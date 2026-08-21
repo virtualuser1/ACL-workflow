@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACL USER Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#2563eb;--primary-dark:#1d4ed8;
+  --success:#059669;--success-light:#d1fae5;
+  --warning:#d97706;--warning-light:#fef3c7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;
+  --gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;
+  --gray-800:#1e293b;--gray-900:#0f172a;
+  --shadow-sm:0 1px 2px 0 rgb(0 0 0/0.05);
+  --shadow:0 1px 3px 0 rgb(0 0 0/0.1),0 1px 2px -1px rgb(0 0 0/0.1);
+  --shadow-md:0 4px 6px -1px rgb(0 0 0/0.1),0 2px 4px -2px rgb(0 0 0/0.1);
+  --shadow-lg:0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);
+  --shadow-xl:0 20px 25px -5px rgb(0 0 0/0.1),0 8px 10px -6px rgb(0 0 0/0.1);
+  --radius:10px;--radius-lg:14px;
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.5;min-height:100vh;font-size:15px}
+.wrap{max-width:1280px;margin:0 auto;padding:20px}
+.hidden{display:none!important}
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
+.card-no-pad{padding:0}
+.login{max-width:460px;margin:80px auto;text-align:center;padding:48px}
+.login h1{font-size:30px;font-weight:800;color:var(--gray-900);margin-bottom:6px}
+.login p{color:var(--gray-500);font-size:15px;margin-bottom:28px}
+.login .field{text-align:left;margin-bottom:16px}
+.login label{display:block;font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
+.login input{width:100%;padding:13px 16px;border:1px solid var(--gray-300);border-radius:var(--radius);font-size:15px;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.login input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,0.12)}
+.login button{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;font-family:inherit}
+.login button:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:var(--shadow)}
+.login button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.message{font-size:14px;padding:10px 14px;border-radius:var(--radius);margin-top:12px;display:none}
+.message.show{display:block}
+.message.error{background:var(--danger-light);color:var(--danger)}
+.message.info{background:var(--gray-100);color:var(--gray-600)}
+h1,h2,h3{color:var(--gray-900)}
+h2{font-size:20px;font-weight:700;margin-bottom:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.header-title h1{font-size:24px;font-weight:800;margin-bottom:2px}
+.header-sub{font-size:13px;color:var(--gray-500)}
+.operator-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;background:var(--success-light);color:var(--success);border-radius:20px;font-size:13px;font-weight:600}
+.operator-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+button{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;transition:all .2s;font-size:14px;font-family:inherit}
+button:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-success:hover{background:#047857}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-warning:hover{background:#b45309}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-purple:hover{background:#6d28d9}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#b91c1c}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-outline{background:transparent;border:1px solid var(--gray-300);color:var(--gray-700)}
+.btn-outline:hover{background:var(--gray-100)}
+.btn-lg{padding:14px 28px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.stat{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;gap:16px}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat-label{font-size:13px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.stat-value{font-size:34px;font-weight:800;color:var(--gray-900);line-height:1}
+.stat-pending .stat-icon{background:var(--warning-light);color:var(--warning)}
+.stat-pending .stat-value{color:var(--warning)}
+.stat-hold .stat-icon{background:var(--purple-light);color:var(--purple)}
+.stat-hold .stat-value{color:var(--purple)}
+.stat-done .stat-icon{background:var(--success-light);color:var(--success)}
+.stat-done .stat-value{color:var(--success)}
+.task-card{background:#fff;border:2px solid var(--gray-200);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:14px;box-shadow:var(--shadow-sm);transition:all .2s}
+.task-card:hover{box-shadow:var(--shadow-md)}
+.task-card.urgent-card{border-color:var(--danger);background:linear-gradient(135deg,#fff 0%,#fef2f2 100%)}
+.task-card.hold-card{border-color:var(--purple);background:linear-gradient(135deg,#fff 0%,#f5f3ff 100%)}
+.task-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.task-id{font-size:18px;font-weight:800;color:var(--gray-800)}
+.task-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:14px}
+.meta-item{background:var(--gray-50);padding:12px 14px;border-radius:var(--radius);border:1px solid var(--gray-100)}
+.meta-label{font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.meta-value{font-size:14px;font-weight:600;color:var(--gray-800);word-break:break-word}
+.meta-value.big{font-size:18px;font-weight:800}
+.case-types{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge-r{background:var(--success-light);color:var(--success)}
+.badge-b{background:var(--danger-light);color:var(--danger)}
+.badge-urgent{background:var(--danger-light);color:var(--danger)}
+.badge-normal{background:var(--gray-100);color:var(--gray-600)}
+.badge-pending{background:var(--warning-light);color:var(--warning)}
+.badge-hold{background:var(--purple-light);color:var(--purple)}
+.badge-done{background:var(--success-light);color:var(--success)}
+.badge-case{background:var(--gray-100);color:var(--gray-700);font-size:12px;padding:4px 10px;border-radius:6px;font-weight:600}
+.task-remarks{background:var(--gray-50);padding:14px 16px;border-radius:var(--radius);border-left:4px solid var(--primary);margin-bottom:14px;font-size:14px;color:var(--gray-700);line-height:1.5}
+.task-remarks b{color:var(--gray-900);font-weight:700;margin-right:6px}
+.hold-reason-box{background:var(--purple-light);padding:14px 16px;border-radius:var(--radius);border-left:4px solid var(--purple);margin-bottom:14px;font-size:14px;color:#5b21b6;line-height:1.5}
+.hold-reason-box b{color:#4c1d95;font-weight:700;margin-right:6px}
+.task-actions{display:flex;justify-content:flex-end;gap:10px;align-items:center;padding-top:14px;border-top:1px solid var(--gray-100);flex-wrap:wrap}
+.empty-state{text-align:center;padding:40px 20px;color:var(--gray-500)}
+.empty-state .empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+.empty-state p{font-size:15px}
+.tablewrap{overflow:auto;border-radius:var(--radius);border:1px solid var(--gray-200)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--gray-200);vertical-align:top}
+th{background:var(--gray-50);font-weight:700;color:var(--gray-600);font-size:12px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;z-index:2;white-space:nowrap}
+tbody tr:hover{background:var(--gray-50)}
+tbody tr:last-child td{border-bottom:none}
+#newTaskOverlay{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#newTaskBox{background:#fff;width:min(620px,96vw);border-radius:var(--radius-lg);padding:36px;box-shadow:var(--shadow-xl);animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+#newTaskBox.urgent-popup{border-top:6px solid var(--danger)}
+#newTaskBox.normal-popup{border-top:6px solid var(--primary)}
+.popup-priority{text-align:center;margin-bottom:16px}
+.popup-priority .badge{font-size:14px;padding:6px 16px}
+.popup-priority .badge.flash{animation:flash 1s infinite}
+@keyframes flash{50%{opacity:.45}}
+.popup-title{font-size:24px;font-weight:800;color:var(--gray-900);text-align:center;margin-bottom:24px}
+.popup-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.popup-meta .meta-item{background:var(--gray-50);padding:14px 16px;border-radius:var(--radius)}
+.popup-meta .meta-label{font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.popup-meta .meta-value{font-size:15px;font-weight:600;color:var(--gray-800)}
+.popup-remarks{background:var(--gray-50);padding:16px;border-radius:var(--radius);border-left:4px solid var(--primary);margin-bottom:20px}
+.popup-remarks b{display:block;font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;margin-bottom:6px}
+.popup-remarks div{font-size:14px;color:var(--gray-700);line-height:1.5}
+.popup-note{font-size:13px;color:var(--gray-500);text-align:center;margin-bottom:20px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-radius:50%;border-top-color:#fff;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.stats{grid-template-columns:1fr}.popup-meta{grid-template-columns:1fr}.task-meta{grid-template-columns:1fr 1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loginCard" class="card login">
+    <h1>ACL USER</h1>
+    <p>Enter your credentials to login</p>
+    <div class="field"><label>Username</label><input id="username" autocomplete="username" placeholder="Enter username"></div>
+    <div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Enter PIN"></div>
+    <button id="loginBtn" onclick="operatorLogin()">Sign In</button>
+    <div id="loginMsg" class="message"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="card">
+      <div class="top">
+        <div class="header-title">
+          <h1>USER Dashboard</h1>
+          <div class="header-sub"><span class="operator-badge" id="operatorInfo">USER</span></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-outline btn-sm" onclick="refreshAll()">↻ Refresh</button>
+          <button class="btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat stat-pending"><div class="stat-icon">⏳</div><div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div></div>
+      <div class="stat stat-hold"><div class="stat-icon">⏸</div><div><div class="stat-label">Hold</div><div class="stat-value" id="holdCount">0</div></div></div>
+      <div class="stat stat-done"><div class="stat-icon">✓</div><div><div class="stat-label">Done Today</div><div class="stat-value" id="doneCount">0</div></div></div>
+    </div>
+    <div class="card">
+      <div class="top"><h2>My Active Tasks</h2></div>
+      <div id="currentTasks"></div>
+    </div>
+    <div class="card card-no-pad">
+      <div style="padding:20px 24px;border-bottom:1px solid var(--gray-200)"><h2 style="margin-bottom:0">Today's Completed Tasks</h2></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Section</th><th>Case Type</th><th>Remarks</th><th>Completed</th></tr></thead>
+          <tbody id="doneRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="newTaskOverlay" class="hidden">
+  <div id="newTaskBox">
+    <div class="popup-priority" id="popupPriority"></div>
+    <div class="popup-title" id="popupTitle">NEW TASK ASSIGNED</div>
+    <div class="popup-meta" id="popupDetails"></div>
+    <div id="popupRemarks"></div>
+    <p class="popup-note">This task has been assigned to you by Master Admin.<br>Please acknowledge before continuing.</p>
+    <button class="btn-success btn-lg" style="width:100%" onclick="acknowledgeTask()">✓ ACKNOWLEDGE TASK</button>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://tvzrpruqkeymfuhvbalv.supabase.co";
+const SUPABASE_KEY="sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+const OPERATOR_LOGIN=SUPABASE_URL+"/functions/v1/operator-login";
+const VERIFY_SESSION=SUPABASE_URL+"/functions/v1/verify-operator-session";
+const TASK_API=SUPABASE_URL+"/functions/v1/task-api";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let operator=null,sessionToken=null,myTasks=[],knownTaskIds=new Set(),popupTask=null,firstLoad=true,loading=false,loginTime=0;
+
+function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function dt(v){return v?new Date(v).toLocaleString("en-IN",{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):"—"}
+function todayIST(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
+function decodeSection(s){
+ if(!s)return{bench:"R",caseTypes:[],section:"-"};
+ const str=String(s),m=str.match(/^\[([RB])\|([^\]]*)\]\s*(.*)/);
+ if(m)return{bench:m[1],caseTypes:m[2]?m[2].split(",").filter(c=>c.trim()):[],section:m[3]||"-"};
+ return{bench:"R",caseTypes:[],section:str||"-"};
+}
+function showMsg(t,ty){$("loginMsg").textContent=t;$("loginMsg").className="message show "+(ty||"info")}
+function hideMsg(){$("loginMsg").className="message"}
+function saveSession(){localStorage.setItem("ahc_operator_session",JSON.stringify({token:sessionToken,operator}))}
+function clearSession(){localStorage.removeItem("ahc_operator_session");sessionToken=null;operator=null}
+
+async function operatorLogin(){
+ const btn=$("loginBtn");btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Signing in...';
+ showMsg("Signing in...","info");
+ try{
+  const u=$("username").value.trim(),p=$("pin").value.trim();
+  if(!u||!p)throw Error("Username and PIN required.");
+  const r=await fetch(OPERATOR_LOGIN,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY},body:JSON.stringify({username:u,pin:p})});
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw Error("Invalid response.")}
+  if(!r.ok||!j.success)throw Error(j.error||j.message||"Login failed.");
+  sessionToken=j.session_token||j.sessionToken||j.token||j.session?.token;
+  operator=j.user||j.operator;
+  if(!sessionToken||!operator)throw Error("Session data missing.");
+  saveSession();loginTime=Date.now();hideMsg();
+  await openDashboard();
+ }catch(e){showMsg(e.message,"error");btn.disabled=false;btn.textContent="Sign In";}
+}
+async function verifySession(){
+ if(!sessionToken||!operator)return false;
+ try{
+  const r=await fetch(VERIFY_SESSION,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"x-session-token":sessionToken}});
+  if(!r.ok)return false;
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{return true}
+  if(j.success===false||j.authenticated===false)return false;
+  if(j.user||j.operator){operator=j.user||j.operator;saveSession();}
+  return true;
+ }catch(e){return false}
+}
+async function taskApi(body){
+ if(!sessionToken)throw Error("Session expired.");
+ const r=await fetch(TASK_API,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"x-session-token":sessionToken},body:JSON.stringify(body)});
+ const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw Error("Invalid API response.")}
+ if(!r.ok||!j.success)throw Error(j.error||"API error.");
+ return j;
+}
+async function openDashboard(){
+ $("loginCard").classList.add("hidden");$("app").classList.remove("hidden");
+ const n=operator.full_name||operator.username||"Operator",u=operator.username||"";
+ $("operatorInfo").innerHTML=`<span style="font-weight:700">${esc(n)}</span>${u?" · "+esc(u):""}`;
+ firstLoad=true;await refreshAll();
+}
+async function refreshAll(){
+ if(loading)return;loading=true;
+ try{await loadMyTasks();await loadDoneToday();}catch(e){console.error(e)}finally{loading=false}
+}
+async function loadMyTasks(){
+ const j=await taskApi({action:"my_tasks"});
+ const incoming=j.tasks||[];
+ const active=incoming.filter(t=>{const s=String(t.status||"").toLowerCase();return s!=="done"&&s!=="completed"});
+ const newTasks=active.filter(t=>!knownTaskIds.has(Number(t.id)));
+ if(!firstLoad&&newTasks.length){
+  newTasks.sort((a,b)=>{if(a.priority==="Urgent"&&b.priority!=="Urgent")return -1;if(a.priority!=="Urgent"&&b.priority==="Urgent")return 1;return Number(b.id)-Number(a.id)});
+  showNewTask(newTasks[0]);
+ }
+ knownTaskIds=new Set(active.map(t=>Number(t.id)));
+ myTasks=active;renderMyTasks();firstLoad=false;
+}
+async function loadDoneToday(){
+ const j=await taskApi({action:"today_done",date:todayIST()});
+ const rows=j.tasks||[];
+ $("doneCount").textContent=rows.length;
+ if(!rows.length){$("doneRows").innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--gray-500)">No tasks completed today.</td></tr>';return}
+ $("doneRows").innerHTML=rows.map(t=>{
+  const d=decodeSection(t.section_name);
+  const cb=d.caseTypes.length?d.caseTypes.map(c=>`<span class="badge badge-case">${esc(c)}</span>`).join(" "):'<span style="color:var(--gray-400)">-</span>';
+  return `<tr>
+   <td><b>#${esc(t.id)}</b></td>
+   <td><span class="badge ${d.bench==="B"?"badge-b":"badge-r"}">${d.bench}</span></td>
+   <td>${esc(t.court_no||"-")}</td>
+   <td>${esc(t.list_type||"-")}</td>
+   <td>${esc(d.section)}</td>
+   <td>${cb}</td>
+   <td style="max-width:200px">${esc(t.remarks||"-")}</td>
+   <td style="white-space:nowrap;font-size:13px">${dt(t.completed_time)}</td>
+  </tr>`;
+ }).join("");
+}
+
+function renderMyTasks(){
+ const pending=myTasks.filter(t=>String(t.status)==="Pending");
+ const hold=myTasks.filter(t=>String(t.status)==="Hold");
+ $("pendingCount").textContent=pending.length;
+ $("holdCount").textContent=hold.length;
+ if(!myTasks.length){
+  $("currentTasks").innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>No pending or hold task assigned to you.</p></div>';
+  return;
+ }
+ $("currentTasks").innerHTML=myTasks.map(t=>{
+  const urgent=t.priority==="Urgent";
+  const held=String(t.status)==="Hold";
+  const d=decodeSection(t.section_name);
+  const cc=held?"hold-card":(urgent?"urgent-card":"");
+  const cb=d.caseTypes.length?`<div class="case-types">${d.caseTypes.map(c=>`<span class="badge badge-case">${esc(c)}</span>`).join("")}</div>`:'<span style="color:var(--gray-400);font-size:13px">-</span>';
+  
+  // Hold reason display
+  const holdReason=t.hold_reason||t.holdReason||t.remarks||"";
+  const holdHtml=held?`<div class="hold-reason-box"><b>⏸ Hold Reason:</b>${esc(holdReason||"Task on hold")}</div>`:"";
+  
+  // ✅ Buttons: DONE (instant) + HOLD (with reason prompt)
+  let actions=`
+    <button class="btn-warning btn-lg" onclick="holdTask(${Number(t.id)})">⏸ HOLD</button>
+    <button class="btn-success btn-lg" onclick="completeTask(${Number(t.id)})">✓ DONE</button>
+  `;
+  if(held){
+   actions=`
+    <span style="font-size:14px;color:var(--purple);font-weight:600">⏸ Task on Hold — Admin will resume</span>
+    <button class="btn-success btn-lg" onclick="completeTask(${Number(t.id)})">✓ DONE</button>
+   `;
+  }
+
+  return `
+  <div class="task-card ${cc}">
+   <div class="task-header">
+    <span class="task-id">#${esc(t.id)}</span>
+    <span class="badge ${d.bench==="B"?"badge-b":"badge-r"}">${d.bench==="B"?"B · Broken":"R · Regular"}</span>
+    ${urgent?'<span class="badge badge-urgent">⚡ URGENT</span>':''}
+    ${held?'<span class="badge badge-hold">⏸ ON HOLD</span>':''}
+    ${!urgent&&!held?'<span class="badge badge-pending">⏳ PENDING</span>':''}
+   </div>
+   <div class="task-meta">
+    <div class="meta-item"><div class="meta-label">Court / Chamber</div><div class="meta-value big">${esc(t.court_no||"-")}</div></div>
+    <div class="meta-item"><div class="meta-label">List Type</div><div class="meta-value big">${esc(t.list_type||"-")}</div></div>
+    <div class="meta-item"><div class="meta-label">Section</div><div class="meta-value">${esc(d.section)}</div></div>
+    <div class="meta-item"><div class="meta-label">Case Type</div>${cb}</div>
+   </div>
+   ${t.remarks&&!held?`<div class="task-remarks"><b>💬 Comment:</b>${esc(t.remarks)}</div>`:""}
+   ${holdHtml}
+   <div class="task-actions">${actions}</div>
+  </div>`;
+ }).join("");
+}
+
+// ✅ DONE - Instant, no prompt
+async function completeTask(id){
+ try{
+  const j=await taskApi({action:"complete",task_id:Number(id)});
+  if(!j.success)throw Error(j.error||"Unable to complete.");
+  knownTaskIds.delete(Number(id));
+  await refreshAll();
+ }catch(e){alert("Error: "+e.message)}
+}
+
+// ✅ HOLD - Asks reason, sends to backend
+async function holdTask(id){
+ const reason=prompt("Task #"+id+" HOLD karna hai.\n\nHold reason batayein (required):");
+ if(!reason||!reason.trim()){alert("Hold cancelled. Reason required.");return}
+ try{
+  const j=await taskApi({
+   action:"hold",
+   task_id:Number(id),
+   reason:reason.trim()
+  });
+  if(!j.success)throw Error(j.error||"Unable to hold.");
+  await refreshAll();
+ }catch(e){
+  // ✅ If backend doesn't support USER hold, show clear message
+  if(e.message.includes("Unknown")||e.message.includes("unknown")){
+   alert("⚠️ Backend update required!\n\nBackend me USER ke liye 'hold' action add karna hai.\n\nSupabase Edge Function 'task-api' me operator actions me 'hold' add karein.");
+  }else{
+   alert("Hold failed: "+e.message);
+  }
+ }
+}
+
+function showNewTask(t){
+ popupTask=t;
+ const urgent=t.priority==="Urgent",d=decodeSection(t.section_name);
+ $("newTaskBox").className=urgent?"urgent-popup":"normal-popup";
+ $("popupPriority").innerHTML=urgent
+  ?'<span class="badge badge-urgent flash" style="font-size:15px;padding:8px 18px">⚡ URGENT TASK</span>'
+  :'<span class="badge badge-pending" style="font-size:15px;padding:8px 18px">📋 NEW TASK</span>';
+ $("popupTitle").textContent="Task #"+t.id+" Assigned To You";
+ const cb=d.caseTypes.length?d.caseTypes.map(c=>`<span class="badge badge-case">${esc(c)}</span>`).join(" "):'<span style="color:var(--gray-400)">-</span>';
+ $("popupDetails").innerHTML=`
+  <div class="meta-item"><div class="meta-label">Bench Type</div><div class="meta-value"><span class="badge ${d.bench==="B"?"badge-b":"badge-r"}">${d.bench==="B"?"B · Broken":"R · Regular"}</span></div></div>
+  <div class="meta-item"><div class="meta-label">Priority</div><div class="meta-value"><span class="badge ${urgent?"badge-urgent":"badge-normal"}">${esc(t.priority||"Normal")}</span></div></div>
+  <div class="meta-item"><div class="meta-label">Court / Chamber</div><div class="meta-value" style="font-size:18px;font-weight:800">${esc(t.court_no||"-")}</div></div>
+  <div class="meta-item"><div class="meta-label">List Type</div><div class="meta-value" style="font-size:18px;font-weight:800">${esc(t.list_type||"-")}</div></div>
+  <div class="meta-item"><div class="meta-label">From Section</div><div class="meta-value">${esc(d.section)}</div></div>
+  <div class="meta-item"><div class="meta-label">Case Type</div><div class="case-types">${cb}</div></div>`;
+ $("popupRemarks").innerHTML=t.remarks?`<div class="popup-remarks"><b>Remarks</b><div>${esc(t.remarks)}</div></div>`:"";
+ $("newTaskOverlay").classList.remove("hidden");
+ notifyNewTask(t);
+}
+function acknowledgeTask(){$("newTaskOverlay").classList.add("hidden");popupTask=null;try{window.focus()}catch(e){}}
+function notifyNewTask(t){
+ if("Notification" in window){
+  if(Notification.permission==="granted"){try{new Notification(t.priority==="Urgent"?"⚡ URGENT AHC TASK":"📋 New AHC Task",{body:"Task #"+t.id+" | "+(t.court_no||"")+" | "+(t.list_type||""),requireInteraction:true})}catch(e){}}
+  else if(Notification.permission==="default"){Notification.requestPermission().catch(()=>{})}
+ }
+ try{window.focus()}catch(e){}
+}
+async function logout(){if(!confirm("Logout?"))return;clearSession();location.reload()}
+
+setInterval(async()=>{
+ if(!$("app").classList.contains("hidden")){
+  if(Date.now()-loginTime<10000){await refreshAll();return}
+  const ok=await verifySession().catch(()=>false);
+  if(!ok){clearSession();$("app").classList.add("hidden");$("loginCard").classList.remove("hidden");showMsg("Session expired. Please login again.","error");$("loginBtn").disabled=false;$("loginBtn").textContent="Sign In";return}
+  await refreshAll();
+ }
+},2000);
+
+(async()=>{
+ try{
+  const s=JSON.parse(localStorage.getItem("ahc_operator_session")||"null");
+  if(s?.token&&s?.operator){sessionToken=s.token;operator=s.operator;loginTime=Date.now()-20000;
+   const ok=await verifySession();if(ok)await openDashboard();else clearSession();}
+ }catch(e){clearSession()}
+})();
+</script>
+</body>
+</html>
