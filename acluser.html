@@ -202,6 +202,7 @@ const TASK_API=SUPABASE_URL+"/functions/v1/task-api";
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 let operator=null,sessionToken=null,myTasks=[],knownTaskIds=new Set(),popupTask=null,firstLoad=true,loading=false,loginTime=0;
+let audioCtx=null, beepTimer=null;
 
 function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function dt(v){return v?new Date(v).toLocaleString("en-IN",{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):"—"}
@@ -230,6 +231,10 @@ async function operatorLogin(){
   operator=j.user||j.operator;
   if(!sessionToken||!operator)throw Error("Session data missing.");
   saveSession();loginTime=Date.now();hideMsg();
+  initTaskSound();
+  if("Notification" in window && Notification.permission==="default"){
+   try{await Notification.requestPermission();}catch(e){}
+  }
   await openDashboard();
  }catch(e){showMsg(e.message,"error");btn.disabled=false;btn.textContent="Sign In";}
 }
@@ -380,6 +385,35 @@ async function holdTask(id){
  }
 }
 
+function initTaskSound(){
+ try{
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)return;
+  if(!audioCtx)audioCtx=new AC();
+  if(audioCtx.state==="suspended")audioCtx.resume().catch(()=>{});
+ }catch(e){console.warn("Audio init failed",e);}
+}
+function beepOnce(){
+ try{
+  if(!audioCtx)return;
+  if(audioCtx.state==="suspended")audioCtx.resume().catch(()=>{});
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+  osc.type="sine";
+  osc.frequency.setValueAtTime(880,now);
+  osc.frequency.exponentialRampToValueAtTime(660,now+0.16);
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(0.22,now+0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.20);
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.start(now);osc.stop(now+0.21);
+ }catch(e){console.warn("Beep failed",e);}
+}
+function startTaskAlarm(){
+ initTaskSound(); stopTaskAlarm(); let count=0; beepOnce();
+ beepTimer=setInterval(()=>{count++;if(count>=5){stopTaskAlarm();return;}beepOnce();},650);
+}
+function stopTaskAlarm(){if(beepTimer){clearInterval(beepTimer);beepTimer=null;}}
 function showNewTask(t){
  popupTask=t;
  const urgent=t.priority==="Urgent",d=decodeSection(t.section_name);
@@ -400,7 +434,11 @@ function showNewTask(t){
  $("newTaskOverlay").classList.remove("hidden");
  notifyNewTask(t);
 }
-function acknowledgeTask(){$("newTaskOverlay").classList.add("hidden");popupTask=null;try{window.focus()}catch(e){}}
+function acknowledgeTask(){
+ stopTaskAlarm(); initTaskSound();
+ $("newTaskOverlay").classList.add("hidden");popupTask=null;
+ try{window.focus()}catch(e){}
+}
 function notifyNewTask(t){
  if("Notification" in window){
   if(Notification.permission==="granted"){try{new Notification(t.priority==="Urgent"?"⚡ URGENT AHC TASK":"📋 New AHC Task",{body:"Task #"+t.id+" | "+(t.court_no||"")+" | "+(t.list_type||""),requireInteraction:true})}catch(e){}}
@@ -408,7 +446,7 @@ function notifyNewTask(t){
  }
  try{window.focus()}catch(e){}
 }
-async function logout(){if(!confirm("Logout?"))return;clearSession();location.reload()}
+async function logout(){if(!confirm("Logout?"))return;stopTaskAlarm();clearSession();location.reload()}
 
 setInterval(async()=>{
  if(!$("app").classList.contains("hidden")){
