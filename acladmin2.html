@@ -801,7 +801,7 @@ tr.memo-done-row{background:var(--success-light)}
         <option value="" selected>Select</option>
         <option value="In-Chamber">In-Chamber</option>
         <option value="Residence">Residence</option>
-        
+        <option value="BROKEN">BROKEN</option>
         <!-- Courts 1 to 100 -->
         <script>
           for(let i=1; i<=100; i++) document.write(`<option value="Court No.${i}">${i}</option>`);
@@ -1417,8 +1417,6 @@ const HOLD_REASONS = [
   "TU MUST BE ADDED",
   "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
   "VIDEO CONFERENCING WITH TIMING NOT PRESENT"
-  "WRONGLY FEEDED BY SECTION"
-  "WRONGLY"
 ].sort((a,b) => a.localeCompare(b));
 
 let pendingHoldTaskId = null;
