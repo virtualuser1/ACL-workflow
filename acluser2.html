@@ -661,11 +661,12 @@ tbody tr:last-child td{
 
 #newTaskBox{
   background:#fff;
-  width:min(620px,96vw);
+  width:min(400px,92vw); /* REDUCED WIDTH */
   border-radius:var(--radius-lg);
-  padding:36px;
+  padding:24px; /* REDUCED PADDING */
   box-shadow:var(--shadow-xl);
   animation:slideUp .3s;
+  text-align:center;
 }
 
 @keyframes slideUp{
@@ -683,7 +684,7 @@ tbody tr:last-child td{
 
 .popup-priority{
   text-align:center;
-  margin-bottom:16px;
+  margin-bottom:12px;
 }
 
 .popup-priority .badge{
@@ -700,62 +701,29 @@ tbody tr:last-child td{
 }
 
 .popup-title{
-  font-size:24px;
-  font-weight:800;
+  font-size:18px; /* REDUCED FONT SIZE */
+  font-weight:700;
   color:var(--gray-900);
   text-align:center;
-  margin-bottom:24px;
+  margin-bottom:16px;
 }
 
-.popup-meta{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  margin-bottom:20px;
-}
-
-.popup-meta .meta-item{
-  background:var(--gray-50);
-  padding:14px 16px;
-  border-radius:var(--radius);
-}
-
-.popup-meta .meta-label{
-  font-size:11px;
-  font-weight:700;
-  color:var(--gray-500);
-  text-transform:uppercase;
-  letter-spacing:.4px;
-  margin-bottom:4px;
-}
-
-.popup-meta .meta-value{
-  font-size:15px;
-  font-weight:600;
-  color:var(--gray-800);
-}
-
-.popup-remarks{
-  background:var(--gray-50);
-  padding:16px;
-  border-radius:var(--radius);
-  border-left:4px solid var(--primary);
-  margin-bottom:20px;
-}
-
-.popup-remarks b{
-  display:block;
-  font-size:11px;
-  font-weight:700;
-  color:var(--gray-500);
-  text-transform:uppercase;
-  margin-bottom:6px;
-}
-
-.popup-remarks div{
+/* NEW ONE-LINER STYLE */
+.popup-one-liner{
   font-size:14px;
   color:var(--gray-700);
+  margin-bottom:20px;
   line-height:1.5;
+  background:var(--gray-50);
+  padding:12px 16px;
+  border-radius:var(--radius);
+  border:1px solid var(--gray-200);
+  text-align: left;
+}
+
+/* HIDE OLD HEAVY ELEMENTS */
+.popup-meta, .popup-remarks, .popup-note {
+  display: none !important;
 }
 
 .popup-note{
@@ -1109,14 +1077,13 @@ tbody tr:last-child td{
 </div>
 
 
+<!-- SIMPLIFIED POPUP OVERLAY -->
 <div id="newTaskOverlay" class="hidden">
   <div id="newTaskBox">
     <div class="popup-priority" id="popupPriority"></div>
     <div class="popup-title" id="popupTitle">NEW TASK ASSIGNED</div>
-    <div class="popup-meta" id="popupDetails"></div>
-    <div id="popupRemarks"></div>
-    <p class="popup-note">This task has been assigned to you by Master Admin.<br>Please acknowledge before continuing.</p>
-    <button class="btn-success btn-lg" style="width:100%" onclick="acknowledgeTask()">✓ ACKNOWLEDGE TASK</button>
+    <div class="popup-one-liner" id="popupOneLiner"></div>
+    <button class="btn-success btn-lg" style="width:100%" onclick="acknowledgeTask()">✓ ACKNOWLEDGE</button>
   </div>
 </div>
 
@@ -1209,7 +1176,6 @@ const OPERATOR_LOGIN = SUPABASE_URL + "/functions/v1/operator-login";
 const VERIFY_SESSION = SUPABASE_URL + "/functions/v1/verify-operator-session";
 const TASK_API = SUPABASE_URL + "/functions/v1/task-api";
 
-// FIXED: Pointing to the exact Edge Function name you provided
 const FORGOT_PASSWORD_API = SUPABASE_URL + "/functions/v1/operator-forgot-password";
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1693,25 +1659,26 @@ function stopTaskAlarm(){
   if(beepTimer){ clearInterval(beepTimer); beepTimer = null; }
 }
 
+/* ============================================================
+   UPDATED SIMPLIFIED POPUP FUNCTION
+============================================================ */
 function showNewTask(t){
   popupTask = t;
   const urgent = t.priority === "Urgent";
-  const d = decodeSection(t.section_name);
-  $("newTaskBox").className = urgent ? "urgent-popup" : "normal-popup";
-  $("popupPriority").innerHTML = urgent ? `<span class="badge badge-urgent flash" style="font-size:15px;padding:8px 18px">⚡ URGENT TASK</span>` : `<span class="badge badge-pending" style="font-size:15px;padding:8px 18px">📋 NEW TASK</span>`;
-  $("popupTitle").textContent = "Task #" + t.id + " Assigned To You";
-  const cb = d.caseTypes.length ? d.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join(" ") : `<span style="color:var(--gray-400)">-</span>`;
   
-  $("popupDetails").innerHTML = `
-    <div class="meta-item"><div class="meta-label">Bench Type</div><div class="meta-value"><span class="badge ${d.bench === "B" ? "badge-b" : "badge-r"}">${d.bench === "B" ? "B · Broken" : "R · Regular"}</span></div></div>
-    <div class="meta-item"><div class="meta-label">Priority</div><div class="meta-value"><span class="badge ${urgent ? "badge-urgent" : "badge-normal"}">${esc(t.priority || "Normal")}</span></div></div>
-    <div class="meta-item"><div class="meta-label">Court / Chamber</div><div class="meta-value" style="font-size:18px;font-weight:800">${esc(t.court_no || "-")}</div></div>
-    <div class="meta-item"><div class="meta-label">List Type</div><div class="meta-value" style="font-size:18px;font-weight:800">${esc(t.list_type || "-")}</div></div>
-    <div class="meta-item"><div class="meta-label">Task Date</div><div class="meta-value"><span class="badge task-date-badge">📅 ${esc(formatTaskDate(t))}</span></div></div>
-    <div class="meta-item"><div class="meta-label">From Section</div><div class="meta-value">${esc(d.section)}</div></div>
-    <div class="meta-item"><div class="meta-label">Case Type</div><div class="case-types">${cb}</div></div>`;
+  $("newTaskBox").className = urgent ? "urgent-popup" : "normal-popup";
+  
+  $("popupPriority").innerHTML = urgent 
+    ? `<span class="badge badge-urgent flash" style="font-size:13px;padding:6px 14px">⚡ URGENT</span>` 
+    : `<span class="badge badge-pending" style="font-size:13px;padding:6px 14px">📋 NEW TASK</span>`;
     
-  $("popupRemarks").innerHTML = t.remarks ? `<div class="popup-remarks"><b>Remarks</b><div>${esc(t.remarks)}</div></div>` : "";
+  $("popupTitle").textContent = "Task #" + t.id + " Assigned";
+  
+  // ONE-LINER MESSAGE
+  const oneLiner = `🏛️ Court: <b>${esc(t.court_no || "-")}</b> &nbsp;|&nbsp; 📋 List: <b>${esc(t.list_type || "-")}</b> &nbsp;|&nbsp; 📅 Date: <b>${esc(formatTaskDate(t))}</b>`;
+  
+  $("popupOneLiner").innerHTML = oneLiner;
+  
   $("newTaskOverlay").classList.remove("hidden");
   startTaskAlarm();
   notifyNewTask(t);
@@ -1743,7 +1710,7 @@ function notifyNewTask(t){
 
 
 /* ============================================================
-   FORGOT PASSWORD (FIXED TO MATCH EDGE FUNCTION PAYLOAD)
+   FORGOT PASSWORD
 ============================================================ */
 function openForgotPassword(){
   $("forgotPasswordOverlay").classList.remove("hidden");
@@ -1840,7 +1807,6 @@ async function resetForgotPassword(){
   showForgotMsg("Verifying your details...", "info");
 
   try{
-    // FIXED PAYLOAD: Matches your Deno Edge Function exactly
     const response = await fetch(FORGOT_PASSWORD_API, {
       method:"POST",
       headers:{"Content-Type":"application/json", "apikey":SUPABASE_KEY},
