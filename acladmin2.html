@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -148,6 +149,12 @@ button:hover{
   box-shadow:var(--shadow);
 }
 
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
 .btn-primary{background:var(--primary);color:#fff}
 .btn-primary:hover{background:var(--primary-dark)}
 .btn-success{background:var(--success);color:#fff}
@@ -260,14 +267,15 @@ button:hover{
   font-size:14px;
 }
 
+/* NEW ORDER */
 .fld-bench{width:100px}
 .fld-court{width:150px}
 .fld-list{width:125px}
-.fld-section{width:110px}
-.fld-casetype{width:220px;position:relative}
-.fld-remarks{width:160px}
 .fld-operator{width:200px}
-.fld-btn{flex-shrink:0}
+.fld-btn{width:105px;flex-shrink:0}
+.fld-section{width:110px}
+.fld-remarks{width:160px}
+.fld-casetype{width:220px;position:relative}
 
 .fld-remarks textarea{
   width:100%;
@@ -621,7 +629,7 @@ tr.memo-done-row{background:var(--success-light)}
 
 .report-print{display:none}
 
-/* HOLD MODAL STYLES */
+/* HOLD MODAL */
 #holdReasonOverlay{
   position:fixed;
   inset:0;
@@ -633,6 +641,7 @@ tr.memo-done-row{background:var(--success-light)}
   justify-content:center;
   padding:20px;
 }
+
 #holdReasonBox{
   background:#fff;
   width:min(620px,96vw);
@@ -640,15 +649,18 @@ tr.memo-done-row{background:var(--success-light)}
   padding:30px;
   box-shadow:var(--shadow-lg);
 }
+
 #holdReasonBox h3{
   font-size:22px;
   margin-bottom:8px;
 }
+
 #holdReasonBox p{
   color:var(--gray-500);
   font-size:13px;
   margin-bottom:16px;
 }
+
 #holdReasonSelect{
   width:100%;
   padding:14px 16px;
@@ -659,11 +671,13 @@ tr.memo-done-row{background:var(--success-light)}
   color:var(--gray-800);
   margin-bottom:20px;
 }
+
 #holdReasonSelect:focus{
   outline:none;
   border-color:var(--purple);
   box-shadow:0 0 0 3px rgba(124,58,237,.12);
 }
+
 .hold-modal-actions{
   display:flex;
   justify-content:flex-end;
@@ -673,7 +687,9 @@ tr.memo-done-row{background:var(--success-light)}
 
 @media print{
   body *{visibility:hidden}
-  #printReport, #printReport *{visibility:visible}
+
+  #printReport,#printReport *{visibility:visible}
+
   #printReport{
     display:block!important;
     position:absolute;
@@ -686,25 +702,80 @@ tr.memo-done-row{background:var(--success-light)}
     box-shadow:none;
     background:#fff;
   }
-  #printReport h1{font-size:16px;margin-bottom:4px;color:#000}
-  #printReport p{font-size:11px;margin-bottom:8px;color:#333}
-  #printReport table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:10px}
-  #printReport table th, #printReport table td{padding:4px 5px;border:1px solid #999;text-align:left;vertical-align:top}
-  #printReport table th{background:#eee!important;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  #printReport .deleted-print{background:#fff0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  #printReport .deleted-print td{text-decoration:line-through;color:#666}
-  @page{margin:8mm;size:landscape}
+
+  #printReport h1{
+    font-size:16px;
+    margin-bottom:4px;
+    color:#000
+  }
+
+  #printReport p{
+    font-size:11px;
+    margin-bottom:8px;
+    color:#333
+  }
+
+  #printReport table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:9px;
+    margin-bottom:10px
+  }
+
+  #printReport table th,
+  #printReport table td{
+    padding:4px 5px;
+    border:1px solid #999;
+    text-align:left;
+    vertical-align:top
+  }
+
+  #printReport table th{
+    background:#eee!important;
+    font-weight:700;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact
+  }
+
+  #printReport .deleted-print{
+    background:#fff0f0!important;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact
+  }
+
+  #printReport .deleted-print td{
+    text-decoration:line-through;
+    color:#666
+  }
+
+  @page{
+    margin:8mm;
+    size:landscape
+  }
 }
 
 @media(max-width:1400px){
-  .form-line{flex-wrap:wrap}
-  .form-line .fld{min-width:calc(20% - 10px)}
+  .form-line{
+    flex-wrap:wrap
+  }
+
+  .form-line .fld{
+    min-width:calc(20% - 10px)
+  }
 }
 
 @media(max-width:600px){
-  .form-line .fld{min-width:100%}
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .card{padding:18px}
+  .form-line .fld{
+    min-width:100%
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr)
+  }
+
+  .card{
+    padding:18px
+  }
 }
 </style>
 </head>
@@ -717,11 +788,17 @@ tr.memo-done-row{background:var(--success-light)}
 <div id="loginCard" class="card login">
   <h1>ACL Admin</h1>
   <p>Admin Login</p>
+
   <label style="text-align:left">Admin ID</label>
   <input id="adminId" type="text" value="admin" style="margin-bottom:14px">
+
   <label style="text-align:left">Password</label>
   <input id="password" type="password" placeholder="Enter password" style="margin-bottom:20px">
-  <button class="btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="login()">Sign In</button>
+
+  <button class="btn-primary"
+          style="width:100%;justify-content:center;padding:14px"
+          onclick="login()">Sign In</button>
+
   <div id="loginMsg" class="message"></div>
 </div>
 
@@ -732,14 +809,19 @@ tr.memo-done-row{background:var(--success-light)}
 <!-- HEADER -->
 <div class="card">
   <div class="top">
+
     <div class="header-title">
       <h1>ACL ADMIN Dashboard</h1>
-      <div class="header-sub">Logged in as: <b>Admin</b></div>
+      <div class="header-sub">
+        Logged in as: <b>Admin</b>
+      </div>
     </div>
+
     <div class="action">
       <button class="btn-outline" onclick="refreshAll()">↻ Refresh</button>
       <button class="btn-danger btn-sm" onclick="logout()">Logout</button>
     </div>
+
   </div>
 </div>
 
@@ -747,70 +829,138 @@ tr.memo-done-row{background:var(--success-light)}
 <!-- DATE -->
 <div class="card" style="padding:18px 28px">
   <div class="date-section">
+
     <label>📅 Working Date:</label>
-    <input id="workDate" type="date" onchange="refreshAll()">
-    <span class="date-hint">Selected date tasks only</span>
+
+    <input id="workDate"
+           type="date"
+           onchange="refreshAll()">
+
+    <span class="date-hint">
+      Selected date tasks only
+    </span>
+
   </div>
 </div>
 
 
 <!-- STATS -->
 <div class="stats">
+
   <div class="stat stat-total">
     <div class="stat-icon">📋</div>
     <div class="stat-label">Total</div>
     <div class="stat-value" id="totalCount">0</div>
   </div>
+
   <div class="stat stat-pending">
     <div class="stat-icon">⏳</div>
     <div class="stat-label">Pending</div>
     <div class="stat-value" id="pendingCount">0</div>
   </div>
+
   <div class="stat stat-hold">
     <div class="stat-icon">⏸</div>
     <div class="stat-label">Hold</div>
     <div class="stat-value" id="holdCount">0</div>
   </div>
+
   <div class="stat stat-done">
     <div class="stat-icon">✓</div>
     <div class="stat-label">Done</div>
     <div class="stat-value" id="doneCount">0</div>
   </div>
+
   <div class="stat stat-memo">
     <div class="stat-icon">📝</div>
     <div class="stat-label">Admin</div>
     <div class="stat-value" id="memoCount">0</div>
   </div>
+
 </div>
 
 
-<!-- ASSIGN NEW TASK -->
+<!-- =====================================================
+     ASSIGN NEW TASK
+     ORDER:
+     Bench
+     Court / Chamber
+     List Type
+     Assign To
+     Assign Button
+     Section
+     Remarks
+     Case Type
+     ===================================================== -->
+
 <div class="card no-print" style="padding:22px 28px">
+
   <h2>Assign New Task</h2>
+
   <div class="form-line">
+
+    <!-- 1. BENCH -->
     <div class="fld fld-bench">
+
       <label>Bench</label>
+
       <select id="benchType">
         <option value="R" selected>Regular</option>
         <option value="B">Broken</option>
       </select>
+
     </div>
+
+
+    <!-- 2. COURT / CHAMBER -->
     <div class="fld fld-court">
+
       <label>Court / Chamber</label>
+
       <select id="courtNo">
+
         <option value="" selected>Select</option>
-        <option value="In-Chamber">In-Chamber</option>
-        <option value="Residence">Residence</option>
-        <option value="BROKEN">BROKEN</option>
-        <!-- Courts 1 to 100 -->
-        <script>
-          for(let i=1; i<=100; i++) document.write(`<option value="Court No.${i}">${i}</option>`);
-        </script>
+
+         <option value="In-Chamber">In-Chamber</option>
+<option value="Residence">Residence</option>
+<option value="BROKEN">BROKEN</option>
+<option value="CJ">CJ</option>
+
+<script>
+  for(let i=1; i<=100; i++) {
+    document.write(`<option value="Court No.${i}">${i}</option>`);
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </select>
+
     </div>
+
+
+    <!-- 3. LIST TYPE -->
     <div class="fld fld-list">
+
       <label>List Type</label>
+
       <select id="listType">
+
         <option value="">Select</option>
         <option>ACL-1(1012)</option>
         <option>ACL-2(1013)</option>
@@ -818,110 +968,302 @@ tr.memo-done-row{background:var(--success-light)}
         <option>ACL-4(1015)</option>
         <option>ACL-6(1016)</option>
         <option>ACL-7(1033)</option>
+
       </select>
+
     </div>
-    <div class="fld fld-section">
-      <label>Section</label>
-      <input id="sectionName" placeholder="Section">
-    </div>
-    <div class="fld fld-casetype">
-      <label>Case Type</label>
-      <div class="ct-dropdown" id="ctDropdown">
-        <div class="ct-trigger" onclick="toggleCtDropdown()">
-          <span class="ct-text placeholder" id="ctText">Select Case Type</span>
-          <span class="ct-arrow">▼</span>
-        </div>
-        <div class="ct-panel" id="ctPanel"></div>
-      </div>
-    </div>
-    <div class="fld fld-remarks">
-      <label>Remarks <span id="wordCount" style="color:var(--gray-400);font-weight:400">(0/50)</span></label>
-      <textarea id="remarks" placeholder="Max 50 words" oninput="checkWordLimit(this)"></textarea>
-    </div>
+
+
+    <!-- 4. ASSIGN TO -->
     <div class="fld fld-operator">
+
       <label>Assign To</label>
-      <select id="operatorSelect"><option value="">Admin</option></select>
+
+      <select id="operatorSelect">
+        <option value="">Admin</option>
+      </select>
+
     </div>
+
+
+    <!-- 5. ASSIGN BUTTON -->
     <div class="fld fld-btn">
+
       <label>&nbsp;</label>
-      <button class="btn-success" style="padding:12px 24px;white-space:nowrap" onclick="createTask()">✓ Assign</button>
+
+      <button class="btn-success"
+              style="padding:12px 18px;white-space:nowrap"
+              onclick="createTask()">
+        ✓ Assign
+      </button>
+
     </div>
+
+
+    <!-- 6. SECTION -->
+    <div class="fld fld-section">
+
+      <label>Section</label>
+
+      <input id="sectionName"
+             placeholder="Section">
+
+    </div>
+
+
+    <!-- 7. REMARKS -->
+    <div class="fld fld-remarks">
+
+      <label>
+        Remarks
+        <span id="wordCount"
+              style="color:var(--gray-400);font-weight:400">
+          (0/50)
+        </span>
+      </label>
+
+      <textarea id="remarks"
+                placeholder="Max 50 words"
+                oninput="checkWordLimit(this)"></textarea>
+
+    </div>
+
+
+    <!-- 8. CASE TYPE -->
+    <div class="fld fld-casetype">
+
+      <label>Case Type</label>
+
+      <div class="ct-dropdown" id="ctDropdown">
+
+        <div class="ct-trigger"
+             onclick="toggleCtDropdown()">
+
+          <span class="ct-text placeholder"
+                id="ctText">
+            Select Case Type
+          </span>
+
+          <span class="ct-arrow">▼</span>
+
+        </div>
+
+        <div class="ct-panel"
+             id="ctPanel"></div>
+
+      </div>
+
+    </div>
+
   </div>
-  <div id="taskMsg" class="message" style="margin-top:8px"></div>
-  <div class="warning-box" id="duplicateWarning">
+
+
+  <div id="taskMsg"
+       class="message"
+       style="margin-top:8px"></div>
+
+
+  <div class="warning-box"
+       id="duplicateWarning">
+
     <span>⚠️</span>
+
     <span id="duplicateMsg"></span>
+
     <div class="warn-actions">
-      <button class="btn-sm btn-warning" onclick="forceCreateTask()">Assign Anyway</button>
-      <button class="btn-sm btn-muted" onclick="hideWarning()">Cancel</button>
+
+      <button class="btn-sm btn-warning"
+              onclick="forceCreateTask()">
+        Assign Anyway
+      </button>
+
+      <button class="btn-sm btn-muted"
+              onclick="hideWarning()">
+        Cancel
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
 
-<!-- TASK TABLE -->
+<!-- =====================================================
+     TASK TABLE
+
+     ORDER:
+     ID
+     Bench
+     Court
+     List Type
+     Assigned To
+     Section
+     Remarks
+     Case Type
+     Status
+     Assigned
+     Completed
+     Action
+     ===================================================== -->
+
 <div class="card card-no-pad">
-  <div class="top no-print" style="padding:20px 28px;border-bottom:1px solid var(--gray-200)">
-    <h2 style="margin-bottom:0">Tasks — <span id="dateLabel" style="color:var(--primary)"></span></h2>
+
+  <div class="top no-print"
+       style="padding:20px 28px;border-bottom:1px solid var(--gray-200)">
+
+    <h2 style="margin-bottom:0">
+      Tasks —
+      <span id="dateLabel"
+            style="color:var(--primary)"></span>
+    </h2>
+
     <div class="action">
-      <button class="btn-outline btn-sm" onclick="openReport()">📊 Report</button>
-      <button class="btn-muted btn-sm" onclick="printTasks()">🖨 Print</button>
+
+      <button class="btn-outline btn-sm"
+              onclick="openReport()">
+        📊 Report
+      </button>
+
+      <button class="btn-muted btn-sm"
+              onclick="printTasks()">
+        🖨 Print
+      </button>
+
     </div>
+
   </div>
+
+
   <div class="tablewrap">
+
     <table>
+
       <thead>
+
         <tr>
-          <th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Section</th><th>Case Type</th><th>Remarks</th><th>Assigned To</th><th>Status</th><th>Assigned</th><th>Completed</th><th class="no-print">Action</th>
+          <th>ID</th>
+          <th>Bench</th>
+          <th>Court</th>
+          <th>List Type</th>
+          <th>Assigned To</th>
+          <th>Section</th>
+          <th>Remarks</th>
+          <th>Case Type</th>
+          <th>Status</th>
+          <th>Assigned</th>
+          <th>Completed</th>
+          <th class="no-print">Action</th>
         </tr>
+
       </thead>
+
       <tbody id="taskRows"></tbody>
+
     </table>
+
   </div>
-</div>
 
-<div id="printReport" class="report-print"></div>
-</div>
 </div>
 
 
-<!-- MODAL -->
+<div id="printReport"
+     class="report-print"></div>
+
+</div>
+</div>
+
+
+<!-- GENERAL MODAL -->
 <div id="modal" class="hidden">
+
   <div class="modalbox">
+
     <div id="modalContent"></div>
-    <div class="action no-print" style="margin-top:20px;justify-content:flex-end">
-      <button class="btn-muted" onclick="closeModal()">Close</button>
+
+    <div class="action no-print"
+         style="margin-top:20px;justify-content:flex-end">
+
+      <button class="btn-muted"
+              onclick="closeModal()">
+        Close
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- HOLD REASON MODAL -->
-<div id="holdReasonOverlay" class="hidden">
+
+<!-- =====================================================
+     HOLD REASON MODAL
+     ===================================================== -->
+
+<div id="holdReasonOverlay"
+     class="hidden">
+
   <div id="holdReasonBox">
+
     <h3>⏸ Hold Task</h3>
-    <p id="holdReasonTaskLabel">Select the reason for putting this task on hold.</p>
+
+    <p id="holdReasonTaskLabel">
+      Select the reason for putting this task on hold.
+    </p>
+
     <select id="holdReasonSelect">
-      <option value="">— Select Hold Reason —</option>
+
+      <option value="">
+        — Select Hold Reason —
+      </option>
+
     </select>
+
     <div class="hold-modal-actions">
-      <button class="btn-muted" onclick="cancelHoldReason()">Cancel</button>
-      <button class="btn-warning" onclick="confirmHoldReason()">⏸ HOLD TASK</button>
+
+      <button class="btn-muted"
+              onclick="cancelHoldReason()">
+        Cancel
+      </button>
+
+      <button class="btn-warning"
+              onclick="confirmHoldReason()">
+        ⏸ HOLD TASK
+      </button>
+
     </div>
+
   </div>
+
 </div>
 
 
 <script>
+
 /* =====================================================
    SUPABASE
    ===================================================== */
-const SUPABASE_URL = "https://tvzrpruqkeymfuhvbalv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
-const TASK_API = SUPABASE_URL + "/functions/v1/task-api";
-const ADMIN_EMAIL = "virtualuser1@tutamail.com";
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = id => document.getElementById(id);
+const SUPABASE_URL =
+  "https://tvzrpruqkeymfuhvbalv.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+
+const TASK_API =
+  SUPABASE_URL + "/functions/v1/task-api";
+
+const ADMIN_EMAIL =
+  "virtualuser1@tutamail.com";
+
+const sb =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+const $ = id =>
+  document.getElementById(id);
 
 let operators = [];
 let tasks = [];
@@ -931,712 +1273,2542 @@ let busy = false;
 /* =====================================================
    CASE TYPES
    ===================================================== */
+
 const CASE_TYPES = [
-"A227","A228","A340","A372","A372D","A378","A378D","A389","A482","A483","ABAIL","ABAILC","AMAL","APPL",
-"ARBT","ARCO","ARPL","ARPLD","BAIL","BAILC","C14A1","C14A1D","C372","C372D","C378","C378D","CAPL","CAPT",
-"CAPTD","CEAP","CERA","CERE","CEXA","CLRE","CLRED","CMRA","CMRAD","COMA","COMAD","COMP","CONA","CONAD",
-"COPL","COPLD","COPP","COSU","CRCL","CREF","CREFD","CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL",
-"CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP","EDRE","EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD",
-"FEXA","GAPL","GOVA","GOVAD","GSTAL","GSTALD","GTAP","GTRE","HABC","IAPL","IAPLD","ITAP","ITRE","JAPL",
-"JAPLD","MCOA","MTAL","NA379","NA413","NA413D","NA419","NA419D","NA430","NA528","NA529","NABAIL","NC413",
-"NC413D","NC419","NC419D","OLR","OSUT","PRCS","REFC","REFE","RERA","RERAD","SAFO","SAFOD","SAMC","SAPL",
-"SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD","STRE","STRED","TACL","TACLD","TACR","TEAP","TEST",
-"TESU","WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB","WRIC","WTAP","WTAR","WTAX","WTRE"
+
+"A227","A228","A340","A372","A372D","A378","A378D","A389",
+"A482","A483","ABAIL","ABAILC","AMAL","APPL","ARBT","ARCO",
+"ARPL","ARPLD","BAIL","BAILC","C14A1","C14A1D","C372","C372D",
+"C378","C378D","CAPL","CAPT","CAPTD","CEAP","CERA","CERE",
+"CEXA","CLRE","CLRED","CMRA","CMRAD","COMA","COMAD","COMP",
+"CONA","CONAD","COPL","COPLD","COPP","COSU","CRCL","CREF",
+"CREFD","CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL",
+"CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP","EDRE",
+"EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD","FEXA","GAPL",
+"GOVA","GOVAD","GSTAL","GSTALD","GTAP","GTRE","HABC","IAPL",
+"IAPLD","ITAP","ITRE","JAPL","JAPLD","MCOA","MTAL","NA379",
+"NA413","NA413D","NA419","NA419D","NA430","NA528","NA529",
+"NABAIL","NC413","NC413D","NC419","NC419D","OLR","OSUT",
+"PRCS","REFC","REFE","RERA","RERAD","SAFO","SAFOD","SAMC",
+"SAPL","SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD",
+"STRE","STRED","TACL","TACLD","TACR","TEAP","TEST","TESU",
+"WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB","WRIC","WTAP",
+"WTAR","WTAX","WTRE"
+
 ];
+
 let selectedCaseTypes = [];
 
 
 /* =====================================================
    CASE TYPE DROPDOWN
    ===================================================== */
+
 function initCtDropdown(){
-  $("ctPanel").innerHTML = CASE_TYPES.map(ct => `
-    <div class="ct-option" data-val="${ct}" onclick="selectCaseType(event,this)">${ct}</div>
-  `).join("");
+
+  $("ctPanel").innerHTML =
+    CASE_TYPES.map(ct => `
+      <div class="ct-option"
+           data-val="${ct}"
+           onclick="selectCaseType(event,this)">
+        ${ct}
+      </div>
+    `).join("");
+
 }
 
 function selectCaseType(event,el){
+
   event.stopPropagation();
-  const val = el.getAttribute("data-val");
-  const ctrl = event.ctrlKey || event.metaKey;
+
+  const val =
+    el.getAttribute("data-val");
+
+  const ctrl =
+    event.ctrlKey || event.metaKey;
 
   if(ctrl){
-    const index = selectedCaseTypes.indexOf(val);
+
+    const index =
+      selectedCaseTypes.indexOf(val);
+
     if(index >= 0){
+
       selectedCaseTypes.splice(index,1);
-      el.classList.remove("selected","ctrl-selected");
+
+      el.classList.remove(
+        "selected",
+        "ctrl-selected"
+      );
+
     }else{
+
       selectedCaseTypes.push(val);
-      el.classList.add("ctrl-selected");
+
+      el.classList.add(
+        "ctrl-selected"
+      );
+
     }
+
   }else{
+
     selectedCaseTypes = [val];
-    document.querySelectorAll(".ct-option").forEach(x => x.classList.remove("selected","ctrl-selected"));
+
+    document
+      .querySelectorAll(".ct-option")
+      .forEach(x =>
+        x.classList.remove(
+          "selected",
+          "ctrl-selected"
+        )
+      );
+
     el.classList.add("selected");
+
   }
+
   updateCtDisplay();
+
 }
 
 function toggleCtDropdown(){
-  $("ctDropdown").classList.toggle("open");
+
+  $("ctDropdown")
+    .classList
+    .toggle("open");
+
 }
 
 function updateCtDisplay(){
+
   const txt = $("ctText");
+
   if(selectedCaseTypes.length === 0){
-    txt.textContent = "Select Case Type";
+
+    txt.textContent =
+      "Select Case Type";
+
     txt.classList.add("placeholder");
+
     return;
+
   }
+
   txt.classList.remove("placeholder");
+
   if(selectedCaseTypes.length === 1){
-    txt.textContent = selectedCaseTypes[0];
+
+    txt.textContent =
+      selectedCaseTypes[0];
+
   }else{
-    txt.textContent = selectedCaseTypes[0] + " +" + (selectedCaseTypes.length - 1) + " more";
+
+    txt.textContent =
+      selectedCaseTypes[0] +
+      " +" +
+      (selectedCaseTypes.length - 1) +
+      " more";
+
   }
+
 }
 
 function clearCtDropdown(){
+
   selectedCaseTypes = [];
-  document.querySelectorAll(".ct-option").forEach(el => el.classList.remove("selected","ctrl-selected"));
+
+  document
+    .querySelectorAll(".ct-option")
+    .forEach(el =>
+      el.classList.remove(
+        "selected",
+        "ctrl-selected"
+      )
+    );
+
   updateCtDisplay();
+
 }
 
-document.addEventListener("click", function(e){
-  if(!e.target.closest(".ct-dropdown")) $("ctDropdown").classList.remove("open");
-});
+document.addEventListener(
+  "click",
+  function(e){
+
+    if(!e.target.closest(".ct-dropdown")){
+
+      $("ctDropdown")
+        .classList
+        .remove("open");
+
+    }
+
+  }
+);
 
 
 /* =====================================================
    WORD LIMIT
    ===================================================== */
+
 function checkWordLimit(el){
-  const words = el.value.trim().split(/\s+/).filter(w => w.length > 0);
+
+  const words =
+    el.value
+      .trim()
+      .split(/\s+/)
+      .filter(w => w.length > 0);
+
   const count = words.length;
-  $("wordCount").textContent = `(${count}/50)`;
+
+  $("wordCount").textContent =
+    `(${count}/50)`;
+
   if(count > 50){
-    el.value = words.slice(0,50).join(" ");
-    $("wordCount").textContent = "(50/50)";
-    $("wordCount").style.color = "var(--danger)";
+
+    el.value =
+      words
+        .slice(0,50)
+        .join(" ");
+
+    $("wordCount").textContent =
+      "(50/50)";
+
+    $("wordCount").style.color =
+      "var(--danger)";
+
   }else{
-    $("wordCount").style.color = count > 40 ? "var(--warning)" : "var(--gray-400)";
+
+    $("wordCount").style.color =
+      count > 40
+        ? "var(--warning)"
+        : "var(--gray-400)";
+
   }
+
 }
 
 
 /* =====================================================
    DELETED TASK LOG
    ===================================================== */
-const DELETED_KEY = "ahc_deleted_tasks_log";
+
+const DELETED_KEY =
+  "ahc_deleted_tasks_log";
+
 function getDeletedTasks(){
-  try{ return JSON.parse(localStorage.getItem(DELETED_KEY) || "[]"); }catch{ return []; }
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(DELETED_KEY) || "[]"
+    );
+
+  }catch{
+
+    return [];
+
+  }
+
 }
-function saveDeletedTask(task, reason){
-  const d = getDeletedTasks();
-  d.push({...task, deleted_reason:reason, deleted_at:new Date().toISOString(), deleted_by:"Admin"});
-  if(d.length > 500) d.splice(0, d.length - 500);
-  localStorage.setItem(DELETED_KEY, JSON.stringify(d));
-}
-function getDeletedByDate(date){
-  return getDeletedTasks().filter(t => {
-    if(t.task_date) return t.task_date === date;
-    if(t.assigned_time){
-      const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time));
-      return d === date;
-    }
-    return false;
+
+function saveDeletedTask(task,reason){
+
+  const d =
+    getDeletedTasks();
+
+  d.push({
+    ...task,
+    deleted_reason:reason,
+    deleted_at:new Date().toISOString(),
+    deleted_by:"Admin"
   });
+
+  if(d.length > 500){
+
+    d.splice(
+      0,
+      d.length - 500
+    );
+
+  }
+
+  localStorage.setItem(
+    DELETED_KEY,
+    JSON.stringify(d)
+  );
+
+}
+
+function getDeletedByDate(date){
+
+  return getDeletedTasks()
+    .filter(t => {
+
+      if(t.task_date)
+        return t.task_date === date;
+
+      if(t.assigned_time){
+
+        const d =
+          new Intl.DateTimeFormat(
+            "en-CA",
+            {
+              timeZone:"Asia/Kolkata",
+              year:"numeric",
+              month:"2-digit",
+              day:"2-digit"
+            }
+          ).format(
+            new Date(t.assigned_time)
+          );
+
+        return d === date;
+
+      }
+
+      return false;
+
+    });
+
 }
 
 
 /* =====================================================
    HELPERS
    ===================================================== */
+
 function operatorOptionValue(v){
+
   const n = Number(v);
-  return Number.isInteger(n) && n > 0 ? String(n) : "";
+
+  return Number.isInteger(n) && n > 0
+    ? String(n)
+    : "";
+
 }
+
 function esc(v){
-  return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
 }
+
 function dt(v){
-  return v ? new Date(v).toLocaleString("en-IN", {day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"}) : "—";
+
+  return v
+    ? new Date(v).toLocaleString(
+        "en-IN",
+        {
+          day:"2-digit",
+          month:"short",
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      )
+    : "—";
+
 }
+
 function todayIST(){
-  return new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date());
-}
-function selectedDate(){
-  return $("workDate").value || todayIST();
-}
-function filterByDate(list){
-  const sel = selectedDate();
-  return list.filter(t => {
-    if(t.task_date) return t.task_date === sel;
-    if(t.assigned_time){
-      const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time));
-      return d === sel;
+
+  return new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone:"Asia/Kolkata",
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit"
     }
+  ).format(new Date());
+
+}
+
+function selectedDate(){
+
+  return $("workDate").value ||
+         todayIST();
+
+}
+
+function filterByDate(list){
+
+  const sel =
+    selectedDate();
+
+  return list.filter(t => {
+
+    if(t.task_date)
+      return t.task_date === sel;
+
+    if(t.assigned_time){
+
+      const d =
+        new Intl.DateTimeFormat(
+          "en-CA",
+          {
+            timeZone:"Asia/Kolkata",
+            year:"numeric",
+            month:"2-digit",
+            day:"2-digit"
+          }
+        ).format(
+          new Date(t.assigned_time)
+        );
+
+      return d === sel;
+
+    }
+
     return false;
+
   });
+
 }
-function encodeSection(bench, caseTypes, section){
-  const ct = caseTypes.length ? caseTypes.join(",") : "";
+
+function encodeSection(
+  bench,
+  caseTypes,
+  section
+){
+
+  const ct =
+    caseTypes.length
+      ? caseTypes.join(",")
+      : "";
+
   return `[${bench}|${ct}] ${section || ""}`.trim();
+
 }
+
 function decodeSection(sectionStr){
-  if(!sectionStr) return {bench:"", caseTypes:[], section:"-"};
-  const str = String(sectionStr);
-  const match = str.match(/^\[([RB])\|([^\]]*)\]\s*(.*)/);
-  if(match){
+
+  if(!sectionStr){
+
     return {
-      bench:match[1],
-      caseTypes: match[2] ? match[2].split(",").filter(c => c.trim()) : [],
-      section: match[3] || "-"
+      bench:"",
+      caseTypes:[],
+      section:"-"
     };
+
   }
-  return {bench:"", caseTypes:[], section:str || "-"};
+
+  const str =
+    String(sectionStr);
+
+  const match =
+    str.match(
+      /^\[([RB])\|([^\]]*)\]\s*(.*)/
+    );
+
+  if(match){
+
+    return {
+
+      bench:match[1],
+
+      caseTypes:
+        match[2]
+          ? match[2]
+              .split(",")
+              .filter(c => c.trim())
+          : [],
+
+      section:
+        match[3] || "-"
+
+    };
+
+  }
+
+  return {
+    bench:"",
+    caseTypes:[],
+    section:str || "-"
+  };
+
 }
+
 function getCourtStr(t){
-  let c = t.court_no || t.courtNo || null;
+
+  let c =
+    t.court_no ||
+    t.courtNo ||
+    null;
+
   if(!c) return "-";
-  if(Array.isArray(c)) return c.join(", ");
+
+  if(Array.isArray(c))
+    return c.join(", ");
+
   return String(c);
+
 }
 
 
 /* =====================================================
    DUPLICATE CHECK
    ===================================================== */
-function checkDuplicate(bench, court, listType){
-  if(!bench || !court || !listType) return null;
-  if(court.toLowerCase() === "in-chamber") return null;
-  const selBench = bench.toUpperCase();
-  const selCourt = court.toLowerCase().trim();
-  const selList = listType.toLowerCase().trim();
+
+function checkDuplicate(
+  bench,
+  court,
+  listType
+){
+
+  if(!bench || !court || !listType)
+    return null;
+
+  if(
+    court.toLowerCase() ===
+    "in-chamber"
+  )
+    return null;
+
+  const selBench =
+    bench.toUpperCase();
+
+  const selCourt =
+    court.toLowerCase().trim();
+
+  const selList =
+    listType.toLowerCase().trim();
 
   for(const task of tasks){
-    const decoded = decodeSection(task.section_name);
-    const tBench = decoded.bench.toUpperCase();
-    const tCourt = getCourtStr(task).toLowerCase().trim();
-    const tList = (task.list_type || "").toLowerCase().trim();
-    if(tBench === selBench && tCourt === selCourt && tList === selList){
-      return {id:task.id, bench: selBench === "B" ? "B (Broken)" : "R (Regular)", court:court, list:listType};
+
+    const decoded =
+      decodeSection(
+        task.section_name
+      );
+
+    const tBench =
+      decoded.bench.toUpperCase();
+
+    const tCourt =
+      getCourtStr(task)
+        .toLowerCase()
+        .trim();
+
+    const tList =
+      (task.list_type || "")
+        .toLowerCase()
+        .trim();
+
+    if(
+      tBench === selBench &&
+      tCourt === selCourt &&
+      tList === selList
+    ){
+
+      return {
+
+        id:task.id,
+
+        bench:
+          selBench === "B"
+            ? "B (Broken)"
+            : "R (Regular)",
+
+        court:court,
+
+        list:listType
+
+      };
+
     }
+
   }
+
   return null;
+
 }
+
 function showWarning(msg){
-  $("duplicateMsg").textContent = msg;
-  $("duplicateWarning").classList.add("show");
+
+  $("duplicateMsg")
+    .textContent = msg;
+
+  $("duplicateWarning")
+    .classList
+    .add("show");
+
 }
+
 function hideWarning(){
-  $("duplicateWarning").classList.remove("show");
+
+  $("duplicateWarning")
+    .classList
+    .remove("show");
+
 }
 
 
 /* =====================================================
    API
    ===================================================== */
+
 function adminHeaders(){
-  return {"Content-Type":"application/json", "apikey":SUPABASE_KEY};
+
+  return {
+    "Content-Type":"application/json",
+    "apikey":SUPABASE_KEY
+  };
+
 }
+
 async function taskApi(body){
-  const session = (await sb.auth.getSession()).data.session;
-  if(!session) throw Error("Session expired.");
-  const r = await fetch(TASK_API, {
-    method:"POST",
-    headers:{...adminHeaders(), "Authorization":"Bearer " + session.access_token},
-    body:JSON.stringify(body)
-  });
-  const text = await r.text();
+
+  const session =
+    (await sb.auth.getSession())
+      .data.session;
+
+  if(!session)
+    throw Error("Session expired.");
+
+  const r =
+    await fetch(
+      TASK_API,
+      {
+        method:"POST",
+
+        headers:{
+          ...adminHeaders(),
+          "Authorization":
+            "Bearer " +
+            session.access_token
+        },
+
+        body:
+          JSON.stringify(body)
+      }
+    );
+
+  const text =
+    await r.text();
+
   let j;
-  try{ j = JSON.parse(text); }catch{ throw Error("Invalid response."); }
-  if(!r.ok || !j.success) throw Error(j.error || "API error.");
+
+  try{
+
+    j = JSON.parse(text);
+
+  }catch{
+
+    throw Error(
+      "Invalid response."
+    );
+
+  }
+
+  if(!r.ok || !j.success){
+
+    throw Error(
+      j.error || "API error."
+    );
+
+  }
+
   return j;
+
 }
 
 
 /* =====================================================
    ADMIN LOGIN
    ===================================================== */
+
 async function login(){
-  const id = $("adminId").value.trim();
+
+  const id =
+    $("adminId")
+      .value
+      .trim();
+
   if(id.toLowerCase() !== "admin"){
-    $("loginMsg").textContent = "Invalid Admin ID";
+
+    $("loginMsg")
+      .textContent =
+      "Invalid Admin ID";
+
     return;
+
   }
-  $("loginMsg").textContent = "Signing in...";
+
+  $("loginMsg")
+    .textContent =
+    "Signing in...";
+
   try{
-    const {error} = await sb.auth.signInWithPassword({email:ADMIN_EMAIL, password:$("password").value});
-    if(error) throw error;
-    $("loginCard").classList.add("hidden");
-    $("app").classList.remove("hidden");
-    $("workDate").value = todayIST();
+
+    const {error} =
+      await sb.auth.signInWithPassword({
+
+        email:ADMIN_EMAIL,
+
+        password:
+          $("password").value
+
+      });
+
+    if(error)
+      throw error;
+
+    $("loginCard")
+      .classList
+      .add("hidden");
+
+    $("app")
+      .classList
+      .remove("hidden");
+
+    $("workDate").value =
+      todayIST();
+
     initCtDropdown();
     initHoldReasons();
+
     await loadOperators();
     await refreshAll();
+
   }catch(e){
-    $("loginMsg").textContent = e.message;
+
+    $("loginMsg")
+      .textContent =
+      e.message;
+
   }
+
 }
+
 async function logout(){
+
   await sb.auth.signOut();
+
   location.reload();
+
 }
 
 
 /* =====================================================
    OPERATORS
    ===================================================== */
-async function loadOperators(){
-  const select = $("operatorSelect");
-  select.innerHTML = '<option value="">Admin</option>';
-  select.disabled = true;
-  try{
-    let list = [];
-    try{
-      const j = await taskApi({ action:"operators" });
-      if(Array.isArray(j?.operators)) list = j.operators;
-    }catch(apiError){ console.warn("task-api operators failed:", apiError); }
-    if(!list.length){
-      const { data, error } = await sb.from("users").select("id,username,full_name,active").eq("active", true).order("id", { ascending:true });
-      if(error) throw error;
-      list = data || [];
-    }
-    operators = list.map(o => ({
-      id: Number(o.id),
-      username: o.username || "",
-      full_name: o.full_name || o.username || `Operator ${o.id}`,
-      active: o.active !== false
-    })).filter(o => Number.isInteger(o.id) && o.id > 0 && o.active && String(o.username).toLowerCase() !== "admin").sort((a,b) => a.id - b.id);
 
-    select.innerHTML = '<option value="">Admin</option>' + operators.map(o => `<option value="${operatorOptionValue(o.id)}">${esc(o.id)} — ${esc(o.full_name)}</option>`).join("");
-    select.disabled = false;
-    if(!operators.length){
-      select.innerHTML = '<option value="">Admin</option>';
-      select.disabled = false;
+async function loadOperators(){
+
+  const select =
+    $("operatorSelect");
+
+  select.innerHTML =
+    '<option value="">Admin</option>';
+
+  select.disabled = true;
+
+  try{
+
+    let list = [];
+
+    try{
+
+      const j =
+        await taskApi({
+          action:"operators"
+        });
+
+      if(
+        Array.isArray(
+          j?.operators
+        )
+      )
+        list = j.operators;
+
+    }catch(apiError){
+
+      console.warn(
+        "task-api operators failed:",
+        apiError
+      );
+
     }
-  }catch(e){
-    console.error("Unable to load operators:", e);
-    select.innerHTML = '<option value="">Admin</option>';
+
+    if(!list.length){
+
+      const {
+        data,
+        error
+      } =
+        await sb
+          .from("users")
+          .select(
+            "id,username,full_name,active"
+          )
+          .eq("active",true)
+          .order(
+            "id",
+            {ascending:true}
+          );
+
+      if(error)
+        throw error;
+
+      list =
+        data || [];
+
+    }
+
+    operators =
+      list
+        .map(o => ({
+
+          id:Number(o.id),
+
+          username:
+            o.username || "",
+
+          full_name:
+            o.full_name ||
+            o.username ||
+            `Operator ${o.id}`,
+
+          active:
+            o.active !== false
+
+        }))
+        .filter(o =>
+          Number.isInteger(o.id) &&
+          o.id > 0 &&
+          o.active &&
+          String(o.username)
+            .toLowerCase() !== "admin"
+        )
+        .sort(
+          (a,b) =>
+            a.id - b.id
+        );
+
+    select.innerHTML =
+      '<option value="">Admin</option>' +
+
+      operators
+        .map(o => `
+          <option value="${operatorOptionValue(o.id)}">
+            ${esc(o.id)} — ${esc(o.full_name)}
+          </option>
+        `)
+        .join("");
+
     select.disabled = false;
+
+  }catch(e){
+
+    console.error(
+      "Unable to load operators:",
+      e
+    );
+
+    select.innerHTML =
+      '<option value="">Admin</option>';
+
+    select.disabled = false;
+
   }
+
 }
 
 
 /* =====================================================
    CREATE TASK
    ===================================================== */
+
 async function createTask(){
+
   hideWarning();
-  const bench = $("benchType").value;
-  const court = $("courtNo").value;
-  const listType = $("listType").value;
-  const assigned = $("operatorSelect").value;
+
+  const bench =
+    $("benchType").value;
+
+  const court =
+    $("courtNo").value;
+
+  const listType =
+    $("listType").value;
+
+  const assigned =
+    $("operatorSelect").value;
 
   if(!assigned){
+
     await submitTask();
-    return;
-  }
-  if(!bench){ alert("Please select Bench."); return; }
-  if(!court){ alert("Please select Court / Chamber."); return; }
 
-  const dupe = checkDuplicate(bench, court, listType);
+    return;
+
+  }
+
+  if(!bench){
+
+    alert(
+      "Please select Bench."
+    );
+
+    return;
+
+  }
+
+  if(!court){
+
+    alert(
+      "Please select Court / Chamber."
+    );
+
+    return;
+
+  }
+
+  const dupe =
+    checkDuplicate(
+      bench,
+      court,
+      listType
+    );
+
   if(dupe){
-    showWarning(`${dupe.bench} + "${dupe.court}" + ${dupe.list} already exists (Task #${dupe.id}).`);
+
+    showWarning(
+      `${dupe.bench} + "${dupe.court}" + ${dupe.list} already exists (Task #${dupe.id}).`
+    );
+
     return;
+
   }
+
   await submitTask();
+
 }
+
 async function forceCreateTask(){
+
   hideWarning();
+
   await submitTask();
+
 }
+
 async function submitTask(){
-  $("taskMsg").textContent = "Saving...";
+
+  $("taskMsg")
+    .textContent =
+    "Saving...";
+
   try{
-    const assigned = operatorOptionValue($("operatorSelect").value);
-    const bench = $("benchType").value;
-    const caseTypes = [...selectedCaseTypes];
-    const rawSection = $("sectionName").value.trim();
-    const rawRemarks = $("remarks").value.trim();
-    const encodedSection = encodeSection(bench, caseTypes, rawSection);
-    const courtValue = $("courtNo").value || null;
-    const listValue = $("listType").value || null;
 
-    const j = await taskApi({
-      action:"create",
-      court_no: courtValue,
-      section_name: encodedSection,
-      list_type: listValue,
-      case_type: caseTypes.length === 1 ? caseTypes[0] : (caseTypes.length ? caseTypes : ""),
-      priority:"Normal",
-      remarks: rawRemarks,
-      assigned_to: assigned ? Number(assigned) : null,
-      task_date: selectedDate()
-    });
+    const assigned =
+      operatorOptionValue(
+        $("operatorSelect").value
+      );
 
-    $("taskMsg").textContent = j.message || (assigned ? "✓ Assigned" : "✓ Admin Memo saved");
-    $("benchType").value = "R";
-    $("courtNo").value = "";
-    $("sectionName").value = "";
-    $("listType").value = "";
-    $("remarks").value = "";
-    $("operatorSelect").value = "";
-    $("wordCount").textContent = "(0/50)";
-    $("wordCount").style.color = "var(--gray-400)";
+    const bench =
+      $("benchType").value;
+
+    const caseTypes =
+      [...selectedCaseTypes];
+
+    const rawSection =
+      $("sectionName")
+        .value
+        .trim();
+
+    const rawRemarks =
+      $("remarks")
+        .value
+        .trim();
+
+    const encodedSection =
+      encodeSection(
+        bench,
+        caseTypes,
+        rawSection
+      );
+
+    const courtValue =
+      $("courtNo").value ||
+      null;
+
+    const listValue =
+      $("listType").value ||
+      null;
+
+
+    /*
+      DATABASE FIELD MAPPING
+
+      court_no    -> Court
+      section_name-> Section + Bench + Case Type
+      list_type   -> List Type
+      case_type   -> Case Type
+      remarks     -> Remarks
+      assigned_to -> Assigned To
+      task_date   -> Working Date
+    */
+
+    const j =
+      await taskApi({
+
+        action:"create",
+
+        court_no:
+          courtValue,
+
+        section_name:
+          encodedSection,
+
+        list_type:
+          listValue,
+
+        case_type:
+          caseTypes.length === 1
+            ? caseTypes[0]
+            : (
+                caseTypes.length
+                  ? caseTypes
+                  : ""
+              ),
+
+        priority:"Normal",
+
+        remarks:
+          rawRemarks,
+
+        assigned_to:
+          assigned
+            ? Number(assigned)
+            : null,
+
+        task_date:
+          selectedDate()
+
+      });
+
+
+    $("taskMsg")
+      .textContent =
+      j.message ||
+      (
+        assigned
+          ? "✓ Assigned"
+          : "✓ Admin Memo saved"
+      );
+
+
+    /* RESET FORM */
+
+    $("benchType").value =
+      "R";
+
+    $("courtNo").value =
+      "";
+
+    $("sectionName").value =
+      "";
+
+    $("listType").value =
+      "";
+
+    $("remarks").value =
+      "";
+
+    $("operatorSelect").value =
+      "";
+
+    $("wordCount")
+      .textContent =
+      "(0/50)";
+
+    $("wordCount")
+      .style.color =
+      "var(--gray-400)";
+
     clearCtDropdown();
+
     await refreshAll();
+
   }catch(e){
-    $("taskMsg").textContent = e.message;
+
+    $("taskMsg")
+      .textContent =
+      e.message;
+
   }
+
 }
 
 
 /* =====================================================
    REFRESH
    ===================================================== */
+
 async function refreshAll(){
-  if(busy) return;
+
+  if(busy)
+    return;
+
   busy = true;
+
   try{
-    $("dateLabel").textContent = selectedDate();
-    const j = await taskApi({ action:"all_tasks", date: selectedDate() });
-    tasks = filterByDate(j.tasks || []);
+
+    $("dateLabel")
+      .textContent =
+      selectedDate();
+
+    const j =
+      await taskApi({
+
+        action:"all_tasks",
+
+        date:
+          selectedDate()
+
+      });
+
+    tasks =
+      filterByDate(
+        j.tasks || []
+      );
+
     renderTasks();
+
   }catch(e){
+
     console.error(e);
-    if(/session expired/i.test(e.message)) location.reload();
+
+    if(
+      /session expired/i
+        .test(e.message)
+    )
+      location.reload();
+
   }finally{
+
     busy = false;
+
   }
+
 }
 
 
 /* =====================================================
    RENDER TASKS
    ===================================================== */
+
 function renderTasks(){
+
   if(!tasks.length){
-    $("totalCount").textContent = "0";
-    $("pendingCount").textContent = "0";
-    $("holdCount").textContent = "0";
-    $("doneCount").textContent = "0";
-    $("memoCount").textContent = "0";
-    $("taskRows").innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--gray-500)">No tasks for this date.</td></tr>`;
+
+    $("totalCount")
+      .textContent = "0";
+
+    $("pendingCount")
+      .textContent = "0";
+
+    $("holdCount")
+      .textContent = "0";
+
+    $("doneCount")
+      .textContent = "0";
+
+    $("memoCount")
+      .textContent = "0";
+
+    $("taskRows").innerHTML = `
+      <tr>
+        <td colspan="12"
+            style="text-align:center;padding:40px;color:var(--gray-500)">
+          No tasks for this date.
+        </td>
+      </tr>
+    `;
+
     return;
+
   }
 
-  $("totalCount").textContent = tasks.length;
-  $("pendingCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "pending").length;
-  $("holdCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "hold").length;
-  $("doneCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "done").length;
-  $("memoCount").textContent = tasks.filter(t => !t.assigned_to && !t.admin_memo_done).length;
 
-  $("taskRows").innerHTML = tasks.map(t => {
-    const status = String(t.status || "Pending");
-    const memo = !t.assigned_to;
-    const green = memo && t.admin_memo_done === true;
-    const rc = green ? "memo-done-row" : memo ? "memo-row" : "";
-    const sb2 = status === "Done" ? '<span class="badge badge-done">DONE</span>' : status === "Hold" ? '<span class="badge badge-hold">HOLD</span>' : '<span class="badge badge-pending">PENDING</span>';
-    const decoded = decodeSection(t.section_name);
-    const benchBadge = decoded.bench === "B" ? '<span class="badge badge-b">B</span>' : decoded.bench === "R" ? '<span class="badge badge-r">R</span>' : '<span class="badge badge-memo">—</span>';
-    const courtStr = getCourtStr(t);
-    let caseBadges = '<span style="color:var(--gray-400)">-</span>';
-    if(decoded.caseTypes.length){
-      caseBadges = decoded.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("");
-    }
+  $("totalCount")
+    .textContent =
+    tasks.length;
 
-    return `
-    <tr class="${rc}">
-      <td><b>#${esc(t.id)}</b></td>
-      <td>${benchBadge}</td>
-      <td><b>${esc(courtStr)}</b></td>
-      <td>${esc(t.list_type || "-")}</td>
-      <td>${esc(decoded.section)}</td>
-      <td><div class="case-cell">${caseBadges}</div></td>
-      <td style="max-width:150px">${esc(t.remarks || "-")}</td>
-      <td>${memo ? '<span class="badge badge-memo">MEMO</span>' : esc(t.operator?.full_name || "-")}</td>
-      <td>${sb2}</td>
-      <td style="white-space:nowrap;font-size:12px">${dt(t.assigned_time)}</td>
-      <td style="white-space:nowrap;font-size:12px">${dt(t.completed_time)}</td>
-      <td class="no-print">
-        <div class="action">
-          ${memo ? `<button class="btn-sm ${green ? "btn-muted" : "btn-success"}" onclick="toggleMemo(${t.id},${!green})">${green ? "↩" : "✓"}</button>` : ""}
-          ${!memo && status !== "Done" ? `<button class="btn-sm btn-outline" onclick="reassign(${t.id})">Re</button>` : ""}
-          ${!memo && status === "Hold" ? `<button class="btn-sm btn-success" onclick="resumeTask(${t.id})">▶</button>` : ""}
-          ${!memo && status === "Pending" ? `<button class="btn-sm btn-warning" onclick="openHoldReason(${t.id})">⏸</button>` : ""}
-          <button class="btn-sm btn-danger" onclick="deleteTask(${t.id})">✕</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join("");
+  $("pendingCount")
+    .textContent =
+    tasks.filter(
+      t =>
+        String(t.status)
+          .toLowerCase() ===
+        "pending"
+    ).length;
+
+  $("holdCount")
+    .textContent =
+    tasks.filter(
+      t =>
+        String(t.status)
+          .toLowerCase() ===
+        "hold"
+    ).length;
+
+  $("doneCount")
+    .textContent =
+    tasks.filter(
+      t =>
+        String(t.status)
+          .toLowerCase() ===
+        "done"
+    ).length;
+
+  $("memoCount")
+    .textContent =
+    tasks.filter(
+      t =>
+        !t.assigned_to &&
+        !t.admin_memo_done
+    ).length;
+
+
+  $("taskRows").innerHTML =
+    tasks.map(t => {
+
+      const status =
+        String(
+          t.status ||
+          "Pending"
+        );
+
+      const memo =
+        !t.assigned_to;
+
+      const green =
+        memo &&
+        t.admin_memo_done === true;
+
+      const rc =
+        green
+          ? "memo-done-row"
+          : memo
+            ? "memo-row"
+            : "";
+
+
+      const statusBadge =
+        status === "Done"
+
+          ? '<span class="badge badge-done">DONE</span>'
+
+          : status === "Hold"
+
+            ? '<span class="badge badge-hold">HOLD</span>'
+
+            : '<span class="badge badge-pending">PENDING</span>';
+
+
+      const decoded =
+        decodeSection(
+          t.section_name
+        );
+
+
+      const benchBadge =
+        decoded.bench === "B"
+
+          ? '<span class="badge badge-b">B</span>'
+
+          : decoded.bench === "R"
+
+            ? '<span class="badge badge-r">R</span>'
+
+            : '<span class="badge badge-memo">—</span>';
+
+
+      const courtStr =
+        getCourtStr(t);
+
+
+      let caseBadges =
+        '<span style="color:var(--gray-400)">-</span>';
+
+
+      if(decoded.caseTypes.length){
+
+        caseBadges =
+          decoded.caseTypes
+            .map(c =>
+              `<span class="badge badge-case">${esc(c)}</span>`
+            )
+            .join("");
+
+      }
+
+
+      /*
+        IMPORTANT:
+        TABLE ORDER IS NOW
+
+        ID
+        Bench
+        Court
+        List Type
+        Assigned To
+        Section
+        Remarks
+        Case Type
+        Status
+        Assigned
+        Completed
+        Action
+      */
+
+      return `
+
+      <tr class="${rc}">
+
+        <!-- ID -->
+        <td>
+          <b>#${esc(t.id)}</b>
+        </td>
+
+
+        <!-- BENCH -->
+        <td>
+          ${benchBadge}
+        </td>
+
+
+        <!-- COURT -->
+        <td>
+          <b>${esc(courtStr)}</b>
+        </td>
+
+
+        <!-- LIST TYPE -->
+        <td>
+          ${esc(t.list_type || "-")}
+        </td>
+
+
+        <!-- ASSIGNED TO -->
+        <td>
+          ${
+            memo
+              ? '<span class="badge badge-memo">MEMO</span>'
+              : esc(
+                  t.operator?.full_name ||
+                  "-"
+                )
+          }
+        </td>
+
+
+        <!-- SECTION -->
+        <td>
+          ${esc(decoded.section)}
+        </td>
+
+
+        <!-- REMARKS -->
+        <td style="max-width:150px">
+          ${esc(t.remarks || "-")}
+        </td>
+
+
+        <!-- CASE TYPE -->
+        <td>
+          <div class="case-cell">
+            ${caseBadges}
+          </div>
+        </td>
+
+
+        <!-- STATUS -->
+        <td>
+          ${statusBadge}
+        </td>
+
+
+        <!-- ASSIGNED TIME -->
+        <td style="white-space:nowrap;font-size:12px">
+          ${dt(t.assigned_time)}
+        </td>
+
+
+        <!-- COMPLETED TIME -->
+        <td style="white-space:nowrap;font-size:12px">
+          ${dt(t.completed_time)}
+        </td>
+
+
+        <!-- ACTION -->
+        <td class="no-print">
+
+          <div class="action">
+
+            ${
+              memo
+
+                ? `
+                  <button
+                    class="btn-sm ${
+                      green
+                        ? "btn-muted"
+                        : "btn-success"
+                    }"
+                    onclick="toggleMemo(${t.id},${!green})">
+
+                    ${green ? "↩" : "✓"}
+
+                  </button>
+                `
+
+                : ""
+            }
+
+
+            ${
+              !memo &&
+              status !== "Done"
+
+                ? `
+                  <button
+                    class="btn-sm btn-outline"
+                    onclick="reassign(${t.id})">
+                    Re
+                  </button>
+                `
+
+                : ""
+            }
+
+
+            ${
+              !memo &&
+              status === "Hold"
+
+                ? `
+                  <button
+                    class="btn-sm btn-success"
+                    onclick="resumeTask(${t.id})">
+                    ▶
+                  </button>
+                `
+
+                : ""
+            }
+
+
+            ${
+              !memo &&
+              status === "Pending"
+
+                ? `
+                  <button
+                    class="btn-sm btn-warning"
+                    onclick="openHoldReason(${t.id})">
+                    ⏸
+                  </button>
+                `
+
+                : ""
+            }
+
+
+            <button
+              class="btn-sm btn-danger"
+              onclick="deleteTask(${t.id})">
+              ✕
+            </button>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+      `;
+
+    }).join("");
+
 }
 
 
 /* =====================================================
    MEMO
    ===================================================== */
-async function toggleMemo(id, done){
+
+async function toggleMemo(id,done){
+
   try{
-    await taskApi({ action:"memo_done", task_id:Number(id), done });
+
+    await taskApi({
+
+      action:"memo_done",
+
+      task_id:Number(id),
+
+      done
+
+    });
+
     await refreshAll();
-  }catch(e){ alert(e.message); }
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
 }
 
 
 /* =====================================================
    REASSIGN
    ===================================================== */
+
 async function reassign(id){
-  const task = tasks.find(t => t.id === id);
-  if(!task){ alert("Task not found"); return; }
-  const names = operators.map(o => `${o.full_name} [${o.id}]`).join("\n");
-  const answer = prompt("REASSIGN\n\n" + names + "\n\nEnter Operator ID:");
-  const n = Number(answer);
-  if(!Number.isInteger(n)) return;
+
+  const task =
+    tasks.find(
+      t => t.id === id
+    );
+
+  if(!task){
+
+    alert(
+      "Task not found"
+    );
+
+    return;
+
+  }
+
+  const names =
+    operators
+      .map(
+        o =>
+          `${o.full_name} [${o.id}]`
+      )
+      .join("\n");
+
+  const answer =
+    prompt(
+      "REASSIGN\n\n" +
+      names +
+      "\n\nEnter Operator ID:"
+    );
+
+  const n =
+    Number(answer);
+
+  if(!Number.isInteger(n))
+    return;
+
   try{
-    await taskApi({ action:"reassign", task_id:id, assigned_to:n });
+
+    await taskApi({
+
+      action:"reassign",
+
+      task_id:id,
+
+      assigned_to:n
+
+    });
+
     await refreshAll();
-  }catch(e){ alert(e.message); }
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
 }
 
 
 /* =====================================================
-   HOLD REASONS & MODAL
+   HOLD REASONS
    ===================================================== */
-const HOLD_REASONS = [
-  "IN-CHAMBER INSTEAD OF 201",
-  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
-  "SECTION COMPLIANCE MUST BE ADDED",
-  "SECTION NOT FEEDED YET",
-  "SERIAL NUMBER ISSUE",
-  "TIMING NOT IN COURT HEADER",
-  "TIMING NOT IN SHORT ORDER REMARK",
-  "TU MUST BE ADDED",
-  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
-  "VIDEO CONFERENCING WITH TIMING NOT PRESENT"
-   "WRONGLY BY SECTION"
-].sort((a,b) => a.localeCompare(b));
 
-let pendingHoldTaskId = null;
+const HOLD_REASONS = [
+
+  "IN-CHAMBER INSTEAD OF 201",
+
+  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+
+  "SECTION COMPLIANCE MUST BE ADDED",
+
+  "SECTION NOT FEEDED YET",
+
+  "SERIAL NUMBER ISSUE",
+
+  "TIMING NOT IN COURT HEADER",
+
+  "TIMING NOT IN SHORT ORDER REMARK",
+
+  "TU MUST BE ADDED",
+
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
+
+  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
+
+  /* ADDED */
+  "WRONGLY BY SECTION"
+
+].sort(
+  (a,b) =>
+    a.localeCompare(b)
+);
+
+
+let pendingHoldTaskId =
+  null;
+
 
 function initHoldReasons(){
-  const sel = $("holdReasonSelect");
-  sel.innerHTML = `<option value="">— Select Hold Reason —</option>` +
-    HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+
+  const sel =
+    $("holdReasonSelect");
+
+  sel.innerHTML =
+    `<option value="">
+       — Select Hold Reason —
+     </option>` +
+
+    HOLD_REASONS
+      .map(r =>
+        `<option value="${esc(r)}">
+          ${esc(r)}
+        </option>`
+      )
+      .join("");
+
 }
+
 
 function openHoldReason(id){
-  pendingHoldTaskId = Number(id);
-  $("holdReasonTaskLabel").textContent = "Task #" + id + " — select the reason for putting this task on hold.";
-  $("holdReasonSelect").value = "";
-  $("holdReasonOverlay").classList.remove("hidden");
-  setTimeout(() => $("holdReasonSelect").focus(), 50);
+
+  pendingHoldTaskId =
+    Number(id);
+
+  $("holdReasonTaskLabel")
+    .textContent =
+    "Task #" +
+    id +
+    " — select the reason for putting this task on hold.";
+
+  $("holdReasonSelect")
+    .value = "";
+
+  $("holdReasonOverlay")
+    .classList
+    .remove("hidden");
+
+  setTimeout(
+    () =>
+      $("holdReasonSelect")
+        .focus(),
+    50
+  );
+
 }
+
 
 function cancelHoldReason(){
-  pendingHoldTaskId = null;
-  $("holdReasonOverlay").classList.add("hidden");
+
+  pendingHoldTaskId =
+    null;
+
+  $("holdReasonOverlay")
+    .classList
+    .add("hidden");
+
 }
 
+
 async function confirmHoldReason(){
-  const id = pendingHoldTaskId;
-  const reason = $("holdReasonSelect").value.trim();
+
+  const id =
+    pendingHoldTaskId;
+
+  const reason =
+    $("holdReasonSelect")
+      .value
+      .trim();
 
   if(!id || !reason){
-    alert("Please select a Hold Reason.");
+
+    alert(
+      "Please select a Hold Reason."
+    );
+
     return;
+
   }
 
-  const btn = document.querySelector("#holdReasonBox .btn-warning");
+
+  const btn =
+    document.querySelector(
+      "#holdReasonBox .btn-warning"
+    );
+
+
   if(btn){
+
     btn.disabled = true;
-    btn.textContent = "Saving…";
+
+    btn.textContent =
+      "Saving…";
+
   }
+
 
   try{
-    await taskApi({ action:"hold", task_id:Number(id), reason:reason });
+
+    await taskApi({
+
+      action:"hold",
+
+      task_id:
+        Number(id),
+
+      reason:
+        reason
+
+    });
+
     cancelHoldReason();
+
     await refreshAll();
+
   }catch(e){
-    alert("Hold failed: " + e.message);
+
+    alert(
+      "Hold failed: " +
+      e.message
+    );
+
   }finally{
+
     if(btn){
+
       btn.disabled = false;
-      btn.textContent = "⏸ HOLD TASK";
+
+      btn.textContent =
+        "⏸ HOLD TASK";
+
     }
+
   }
+
 }
 
 
 /* =====================================================
    RESUME
    ===================================================== */
+
 async function resumeTask(id){
-  if(!confirm("Resume?")) return;
+
+  if(!confirm("Resume?"))
+    return;
+
   try{
-    await taskApi({ action:"resume", task_id:id });
+
+    await taskApi({
+
+      action:"resume",
+
+      task_id:id
+
+    });
+
     await refreshAll();
-  }catch(e){ alert(e.message); }
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
 }
 
 
 /* =====================================================
    DELETE
    ===================================================== */
+
 async function deleteTask(id){
-  const reason = prompt(`Delete Task #${id}?\nReason:`);
-  if(!reason?.trim()){ alert("Cancelled."); return; }
-  if(!confirm(`Confirm delete #${id}?`)) return;
+
+  const reason =
+    prompt(
+      `Delete Task #${id}?\nReason:`
+    );
+
+  if(!reason?.trim()){
+
+    alert("Cancelled.");
+
+    return;
+
+  }
+
+  if(
+    !confirm(
+      `Confirm delete #${id}?`
+    )
+  )
+    return;
+
   try{
-    const task = tasks.find(t => t.id === id);
-    if(task) saveDeletedTask(task, reason.trim());
-    await taskApi({ action:"delete", task_id:id, reason: reason.trim() });
+
+    const task =
+      tasks.find(
+        t => t.id === id
+      );
+
+    if(task){
+
+      saveDeletedTask(
+        task,
+        reason.trim()
+      );
+
+    }
+
+    await taskApi({
+
+      action:"delete",
+
+      task_id:id,
+
+      reason:
+        reason.trim()
+
+    });
+
     await refreshAll();
-  }catch(e){ alert("Delete failed: " + e.message); }
+
+  }catch(e){
+
+    alert(
+      "Delete failed: " +
+      e.message
+    );
+
+  }
+
 }
 
 
 /* =====================================================
    REPORT
    ===================================================== */
+
 async function openReport(){
+
   $("modalContent").innerHTML = `
+
     <h2>📊 Date-wise Report</h2>
+
     <div class="report-controls no-print">
-      <div class="field"><label>Date:</label><input type="date" id="reportDate" value="${selectedDate()}"></div>
-      <button class="btn-primary" onclick="generateReport()">Generate</button>
+
+      <div class="field">
+
+        <label>Date:</label>
+
+        <input
+          type="date"
+          id="reportDate"
+          value="${selectedDate()}">
+
+      </div>
+
+      <button
+        class="btn-primary"
+        onclick="generateReport()">
+        Generate
+      </button>
+
     </div>
+
     <div id="reportResults"></div>
+
   `;
-  $("modal").classList.remove("hidden");
-  setTimeout(() => generateReport(), 100);
+
+  $("modal")
+    .classList
+    .remove("hidden");
+
+  setTimeout(
+    () => generateReport(),
+    100
+  );
+
 }
+
 
 async function generateReport(){
-  const date = $("reportDate").value;
-  if(!date){ alert("Select date"); return; }
-  try{
-    $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500)">Loading...</div>`;
-    const j = await taskApi({ action:"report", date });
-    const filtered = (j.tasks || []).filter(t => {
-      if(t.task_date) return t.task_date === date;
-      if(t.assigned_time){
-        const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time));
-        return d === date;
-      }
-      return false;
-    });
-    const deleted = getDeletedByDate(date);
-    j.tasks = filtered;
-    j.deletedTasks = deleted;
-    j.date = date;
 
-    const pc = filtered.filter(t => String(t.status).toLowerCase() === "pending").length;
-    const hc = filtered.filter(t => String(t.status).toLowerCase() === "hold").length;
-    const dc = filtered.filter(t => String(t.status).toLowerCase() === "done").length;
+  const date =
+    $("reportDate").value;
+
+  if(!date){
+
+    alert("Select date");
+
+    return;
+
+  }
+
+  try{
+
+    $("reportResults").innerHTML =
+      `<div style="text-align:center;padding:30px;color:var(--gray-500)">
+        Loading...
+      </div>`;
+
+
+    const j =
+      await taskApi({
+
+        action:"report",
+
+        date
+
+      });
+
+
+    const filtered =
+      (j.tasks || [])
+        .filter(t => {
+
+          if(t.task_date)
+            return t.task_date === date;
+
+          if(t.assigned_time){
+
+            const d =
+              new Intl.DateTimeFormat(
+                "en-CA",
+                {
+                  timeZone:"Asia/Kolkata",
+                  year:"numeric",
+                  month:"2-digit",
+                  day:"2-digit"
+                }
+              ).format(
+                new Date(t.assigned_time)
+              );
+
+            return d === date;
+
+          }
+
+          return false;
+
+        });
+
+
+    const deleted =
+      getDeletedByDate(date);
+
+
+    j.tasks =
+      filtered;
+
+    j.deletedTasks =
+      deleted;
+
+    j.date =
+      date;
+
+
+    const pc =
+      filtered.filter(
+        t =>
+          String(t.status)
+            .toLowerCase() ===
+          "pending"
+      ).length;
+
+
+    const hc =
+      filtered.filter(
+        t =>
+          String(t.status)
+            .toLowerCase() ===
+          "hold"
+      ).length;
+
+
+    const dc =
+      filtered.filter(
+        t =>
+          String(t.status)
+            .toLowerCase() ===
+          "done"
+      ).length;
+
 
     $("reportResults").innerHTML = `
-      <div style="margin-bottom:16px;padding:14px;background:var(--primary);color:#fff;border-radius:var(--radius)">
-        <div style="font-size:24px;font-weight:800">${esc(date)}</div>
+
+      <div style="
+        margin-bottom:16px;
+        padding:14px;
+        background:var(--primary);
+        color:#fff;
+        border-radius:var(--radius)">
+
+        <div style="
+          font-size:24px;
+          font-weight:800">
+
+          ${esc(date)}
+
+        </div>
+
       </div>
+
+
       <div class="report-summary">
-        <div class="report-card"><h4>Total</h4><div class="count">${filtered.length}</div></div>
-        <div class="report-card"><h4>Pending</h4><div class="count" style="color:var(--warning)">${pc}</div></div>
-        <div class="report-card"><h4>Hold</h4><div class="count" style="color:var(--purple)">${hc}</div></div>
-        <div class="report-card"><h4>Done</h4><div class="count" style="color:var(--success)">${dc}</div></div>
-        ${deleted.length ? `<div class="report-card"><h4>Deleted</h4><div class="count" style="color:var(--danger)">${deleted.length}</div></div>` : ""}
-      </div>
-      ${(j.summary || []).filter(s => s.total > 0).map(s => `
-        <div class="card" style="margin-bottom:10px;padding:14px">
-          <h3>${esc(s.operator?.full_name || "Unassigned")}</h3>
-          <div style="font-size:14px;color:var(--gray-600)">
-            Total: <b>${s.total}</b> | Pending: <b>${s.pending}</b> | Hold: <b>${s.hold}</b> | Done: <b>${s.done}</b>
+
+        <div class="report-card">
+          <h4>Total</h4>
+          <div class="count">
+            ${filtered.length}
           </div>
         </div>
-      `).join("")}
-      ${deleted.length ? `
-        <div class="deleted-section">
-          <h3>🗑 Deleted (${deleted.length})</h3>
-          ${deleted.map(t => `<div class="deleted-item"><b>#${t.id}</b> ${esc(getCourtStr(t))} — <span style="color:var(--danger)">${esc(t.deleted_reason || "")}</span></div>`).join("")}
+
+        <div class="report-card">
+          <h4>Pending</h4>
+          <div class="count"
+               style="color:var(--warning)">
+            ${pc}
+          </div>
         </div>
-      ` : ""}
-      <div class="action no-print" style="margin-top:16px;justify-content:center">
-        <button class="btn-primary" onclick='printReport(${JSON.stringify(j).replaceAll("'","&#039;")})'>🖨 Print</button>
+
+        <div class="report-card">
+          <h4>Hold</h4>
+          <div class="count"
+               style="color:var(--purple)">
+            ${hc}
+          </div>
+        </div>
+
+        <div class="report-card">
+          <h4>Done</h4>
+          <div class="count"
+               style="color:var(--success)">
+            ${dc}
+          </div>
+        </div>
+
+        ${
+          deleted.length
+
+            ? `
+              <div class="report-card">
+                <h4>Deleted</h4>
+                <div class="count"
+                     style="color:var(--danger)">
+                  ${deleted.length}
+                </div>
+              </div>
+            `
+
+            : ""
+        }
+
       </div>
+
+
+      ${(j.summary || [])
+        .filter(s => s.total > 0)
+        .map(s => `
+
+          <div class="card"
+               style="margin-bottom:10px;padding:14px">
+
+            <h3>
+              ${esc(
+                s.operator?.full_name ||
+                "Unassigned"
+              )}
+            </h3>
+
+            <div style="
+              font-size:14px;
+              color:var(--gray-600)">
+
+              Total:
+              <b>${s.total}</b>
+              |
+              Pending:
+              <b>${s.pending}</b>
+              |
+              Hold:
+              <b>${s.hold}</b>
+              |
+              Done:
+              <b>${s.done}</b>
+
+            </div>
+
+          </div>
+
+        `)
+        .join("")}
+
+
+      ${
+        deleted.length
+
+          ? `
+
+            <div class="deleted-section">
+
+              <h3>
+                🗑 Deleted (${deleted.length})
+              </h3>
+
+              ${
+                deleted
+                  .map(t => `
+
+                    <div class="deleted-item">
+
+                      <b>#${t.id}</b>
+
+                      ${esc(
+                        getCourtStr(t)
+                      )}
+
+                      —
+
+                      <span style="
+                        color:var(--danger)">
+
+                        ${esc(
+                          t.deleted_reason ||
+                          ""
+                        )}
+
+                      </span>
+
+                    </div>
+
+                  `)
+                  .join("")
+              }
+
+            </div>
+
+          `
+
+          : ""
+      }
+
+
+      <div class="action no-print"
+           style="
+             margin-top:16px;
+             justify-content:center">
+
+        <button
+          class="btn-primary"
+          onclick='printReport(${JSON.stringify(j).replaceAll("'","&#039;")})'>
+
+          🖨 Print
+
+        </button>
+
+      </div>
+
     `;
+
   }catch(e){
-    $("reportResults").innerHTML = `<div style="color:var(--danger);padding:20px;text-align:center">Error: ${esc(e.message)}</div>`;
+
+    $("reportResults").innerHTML =
+      `<div style="
+        color:var(--danger);
+        padding:20px;
+        text-align:center">
+
+        Error:
+        ${esc(e.message)}
+
+      </div>`;
+
   }
+
 }
+
+
+/* =====================================================
+   PRINT REPORT
+   ===================================================== */
 
 function printReport(j){
-  const rows = (j.tasks || []).map(t => {
-    const d = decodeSection(t.section_name);
-    return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(d.section)}</td><td>${d.caseTypes.join(", ") || "-"}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(t.status)}</td><td></td></tr>`;
-  }).join("");
-  const drows = (j.deletedTasks || []).map(t => {
-    const d = decodeSection(t.section_name);
-    return `<tr class="deleted-print"><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(d.section)}</td><td>${d.caseTypes.join(", ") || "-"}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.operator?.full_name || "")}</td><td>DEL</td><td>${esc(t.deleted_reason || "")}</td></tr>`;
-  }).join("");
-  $("printReport").innerHTML = `<h1>AHC Task Report</h1><p>Date: ${esc(j.date)} | Active: ${(j.tasks || []).length} | Deleted: ${(j.deletedTasks || []).length}</p><table><thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Section</th><th>Case Type</th><th>Remarks</th><th>Operator</th><th>Status</th><th>Reason</th></tr></thead><tbody>${rows}${drows}</tbody></table>`;
+
+  const rows =
+    (j.tasks || [])
+      .map(t => {
+
+        const d =
+          decodeSection(
+            t.section_name
+          );
+
+        return `
+          <tr>
+            <td>${esc(t.id)}</td>
+            <td>${esc(d.bench)}</td>
+            <td>${esc(getCourtStr(t))}</td>
+            <td>${esc(t.list_type || "")}</td>
+            <td>${esc(t.operator?.full_name || "MEMO")}</td>
+            <td>${esc(d.section)}</td>
+            <td>${esc(t.remarks || "")}</td>
+            <td>${d.caseTypes.join(", ") || "-"}</td>
+            <td>${esc(t.status)}</td>
+            <td></td>
+          </tr>
+        `;
+
+      })
+      .join("");
+
+
+  const drows =
+    (j.deletedTasks || [])
+      .map(t => {
+
+        const d =
+          decodeSection(
+            t.section_name
+          );
+
+        return `
+          <tr class="deleted-print">
+
+            <td>${esc(t.id)}</td>
+            <td>${esc(d.bench)}</td>
+            <td>${esc(getCourtStr(t))}</td>
+            <td>${esc(t.list_type || "")}</td>
+            <td>${esc(t.operator?.full_name || "")}</td>
+            <td>${esc(d.section)}</td>
+            <td>${esc(t.remarks || "")}</td>
+            <td>${d.caseTypes.join(", ") || "-"}</td>
+            <td>DEL</td>
+            <td>${esc(t.deleted_reason || "")}</td>
+
+          </tr>
+        `;
+
+      })
+      .join("");
+
+
+  $("printReport").innerHTML = `
+
+    <h1>AHC Task Report</h1>
+
+    <p>
+      Date: ${esc(j.date)}
+      |
+      Active: ${(j.tasks || []).length}
+      |
+      Deleted: ${(j.deletedTasks || []).length}
+    </p>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+          <th>Bench</th>
+          <th>Court</th>
+          <th>List</th>
+          <th>Assigned To</th>
+          <th>Section</th>
+          <th>Remarks</th>
+          <th>Case Type</th>
+          <th>Status</th>
+          <th>Reason</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+        ${rows}
+        ${drows}
+      </tbody>
+
+    </table>
+
+  `;
+
   closeModal();
-  setTimeout(() => window.print(), 200);
+
+  setTimeout(
+    () => window.print(),
+    200
+  );
+
 }
+
+
+/* =====================================================
+   PRINT TASKS
+   ===================================================== */
 
 function printTasks(){
-  const old = $("printReport").innerHTML;
-  const deleted = getDeletedByDate(selectedDate());
-  const rows = tasks.map(t => {
-    const d = decodeSection(t.section_name);
-    return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(d.section)}</td><td>${d.caseTypes.join(", ") || "-"}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(t.status)}</td><td></td></tr>`;
-  }).join("");
-  const drows = deleted.map(t => {
-    const d = decodeSection(t.section_name);
-    return `<tr class="deleted-print"><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(d.section)}</td><td>${d.caseTypes.join(", ") || "-"}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.operator?.full_name || "")}</td><td>DEL</td><td>${esc(t.deleted_reason || "")}</td></tr>`;
-  }).join("");
-  $("printReport").innerHTML = `<h1>AHC Tasks</h1><p>Date: ${esc(selectedDate())} | Active: ${tasks.length} | Deleted: ${deleted.length}</p><table><thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Section</th><th>Case Type</th><th>Remarks</th><th>Operator</th><th>Status</th><th>Reason</th></tr></thead><tbody>${rows}${drows}</tbody></table>`;
+
+  const old =
+    $("printReport").innerHTML;
+
+  const deleted =
+    getDeletedByDate(
+      selectedDate()
+    );
+
+
+  const rows =
+    tasks
+      .map(t => {
+
+        const d =
+          decodeSection(
+            t.section_name
+          );
+
+        return `
+          <tr>
+
+            <td>${esc(t.id)}</td>
+
+            <td>${esc(d.bench)}</td>
+
+            <td>${esc(getCourtStr(t))}</td>
+
+            <td>${esc(t.list_type || "")}</td>
+
+            <td>${esc(t.operator?.full_name || "MEMO")}</td>
+
+            <td>${esc(d.section)}</td>
+
+            <td>${esc(t.remarks || "")}</td>
+
+            <td>${d.caseTypes.join(", ") || "-"}</td>
+
+            <td>${esc(t.status)}</td>
+
+            <td></td>
+
+          </tr>
+        `;
+
+      })
+      .join("");
+
+
+  const drows =
+    deleted
+      .map(t => {
+
+        const d =
+          decodeSection(
+            t.section_name
+          );
+
+        return `
+          <tr class="deleted-print">
+
+            <td>${esc(t.id)}</td>
+
+            <td>${esc(d.bench)}</td>
+
+            <td>${esc(getCourtStr(t))}</td>
+
+            <td>${esc(t.list_type || "")}</td>
+
+            <td>${esc(t.operator?.full_name || "")}</td>
+
+            <td>${esc(d.section)}</td>
+
+            <td>${esc(t.remarks || "")}</td>
+
+            <td>${d.caseTypes.join(", ") || "-"}</td>
+
+            <td>DEL</td>
+
+            <td>${esc(t.deleted_reason || "")}</td>
+
+          </tr>
+        `;
+
+      })
+      .join("");
+
+
+  $("printReport").innerHTML = `
+
+    <h1>AHC Tasks</h1>
+
+    <p>
+      Date: ${esc(selectedDate())}
+      |
+      Active: ${tasks.length}
+      |
+      Deleted: ${deleted.length}
+    </p>
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>ID</th>
+          <th>Bench</th>
+          <th>Court</th>
+          <th>List</th>
+          <th>Assigned To</th>
+          <th>Section</th>
+          <th>Remarks</th>
+          <th>Case Type</th>
+          <th>Status</th>
+          <th>Reason</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+        ${rows}
+        ${drows}
+      </tbody>
+
+    </table>
+
+  `;
+
+
   window.print();
-  setTimeout(() => { $("printReport").innerHTML = old; }, 500);
+
+
+  setTimeout(
+    () => {
+      $("printReport")
+        .innerHTML = old;
+    },
+    500
+  );
+
 }
 
+
 function closeModal(){
-  $("modal").classList.add("hidden");
+
+  $("modal")
+    .classList
+    .add("hidden");
+
 }
 
 
 /* =====================================================
    AUTO LOGIN SESSION
    ===================================================== */
+
 (async()=>{
-  const { data:{ session } } = await sb.auth.getSession();
+
+  const {
+    data:{
+      session
+    }
+  } =
+    await sb.auth.getSession();
+
+
   if(session){
-    $("loginCard").classList.add("hidden");
-    $("app").classList.remove("hidden");
-    $("workDate").value = todayIST();
+
+    $("loginCard")
+      .classList
+      .add("hidden");
+
+    $("app")
+      .classList
+      .remove("hidden");
+
+    $("workDate").value =
+      todayIST();
+
     initCtDropdown();
     initHoldReasons();
+
+
     try{
+
       await loadOperators();
+
       await refreshAll();
+
     }catch(e){
-      $("loginCard").classList.remove("hidden");
-      $("app").classList.add("hidden");
-      $("loginMsg").textContent = e.message;
+
+      $("loginCard")
+        .classList
+        .remove("hidden");
+
+      $("app")
+        .classList
+        .add("hidden");
+
+      $("loginMsg")
+        .textContent =
+        e.message;
+
     }
+
   }
+
 })();
 
 
 /* =====================================================
    AUTO REFRESH
    ===================================================== */
-setInterval(() => {
-  if(!$("app").classList.contains("hidden")) refreshAll();
-}, 10000);
+
+setInterval(
+  () => {
+
+    if(
+      !$("app")
+        .classList
+        .contains("hidden")
+    ){
+
+      refreshAll();
+
+    }
+
+  },
+  10000
+);
+
 </script>
 
 </body>
 </html>
+```
