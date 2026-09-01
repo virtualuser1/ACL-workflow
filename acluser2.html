@@ -1,15 +1,26 @@
+
 <!doctype html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Additional Causelist Dashboard</title>
+
+<title>ACL USER Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+  rel="stylesheet">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 :root{
   --primary:#2563eb;
@@ -22,7 +33,6 @@
   --danger-light:#fee2e2;
   --purple:#7c3aed;
   --purple-light:#ede9fe;
-
   --gray-50:#f8fafc;
   --gray-100:#f1f5f9;
   --gray-200:#e2e8f0;
@@ -38,6 +48,7 @@
   --shadow:0 1px 3px 0 rgb(0 0 0/0.1),0 1px 2px -1px rgb(0 0 0/0.1);
   --shadow-md:0 4px 6px -1px rgb(0 0 0/0.1),0 2px 4px -2px rgb(0 0 0/0.1);
   --shadow-lg:0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);
+  --shadow-xl:0 20px 25px -5px rgb(0 0 0/0.1),0 8px 10px -6px rgb(0 0 0/0.1);
 
   --radius:10px;
   --radius-lg:14px;
@@ -53,26 +64,30 @@ body{
 }
 
 .wrap{
-  max-width:1550px;
+  max-width:1280px;
   margin:0 auto;
   padding:20px;
 }
 
-.hidden{display:none!important}
+.hidden{
+  display:none!important;
+}
 
 .card{
   background:#fff;
   border:1px solid var(--gray-200);
   border-radius:var(--radius-lg);
-  padding:28px;
+  padding:24px;
   margin-bottom:20px;
   box-shadow:var(--shadow-sm);
 }
 
-.card-no-pad{padding:0}
+.card-no-pad{
+  padding:0;
+}
 
 .login{
-  max-width:440px;
+  max-width:460px;
   margin:80px auto;
   text-align:center;
   padding:48px;
@@ -87,65 +102,169 @@ body{
 
 .login p{
   color:var(--gray-500);
-  font-size:16px;
-  margin-bottom:30px;
-}
-
-h1,h2,h3{color:var(--gray-900)}
-
-h2{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:18px;
-}
-
-input,select,textarea,button{
-  font-family:inherit;
   font-size:15px;
+  margin-bottom:28px;
 }
 
-label{
+.login .field{
+  text-align:left;
+  margin-bottom:16px;
+}
+
+.login label{
   display:block;
   font-size:13px;
   font-weight:700;
   color:var(--gray-600);
-  margin-bottom:5px;
+  margin-bottom:6px;
   text-transform:uppercase;
   letter-spacing:.4px;
 }
 
-input,select{
+.login input{
   width:100%;
-  padding:12px 14px;
+  padding:13px 16px;
   border:1px solid var(--gray-300);
   border-radius:var(--radius);
-  background:#fff;
-  color:var(--gray-800);
+  font-size:15px;
   transition:border-color .2s,box-shadow .2s;
+  font-family:inherit;
 }
 
-input:focus,select:focus{
+.login input:focus{
   outline:none;
   border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+.login button{
+  width:100%;
+  padding:14px;
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius);
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:8px;
+  font-family:inherit;
+}
+
+.login button:hover{
+  background:var(--primary-dark);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow);
+}
+
+.login button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.message{
+  font-size:14px;
+  padding:10px 14px;
+  border-radius:var(--radius);
+  margin-top:12px;
+  display:none;
+}
+
+.message.show{
+  display:block;
+}
+
+.message.error{
+  background:var(--danger-light);
+  color:var(--danger);
+}
+
+.message.info{
+  background:var(--gray-100);
+  color:var(--gray-600);
+}
+
+h1,h2,h3{
+  color:var(--gray-900);
+}
+
+h2{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:16px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.header-title h1{
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:2px;
+}
+
+.header-sub{
+  font-size:13px;
+  color:var(--gray-500);
+}
+
+.operator-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  background:var(--success-light);
+  color:var(--success);
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+}
+
+.operator-badge::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--success);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.4}
 }
 
 button{
   display:inline-flex;
   align-items:center;
+  justify-content:center;
   gap:6px;
-  padding:12px 22px;
+  padding:11px 20px;
   border:none;
   border-radius:var(--radius);
   font-weight:700;
   cursor:pointer;
   transition:all .2s;
-  font-size:15px;
+  font-size:14px;
+  font-family:inherit;
 }
 
 button:hover{
   transform:translateY(-1px);
   box-shadow:var(--shadow);
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .btn-primary{
@@ -171,6 +290,19 @@ button:hover{
   color:#fff;
 }
 
+.btn-warning:hover{
+  background:#b45309;
+}
+
+.btn-purple{
+  background:var(--purple);
+  color:#fff;
+}
+
+.btn-purple:hover{
+  background:#6d28d9;
+}
+
 .btn-danger{
   background:var(--danger);
   color:#fff;
@@ -180,13 +312,8 @@ button:hover{
   background:#b91c1c;
 }
 
-.btn-muted{
-  background:var(--gray-200);
-  color:var(--gray-700);
-}
-
 .btn-sm{
-  padding:7px 14px;
+  padding:8px 16px;
   font-size:13px;
 }
 
@@ -200,28 +327,14 @@ button:hover{
   background:var(--gray-100);
 }
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-}
-
-.header-title h1{
-  font-size:26px;
-  font-weight:800;
-  margin-bottom:2px;
-}
-
-.header-sub{
-  font-size:14px;
-  color:var(--gray-500);
+.btn-lg{
+  padding:14px 28px;
+  font-size:16px;
 }
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:16px;
   margin-bottom:20px;
 }
@@ -230,14 +343,28 @@ button:hover{
   background:#fff;
   border:1px solid var(--gray-200);
   border-radius:var(--radius-lg);
-  padding:22px;
+  padding:24px;
   box-shadow:var(--shadow-sm);
   transition:transform .2s,box-shadow .2s;
+  display:flex;
+  align-items:center;
+  gap:16px;
 }
 
 .stat:hover{
   transform:translateY(-2px);
   box-shadow:var(--shadow-md);
+}
+
+.stat-icon{
+  width:52px;
+  height:52px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
 }
 
 .stat-label{
@@ -246,39 +373,22 @@ button:hover{
   color:var(--gray-500);
   text-transform:uppercase;
   letter-spacing:.5px;
-  margin-bottom:6px;
+  margin-bottom:4px;
 }
 
 .stat-value{
-  font-size:32px;
+  font-size:34px;
   font-weight:800;
   color:var(--gray-900);
-}
-
-.stat-total .stat-value{color:var(--gray-800)}
-.stat-pending .stat-value{color:var(--warning)}
-.stat-hold .stat-value{color:var(--purple)}
-.stat-done .stat-value{color:var(--success)}
-.stat-memo .stat-value{color:var(--primary)}
-
-.stat-icon{
-  width:42px;
-  height:42px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:19px;
-  margin-bottom:12px;
-}
-
-.stat-total .stat-icon{
-  background:var(--gray-100);
-  color:var(--gray-600);
+  line-height:1;
 }
 
 .stat-pending .stat-icon{
   background:var(--warning-light);
+  color:var(--warning);
+}
+
+.stat-pending .stat-value{
   color:var(--warning);
 }
 
@@ -287,257 +397,227 @@ button:hover{
   color:var(--purple);
 }
 
+.stat-hold .stat-value{
+  color:var(--purple);
+}
+
 .stat-done .stat-icon{
   background:var(--success-light);
   color:var(--success);
 }
 
-.stat-memo .stat-icon{
-  background:rgba(37,99,235,0.1);
-  color:var(--primary);
+.stat-done .stat-value{
+  color:var(--success);
 }
 
-/* FORM */
-
-.form-line{
-  display:flex;
-  gap:10px;
-  align-items:flex-end;
-  flex-wrap:nowrap;
-}
-
-.form-line .fld{
-  display:flex;
-  flex-direction:column;
-  flex-shrink:0;
-}
-
-.form-line .fld select,
-.form-line .fld input{
-  margin:0;
-  padding:12px 14px;
-  font-size:14px;
-}
-
-.fld-bench{width:100px}
-.fld-court{width:150px}
-.fld-list{width:125px}
-.fld-section{width:120px}
-.fld-casetype{width:220px;position:relative}
-.fld-remarks{width:180px}
-.fld-operator{width:190px}
-.fld-btn{flex-shrink:0}
-
-.fld-remarks textarea{
-  width:100%;
-  height:46px;
-  padding:10px 14px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  font-size:14px;
-  resize:none;
-  font-family:inherit;
-  line-height:1.4;
-}
-
-.fld-remarks textarea:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
-}
-
-.hint{
-  font-size:10px;
-  color:var(--gray-400);
-  margin-top:2px;
-}
-
-/* =====================================================
-   CASE TYPE CUSTOM DROPDOWN
-   NO CHECKBOX
-   CTRL + CLICK = MULTI SELECT
-   ===================================================== */
-
-.ct-dropdown{
-  position:relative;
-}
-
-.ct-trigger{
-  width:100%;
-  height:46px;
-  padding:12px 14px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
+.task-card{
   background:#fff;
-  cursor:pointer;
-  font-size:14px;
+  border:2px solid var(--gray-200);
+  border-radius:var(--radius-lg);
+  padding:20px 24px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+  transition:all .2s;
+}
+
+.task-card:hover{
+  box-shadow:var(--shadow-md);
+}
+
+.task-card.urgent-card{
+  border-color:var(--danger);
+  background:linear-gradient(135deg,#fff 0%,#fef2f2 100%);
+}
+
+.task-card.hold-card{
+  border-color:var(--purple);
+  background:linear-gradient(135deg,#fff 0%,#f5f3ff 100%);
+}
+
+.task-header{
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+
+.task-id{
+  font-size:18px;
+  font-weight:800;
   color:var(--gray-800);
-  transition:border-color .2s,box-shadow .2s;
-  user-select:none;
 }
 
-.ct-trigger:hover{
-  border-color:var(--primary);
+.task-meta{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  margin-bottom:14px;
 }
 
-.ct-dropdown.open .ct-trigger{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-
-.ct-text{
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.ct-text.placeholder{
-  color:var(--gray-400);
-}
-
-.ct-arrow{
-  font-size:12px;
-  color:var(--gray-400);
-  margin-left:8px;
-}
-
-.ct-panel{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  width:100%;
-  min-width:220px;
-  z-index:9999;
-  background:#fff;
-  border:1px solid var(--gray-300);
+.meta-item{
+  background:var(--gray-50);
+  padding:12px 14px;
   border-radius:var(--radius);
-  box-shadow:0 12px 32px rgba(0,0,0,.18);
-  max-height:320px;
-  overflow-y:auto;
-  margin-top:4px;
-  padding:5px;
+  border:1px solid var(--gray-100);
 }
 
-.ct-dropdown.open .ct-panel{
-  display:block;
-}
-
-/* NO CHECKBOX */
-.ct-option{
-  padding:9px 12px;
-  cursor:pointer;
-  font-size:13px;
-  border-radius:6px;
-  user-select:none;
-  white-space:nowrap;
-}
-
-.ct-option:hover{
-  background:var(--gray-100);
-}
-
-.ct-option.selected{
-  background:var(--primary);
-  color:#fff;
+.meta-label{
+  font-size:11px;
   font-weight:700;
-}
-
-.ct-option.ctrl-selected{
-  background:#dbeafe;
-  color:#1d4ed8;
-  font-weight:700;
-}
-
-.ct-option.selected:hover,
-.ct-option.ctrl-selected:hover{
-  background:var(--primary);
-  color:#fff;
-}
-
-/* small instruction */
-.ct-help{
-  font-size:10px;
-  color:var(--gray-400);
-  margin-top:3px;
-}
-
-/* WARNING */
-
-.warning-box{
-  display:none;
-  margin-top:12px;
-  padding:14px 18px;
-  background:var(--warning-light);
-  border:1px solid var(--warning);
-  border-radius:var(--radius);
-  font-size:14px;
-  color:#92400e;
-}
-
-.warning-box.show{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.warning-box .warn-actions{
-  display:flex;
-  gap:8px;
-  margin-left:auto;
-}
-
-/* DATE */
-
-.date-section{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-}
-
-.date-section label{
-  font-size:15px;
-  font-weight:700;
-  color:var(--gray-700);
-  margin-bottom:0;
-}
-
-.date-section input{
-  width:auto;
-  padding:10px 16px;
-}
-
-.date-hint{
-  font-size:13px;
   color:var(--gray-500);
-  padding:5px 12px;
-  background:var(--gray-100);
-  border-radius:20px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  margin-bottom:3px;
 }
 
-/* TABLE */
+.meta-value{
+  font-size:14px;
+  font-weight:600;
+  color:var(--gray-800);
+  word-break:break-word;
+}
+
+.meta-value.big{
+  font-size:18px;
+  font-weight:800;
+}
+
+.case-types{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:4px;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.badge-r{
+  background:var(--success-light);
+  color:var(--success);
+}
+
+.badge-b{
+  background:var(--danger-light);
+  color:var(--danger);
+}
+
+.badge-urgent{
+  background:var(--danger-light);
+  color:var(--danger);
+}
+
+.badge-normal{
+  background:var(--gray-100);
+  color:var(--gray-600);
+}
+
+.badge-pending{
+  background:var(--warning-light);
+  color:var(--warning);
+}
+
+.badge-hold{
+  background:var(--purple-light);
+  color:var(--purple);
+}
+
+.badge-done{
+  background:var(--success-light);
+  color:var(--success);
+}
+
+.badge-case{
+  background:var(--gray-100);
+  color:var(--gray-700);
+  font-size:12px;
+  padding:4px 10px;
+  border-radius:6px;
+  font-weight:600;
+}
+
+.task-remarks{
+  background:var(--gray-50);
+  padding:14px 16px;
+  border-radius:var(--radius);
+  border-left:4px solid var(--primary);
+  margin-bottom:14px;
+  font-size:14px;
+  color:var(--gray-700);
+  line-height:1.5;
+}
+
+.task-remarks b{
+  color:var(--gray-900);
+  font-weight:700;
+  margin-right:6px;
+}
+
+.hold-reason-box{
+  background:var(--purple-light);
+  padding:14px 16px;
+  border-radius:var(--radius);
+  border-left:4px solid var(--purple);
+  margin-bottom:14px;
+  font-size:14px;
+  color:#5b21b6;
+  line-height:1.5;
+}
+
+.hold-reason-box b{
+  color:#4c1d95;
+  font-weight:700;
+  margin-right:6px;
+}
+
+.task-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  align-items:center;
+  padding-top:14px;
+  border-top:1px solid var(--gray-100);
+  flex-wrap:wrap;
+}
+
+.empty-state{
+  text-align:center;
+  padding:40px 20px;
+  color:var(--gray-500);
+}
+
+.empty-state .empty-icon{
+  font-size:48px;
+  margin-bottom:12px;
+  opacity:.5;
+}
+
+.empty-state p{
+  font-size:15px;
+}
 
 .tablewrap{
   overflow:auto;
   border-radius:var(--radius);
   border:1px solid var(--gray-200);
-  max-height:600px;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:13px;
+  font-size:14px;
 }
 
 th,td{
-  padding:12px 14px;
+  padding:13px 16px;
   text-align:left;
   border-bottom:1px solid var(--gray-200);
   vertical-align:top;
@@ -564,284 +644,343 @@ tbody tr:last-child td{
   border-bottom:none;
 }
 
-/* BADGES */
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:700;
-  white-space:nowrap;
-}
-
-.badge-r{
-  background:var(--success-light);
-  color:var(--success);
-}
-
-.badge-b{
-  background:var(--danger-light);
-  color:var(--danger);
-}
-
-.badge-pending{
-  background:var(--warning-light);
-  color:var(--warning);
-}
-
-.badge-hold{
-  background:var(--purple-light);
-  color:var(--purple);
-}
-
-.badge-done{
-  background:var(--success-light);
-  color:var(--success);
-}
-
-.badge-memo{
-  background:rgba(37,99,235,0.1);
-  color:var(--primary);
-}
-
-.badge-case{
-  background:var(--gray-100);
-  color:var(--gray-700);
-  display:block;
-  margin-bottom:3px;
-  font-size:12px;
-  padding:3px 8px;
-  border-radius:4px;
-}
-
-tr.memo-row{
-  background:rgba(37,99,235,0.03);
-}
-
-tr.memo-done-row{
-  background:var(--success-light);
-}
-
-.action{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-}
-
-.message{
-  font-size:14px;
-  padding:8px 14px;
-  border-radius:var(--radius);
-}
-
-.message:not(:empty){
-  background:var(--gray-100);
-  color:var(--gray-600);
-}
-
-.case-cell{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  max-width:220px;
-}
-
-#modal{
+#newTaskOverlay{
   position:fixed;
   inset:0;
-  background:rgba(15,23,42,.6);
-  backdrop-filter:blur(4px);
-  z-index:10000;
+  background:rgba(15,23,42,.75);
+  backdrop-filter:blur(6px);
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  animation:fadeIn .3s;
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+#newTaskBox{
+  background:#fff;
+  width:min(400px,92vw);
+  border-radius:var(--radius-lg);
+  padding:24px;
+  box-shadow:var(--shadow-xl);
+  animation:slideUp .3s;
+  text-align:center;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(20px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+#newTaskBox.urgent-popup{
+  border-top:6px solid var(--danger);
+}
+
+#newTaskBox.normal-popup{
+  border-top:6px solid var(--primary);
+}
+
+.popup-priority{
+  text-align:center;
+  margin-bottom:12px;
+}
+
+.popup-priority .badge{
+  font-size:14px;
+  padding:6px 16px;
+}
+
+.popup-priority .badge.flash{
+  animation:flash 1s infinite;
+}
+
+@keyframes flash{
+  50%{opacity:.45}
+}
+
+.popup-title{
+  font-size:18px;
+  font-weight:700;
+  color:var(--gray-900);
+  text-align:center;
+  margin-bottom:16px;
+}
+
+.popup-one-liner{
+  font-size:14px;
+  color:var(--gray-700);
+  margin-bottom:20px;
+  line-height:1.5;
+  background:var(--gray-50);
+  padding:12px 16px;
+  border-radius:var(--radius);
+  border:1px solid var(--gray-200);
+  text-align:left;
+}
+
+.popup-meta,
+.popup-remarks,
+.popup-note{
+  display:none!important;
+}
+
+.spinner{
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border:2px solid rgba(255,255,255,.3);
+  border-radius:50%;
+  border-top-color:#fff;
+  animation:spin .6s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+#holdReasonOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.78);
+  backdrop-filter:blur(6px);
+  z-index:100000;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:20px;
 }
 
-.modalbox{
+#holdReasonBox{
   background:#fff;
-  width:min(700px,96vw);
-  max-height:85vh;
-  overflow:auto;
+  width:min(620px,96vw);
   border-radius:var(--radius-lg);
-  padding:32px;
-  box-shadow:var(--shadow-lg);
+  padding:30px;
+  box-shadow:var(--shadow-xl);
 }
 
-.report-controls{
-  display:flex;
-  gap:12px;
-  align-items:end;
-  margin-bottom:20px;
-  padding:16px;
-  background:var(--gray-50);
-  border-radius:var(--radius);
-  border:1px solid var(--gray-200);
-  flex-wrap:wrap;
+#holdReasonBox h3{
+  font-size:22px;
+  margin-bottom:8px;
 }
 
-.report-controls .field{
-  flex:1;
-  min-width:180px;
-}
-
-.report-controls input{
-  width:100%;
-}
-
-.report-summary{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:10px;
+#holdReasonBox p{
+  color:var(--gray-500);
+  font-size:13px;
   margin-bottom:16px;
 }
 
-.report-card{
-  padding:14px;
-  background:var(--gray-50);
+#holdReasonSelect{
+  width:100%;
+  padding:14px 16px;
+  border:1px solid var(--gray-300);
   border-radius:var(--radius);
-  border:1px solid var(--gray-200);
+  font:600 14px Inter,system-ui,sans-serif;
+  background:#fff;
+  color:var(--gray-800);
+  margin-bottom:20px;
 }
 
-.report-card h4{
-  font-size:12px;
-  margin-bottom:4px;
-  color:var(--gray-700);
+#holdReasonSelect:focus{
+  outline:none;
+  border-color:var(--purple);
+  box-shadow:0 0 0 3px rgba(124,58,237,.12);
 }
 
-.report-card .count{
-  font-size:24px;
-  font-weight:800;
-  color:var(--gray-900);
+.hold-modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-.deleted-section{
-  margin-top:16px;
-  padding:16px;
-  background:var(--danger-light);
-  border:1px solid var(--danger);
+#deleteReasonOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.78);
+  backdrop-filter:blur(6px);
+  z-index:100001;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+#deleteReasonBox{
+  background:#fff;
+  width:min(620px,96vw);
+  border-radius:var(--radius-lg);
+  padding:30px;
+  box-shadow:var(--shadow-xl);
+}
+
+#deleteReasonBox h3{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+#deleteReasonBox p{
+  color:var(--gray-500);
+  font-size:13px;
+  margin-bottom:16px;
+}
+
+#deleteReasonSelect{
+  width:100%;
+  padding:14px 16px;
+  border:1px solid var(--gray-300);
   border-radius:var(--radius);
+  font:600 14px Inter,system-ui,sans-serif;
+  background:#fff;
+  color:var(--gray-800);
+  margin-bottom:20px;
 }
 
-.deleted-section h3{
-  color:var(--danger);
-  margin-bottom:10px;
-  font-size:15px;
+#forgotPasswordOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.80);
+  backdrop-filter:blur(6px);
+  z-index:200000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
 
-.deleted-item{
-  padding:8px 10px;
-  border-bottom:1px solid rgba(220,38,38,.2);
+#forgotPasswordBox{
+  background:#fff;
+  width:min(520px,96vw);
+  max-height:94vh;
+  overflow:auto;
+  border-radius:var(--radius-lg);
+  padding:32px;
+  box-shadow:var(--shadow-xl);
+}
+
+.forgot-header{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.forgot-header h2{
+  margin-bottom:6px;
+}
+
+.forgot-header p{
+  color:var(--gray-500);
   font-size:13px;
 }
 
-.deleted-item:last-child{
-  border-bottom:none;
+.forgot-field{
+  margin-bottom:16px;
 }
 
-.report-print{
-  display:none;
+.forgot-field label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:var(--gray-600);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
 }
 
-@media print{
-  body *{
-    visibility:hidden;
-  }
-
-  #printReport,
-  #printReport *{
-    visibility:visible;
-  }
-
-  #printReport{
-    display:block!important;
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    padding:10px;
-    margin:0;
-    border:none;
-    box-shadow:none;
-    background:#fff;
-  }
-
-  #printReport h1{
-    font-size:16px;
-    margin-bottom:4px;
-    color:#000;
-  }
-
-  #printReport p{
-    font-size:11px;
-    margin-bottom:8px;
-    color:#333;
-  }
-
-  #printReport table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:9px;
-    margin-bottom:10px;
-  }
-
-  #printReport table th,
-  #printReport table td{
-    padding:4px 5px;
-    border:1px solid #999;
-    text-align:left;
-    vertical-align:top;
-  }
-
-  #printReport table th{
-    background:#eee!important;
-    font-weight:700;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-
-  #printReport .deleted-print{
-    background:#fff0f0!important;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact;
-  }
-
-  #printReport .deleted-print td{
-    text-decoration:line-through;
-    color:#666;
-  }
-
-  @page{
-    margin:8mm;
-    size:landscape;
-  }
+.forgot-field input,
+.forgot-field select{
+  width:100%;
+  padding:13px 16px;
+  border:1px solid var(--gray-300);
+  border-radius:var(--radius);
+  font-size:15px;
+  font-family:inherit;
+  background:#fff;
+  color:var(--gray-800);
 }
 
-@media(max-width:1400px){
-  .form-line{
-    flex-wrap:wrap;
-  }
-
-  .form-line .fld{
-    min-width:calc(20% - 10px);
-  }
+.forgot-field input:focus,
+.forgot-field select:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
 }
 
-@media(max-width:600px){
-  .form-line .fld{
-    min-width:100%;
-  }
+.forgot-actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.forgot-actions button{
+  flex:1;
+}
+
+.forgot-link{
+  margin-top:18px;
+  padding-top:16px;
+  border-top:1px solid var(--gray-200);
+  text-align:center;
+}
+
+.forgot-link button{
+  width:100%;
+  justify-content:center;
+  color:var(--primary);
+  border-color:var(--primary);
+}
+
+.task-date-badge{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+@media(max-width:768px){
 
   .stats{
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:1fr;
+  }
+
+  .popup-meta{
+    grid-template-columns:1fr;
+  }
+
+  .task-meta{
+    grid-template-columns:1fr 1fr;
   }
 
   .card{
     padding:18px;
   }
+
+  .login{
+    margin:30px auto;
+    padding:30px 22px;
+  }
+
+  #forgotPasswordBox{
+    padding:24px 20px;
+  }
 }
+
+@media(max-width:480px){
+
+  .task-meta{
+    grid-template-columns:1fr;
+  }
+
+  .task-actions button{
+    width:100%;
+  }
+
+  .forgot-actions{
+    flex-direction:column;
+  }
+}
+
 </style>
 </head>
 
@@ -853,787 +992,484 @@ tr.memo-done-row{
 
 <div id="loginCard" class="card login">
 
-  <h1>ACL Admin</h1>
-  <p>Admin Login</p>
+  <h1>ACL USER</h1>
 
-  <label style="text-align:left">Admin ID</label>
+  <p>Enter your credentials to login</p>
 
-  <input
-    id="adminId"
-    type="text"
-    value="admin"
-    style="margin-bottom:14px"
-  >
+  <div class="field">
+    <label>Username</label>
+    <input
+      id="username"
+      autocomplete="username"
+      placeholder="Enter username">
+  </div>
 
-  <label style="text-align:left">Password</label>
+  <div class="field">
+    <label>PIN</label>
+    <input
+      id="pin"
+      type="password"
+      inputmode="numeric"
+      autocomplete="current-password"
+      placeholder="Enter PIN">
+  </div>
 
-  <input
-    id="password"
-    type="password"
-    placeholder="Enter password"
-    style="margin-bottom:20px"
-  >
-
-  <button
-    class="btn-primary"
-    style="width:100%;justify-content:center;padding:14px"
-    onclick="login()"
-  >
+  <button id="loginBtn" onclick="operatorLogin()">
     Sign In
   </button>
 
   <div id="loginMsg" class="message"></div>
 
+  <div class="forgot-link">
+    <button
+      type="button"
+      class="btn-outline"
+      onclick="openForgotPassword()">
+      🔐 Forgot Password?
+    </button>
+  </div>
+
 </div>
 
 
-<!-- APPLICATION -->
+<!-- APP -->
 
 <div id="app" class="hidden">
 
-<!-- HEADER -->
+  <div class="card">
 
-<div class="card">
+    <div class="top">
 
-  <div class="top">
+      <div class="header-title">
 
-    <div class="header-title">
+        <h1>USER Dashboard</h1>
 
-      <h1>ACL ADMIN Dashboard</h1>
+        <div class="header-sub">
+          <span
+            class="operator-badge"
+            id="operatorInfo">
+            USER
+          </span>
+        </div>
 
-      <div class="header-sub">
-        Logged in as: <b>Admin</b>
+      </div>
+
+      <div style="display:flex;gap:8px">
+
+        <button
+          class="btn-outline btn-sm"
+          onclick="refreshAll()">
+          ↻ Refresh
+        </button>
+
+        <button
+          class="btn-danger btn-sm"
+          onclick="logout()">
+          Logout
+        </button>
+
       </div>
 
     </div>
 
-    <div class="action">
+  </div>
+
+
+  <!-- WORKING DATE -->
+
+  <div class="card" style="padding:18px 24px">
+
+    <div
+      class="top"
+      style="align-items:center">
+
+      <div>
+
+        <label
+          style="margin-bottom:4px;display:block;font-weight:700">
+          📅 Working Date
+        </label>
+
+        <div
+          style="font-size:12px;color:var(--gray-500)">
+          Select a date to see tasks assigned for that date.
+        </div>
+
+      </div>
+
+      <div
+        style="display:flex;align-items:center;gap:10px">
+
+        <input
+          id="workDate"
+          type="date"
+          onchange="refreshAll()"
+          style="width:auto;min-width:170px;padding:10px 12px;border:1px solid var(--gray-300);border-radius:var(--radius)">
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- STATS -->
+
+  <div class="stats">
+
+    <div class="stat stat-pending">
+
+      <div>
+
+        <div class="stat-label">
+          Pending
+        </div>
+
+        <div
+          class="stat-value"
+          id="pendingCount">
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat stat-hold">
+
+      <div>
+
+        <div class="stat-label">
+          Hold
+        </div>
+
+        <div
+          class="stat-value"
+          id="holdCount">
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="stat stat-done">
+
+      <div>
+
+        <div class="stat-label">
+          Done Today
+        </div>
+
+        <div
+          class="stat-value"
+          id="doneCount">
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACTIVE TASKS -->
+
+  <div class="card">
+
+    <div class="top">
+      <h2>My Active Tasks</h2>
+    </div>
+
+    <div id="currentTasks"></div>
+
+  </div>
+
+
+  <!-- COMPLETED TASKS -->
+
+  <div class="card card-no-pad">
+
+    <div
+      style="padding:20px 24px;border-bottom:1px solid var(--gray-200)">
+
+      <h2 style="margin-bottom:0">
+        Completed Tasks — Selected Date
+      </h2>
+
+    </div>
+
+    <div class="tablewrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>ID</th>
+            <th>Bench</th>
+            <th>Court</th>
+            <th>List Type</th>
+            <th>Section</th>
+            <th>Case Type</th>
+            <th>Remarks</th>
+            <th>Completed</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="doneRows"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<!-- NEW TASK POPUP -->
+
+<div id="newTaskOverlay" class="hidden">
+
+  <div id="newTaskBox">
+
+    <div
+      class="popup-priority"
+      id="popupPriority">
+    </div>
+
+    <div
+      class="popup-title"
+      id="popupTitle">
+      NEW TASK ASSIGNED
+    </div>
+
+    <div
+      class="popup-one-liner"
+      id="popupOneLiner">
+    </div>
+
+    <button
+      class="btn-success btn-lg"
+      style="width:100%"
+      onclick="acknowledgeTask()">
+      ✓ ACKNOWLEDGE
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- HOLD REASON -->
+
+<div id="holdReasonOverlay" class="hidden">
+
+  <div id="holdReasonBox">
+
+    <h3>⏸ Hold Task</h3>
+
+    <p id="holdReasonTaskLabel">
+      Select the reason for putting this task on hold.
+    </p>
+
+    <select id="holdReasonSelect">
+
+      <option value="">
+        — Select Hold Reason —
+      </option>
+
+    </select>
+
+    <div class="hold-modal-actions">
 
       <button
-        class="btn-outline"
-        onclick="refreshAll()"
-      >
-        ↻ Refresh
-      </button>
-
-      <button
-        class="btn-danger btn-sm"
-        onclick="logout()"
-      >
-        Logout
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- DATE -->
-
-<div class="card" style="padding:18px 28px">
-
-  <div class="date-section">
-
-    <label>📅 Working Date:</label>
-
-    <input
-      id="workDate"
-      type="date"
-      onchange="refreshAll()"
-    >
-
-    <span class="date-hint">
-      Selected date tasks only
-    </span>
-
-  </div>
-
-</div>
-
-
-<!-- STATS -->
-
-<div class="stats">
-
-  <div class="stat stat-total">
-
-   
-
-    <div class="stat-label">
-      Total
-    </div>
-
-    <div
-      class="stat-value"
-      id="totalCount"
-    >
-      0
-    </div>
-
-  </div>
-
-
-  <div class="stat stat-pending">
-
-   
-
-    <div class="stat-label">
-      Pending
-    </div>
-
-    <div
-      class="stat-value"
-      id="pendingCount"
-    >
-      0
-    </div>
-
-  </div>
-
-
-  <div class="stat stat-hold">
-
-  
-
-    <div class="stat-label">
-      Hold
-    </div>
-
-    <div
-      class="stat-value"
-      id="holdCount"
-    >
-      0
-    </div>
-
-  </div>
-
-
-  <div class="stat stat-done">
-
-   
-
-    <div class="stat-label">
-      Done
-    </div>
-
-    <div
-      class="stat-value"
-      id="doneCount"
-    >
-      0
-    </div>
-
-  </div>
-
-
-  <div class="stat stat-memo">
-
-
-
-    <div class="stat-label">
-      Admin
-    </div>
-
-    <div
-      class="stat-value"
-      id="memoCount"
-    >
-      0
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- =====================================================
-     ASSIGN NEW TASK
-     ===================================================== -->
-
-<div
-  class="card no-print"
-  style="padding:22px 28px"
->
-
-  <h2>
-    Assign New Task
-  </h2>
-
-
-  <div class="form-line">
-<!-- BENCH -->
-
-<!-- COURT -->
-
-<!-- LIST TYPE -->
-
-<!-- SECTION -->
-
-<!-- CASE TYPE -->
-
-<!-- REMARKS -->
-
-<!-- OPERATOR -->
-
-<!-- BUTTON -->
-
-<div class="fld fld-bench">
-<label>
-        Bench
-      </label>
-<select id="benchType">
-<!-- BLANK DEFAULT -->
-<option selected="" value="">
-          Select
-        </option>
-<option value="R">
-          R
-        </option>
-<option value="B">
-          B
-        </option>
-</select>
-</div><div class="fld fld-court">
-<label>
-        Court / Chamber
-      </label>
-<select id="courtNo">
-<!-- BLANK DEFAULT -->
-<option selected="" value="">
-          Select
-        </option>
-<option value="In-Chamber">
-          In-Chamber
-        </option>
-<option value="Residence">
-          Residence
-        </option>
-<option value="BROKEN">
-          BROKEN
-        </option>
-<option value="CJ">
-          CJ
-        </option>
-<option value="Court No.1">
-          1
-        </option>
-<option value="Court No.2">
-          2
-        </option>
-<option value="Court No.3">
-          3
-        </option>
-<option value="Court No.4">
-          4
-        </option>
-<option value="Court No.5">
-          5
-        </option>
-<option value="Court No.6">
-          6
-        </option>
-<option value="Court No.7">
-          7
-        </option>
-<option value="Court No.8">
-          8
-        </option>
-<option value="Court No.9">
-          9
-        </option>
-<option value="Court No.10">
-          10
-        </option>
-<option value="Court No.11">
-          11
-        </option>
-<option value="Court No.12">
-          12
-        </option>
-<option value="Court No.13">
-          13
-        </option>
-<option value="Court No.14">
-          14
-        </option>
-<option value="Court No.15">
-          15
-        </option>
-<option value="Court No.16">
-          16
-        </option>
-<option value="Court No.17">
-          17
-        </option>
-<option value="Court No.18">
-          18
-        </option>
-<option value="Court No.19">
-          19
-        </option>
-<option value="Court No.20">
-          20
-        </option>
-<option value="Court No.21">
-          21
-        </option>
-<option value="Court No.22">
-          22
-        </option>
-<option value="Court No.23">
-          23
-        </option>
-<option value="Court No.24">
-          24
-        </option>
-<option value="Court No.25">
-          25
-        </option>
-<option value="Court No.26">
-          26
-        </option>
-<option value="Court No.27">
-          27
-        </option>
-<option value="Court No.28">
-          28
-        </option>
-<option value="Court No.29">
-          29
-        </option>
-<option value="Court No.30">
-          30
-        </option>
-<option value="Court No.31">
-          31
-        </option>
-<option value="Court No.32">
-          32
-        </option>
-<option value="Court No.33">
-          33
-        </option>
-<option value="Court No.34">
-          34
-        </option>
-<option value="Court No.35">
-          35
-        </option>
-<option value="Court No.36">
-          36
-        </option>
-<option value="Court No.37">
-          37
-        </option>
-<option value="Court No.38">
-          38
-        </option>
-<option value="Court No.39">
-          39
-        </option>
-<option value="Court No.40">
-          40
-        </option>
-<option value="Court No.41">
-          41
-        </option>
-<option value="Court No.42">
-          42
-        </option>
-<option value="Court No.43">
-          43
-        </option>
-<option value="Court No.44">
-          44
-        </option>
-<option value="Court No.45">
-          45
-        </option>
-<option value="Court No.46">
-          46
-        </option>
-<option value="Court No.47">
-          47
-        </option>
-<option value="Court No.48">
-          48
-        </option>
-<option value="Court No.49">
-          49
-        </option>
-<option value="Court No.50">
-          50
-        </option>
-<option value="Court No.51">
-          51
-        </option>
-<option value="Court No.52">
-          52
-        </option>
-<option value="Court No.53">
-          53
-        </option>
-<option value="Court No.54">
-          54
-        </option>
-<option value="Court No.55">
-          55
-        </option>
-<option value="Court No.56">
-          56
-        </option>
-<option value="Court No.57">
-          57
-        </option>
-<option value="Court No.58">
-          58
-        </option>
-<option value="Court No.59">
-          59
-        </option>
-<option value="Court No.60">
-          60
-        </option>
-<option value="Court No.61">
-          61
-        </option>
-<option value="Court No.62">
-          62
-        </option>
-<option value="Court No.63">
-          63
-        </option>
-<option value="Court No.64">
-          64
-        </option>
-<option value="Court No.65">
-          65
-        </option>
-<option value="Court No.66">
-          66
-        </option>
-<option value="Court No.67">
-          67
-        </option>
-<option value="Court No.68">
-          68
-        </option>
-<option value="Court No.69">
-          69
-        </option>
-<option value="Court No.70">
-          70
-        </option>
-<option value="Court No.71">
-          71
-        </option>
-<option value="Court No.72">
-          72
-        </option>
-<option value="Court No.73">
-          73
-        </option>
-<option value="Court No.74">
-          74
-        </option>
-<option value="Court No.75">
-          75
-        </option>
-<option value="Court No.76">
-          76
-        </option>
-<option value="Court No.77">
-          77
-        </option>
-<option value="Court No.78">
-          78
-        </option>
-<option value="Court No.79">
-          79
-        </option>
-<option value="Court No.80">
-          80
-        </option>
-<option value="Court No.81">
-          81
-        </option>
-<option value="Court No.82">
-          82
-        </option>
-<option value="Court No.83">
-          83
-        </option>
-<option value="Court No.84">
-          84
-        </option>
-<option value="Court No.85">
-          85
-        </option>
-<option value="Court No.86">
-          86
-        </option>
-<option value="Court No.87">
-          87
-        </option>
-<option value="Court No.88">
-          88
-        </option>
-<option value="Court No.89">
-          89
-        </option>
-<option value="Court No.90">
-          90
-        </option>
-<option value="Court No.91">
-          91
-        </option>
-<option value="Court No.92">
-          92
-        </option>
-<option value="Court No.93">
-          93
-        </option>
-<option value="Court No.94">
-          94
-        </option>
-<option value="Court No.95">
-          95
-        </option>
-<option value="Court No.96">
-          96
-        </option>
-<option value="Court No.97">
-          97
-        </option>
-<option value="Court No.98">
-          98
-        </option>
-<option value="Court No.99">
-          99
-        </option>
-<option value="Court No.100">
-          100
-        </option>
-</select>
-</div><div class="fld fld-list">
-<label>
-        List Type
-      </label>
-<select id="listType">
-<option value="">
-          Select
-        </option>
-<option>
-          ACL-1(1012)
-        </option>
-<option>
-          ACL-2(1013)
-        </option>
-<option>
-          ACL-3(1014)
-        </option>
-<option>
-          ACL-4(1015)
-        </option>
-<option>
-          ACL-6(1016)
-        </option>
-<option>
-          ACL-7(1033)
-        </option>
-</select>
-</div><div class="fld fld-operator">
-<label>
-        Assign To
-      </label>
-<select id="operatorSelect">
-<option value="">
-          Admin
-        </option>
-</select>
-</div><div class="fld fld-btn">
-<label>
-         
-      </label>
-<button class="btn-success" onclick="createTask()" style="padding:12px 24px;white-space:nowrap">
-        ✓ Assign
-      </button>
-</div><div class="fld fld-section">
-<label>
-        Section
-      </label>
-<input id="sectionName" placeholder="Section"/>
-</div><div class="fld fld-remarks">
-<label>
-        Remarks
-        <span id="wordCount" style="color:var(--gray-400);font-weight:400">
-          (0/50)
-        </span>
-</label>
-<textarea id="remarks" oninput="checkWordLimit(this)" placeholder="Max 50 words"></textarea>
-</div><div class="fld fld-casetype">
-<label>
-        Case Type
-      </label>
-<div class="ct-dropdown" id="ctDropdown">
-<div class="ct-trigger" onclick="toggleCtDropdown()">
-<span class="ct-text placeholder" id="ctText">
-            Select Case Type
-          </span>
-<span class="ct-arrow">
-            ▼
-          </span>
-</div>
-<div class="ct-panel" id="ctPanel"></div>
-</div>
-</div></div>
-
-  <div
-    id="taskMsg"
-    class="message"
-    style="margin-top:8px"
-  ></div>
-
-
-  <div
-    class="warning-box"
-    id="duplicateWarning"
-  >
-
-    <span>⚠️</span>
-
-    <span id="duplicateMsg"></span>
-
-    <div class="warn-actions">
-
-      <button
-        class="btn-sm btn-warning"
-        onclick="forceCreateTask()"
-      >
-        Assign Anyway
-      </button>
-
-      <button
-        class="btn-sm btn-muted"
-        onclick="hideWarning()"
-      >
+        class="btn-outline btn-lg"
+        onclick="cancelHoldReason()">
         Cancel
       </button>
 
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- TASK TABLE -->
-
-<div class="card card-no-pad">
-
-  <div
-    class="top no-print"
-    style="padding:20px 28px;border-bottom:1px solid var(--gray-200)"
-  >
-
-    <h2 style="margin-bottom:0">
-
-      Tasks —
-      <span
-        id="dateLabel"
-        style="color:var(--primary)"
-      ></span>
-
-    </h2>
-
-    <div class="action">
-
       <button
-        class="btn-outline btn-sm"
-        onclick="openReport()"
-      >
-        📊 Report
-      </button>
-
-      <button
-        class="btn-muted btn-sm"
-        onclick="printTasks()"
-      >
-        🖨 Print
+        class="btn-warning btn-lg"
+        onclick="confirmHoldReason()">
+        ⏸ HOLD TASK
       </button>
 
     </div>
 
   </div>
 
-
-  <div class="tablewrap">
-
-    <table>
-
-      <thead>
-
-        <tr>
-
-
-
-
-
-
-
-
-
-
-
-
-<th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Assigned To</th><th>Section</th><th>Remarks</th><th>Case Type</th><th>Status</th><th>Assigned</th><th>Completed</th><th class="no-print">
-            Action
-          </th></tr>
-
-      </thead>
-
-      <tbody id="taskRows"></tbody>
-
-    </table>
-
-  </div>
-
 </div>
 
 
-<div
-  id="printReport"
-  class="report-print"
-></div>
+<!-- DELETE REASON -->
 
-</div>
-</div>
+<div id="deleteReasonOverlay" class="hidden">
 
+  <div id="deleteReasonBox">
 
-<!-- MODAL -->
+    <h3>🗑 Delete Task</h3>
 
-<div
-  id="modal"
-  class="hidden"
->
+    <p id="deleteReasonTaskLabel">
+      Select the reason for deleting this task.
+    </p>
 
-  <div class="modalbox">
+    <select id="deleteReasonSelect">
 
-    <div id="modalContent"></div>
+      <option value="">
+        — Select Delete Reason —
+      </option>
+
+    </select>
 
     <div
-      class="action no-print"
-      style="margin-top:20px;justify-content:flex-end"
-    >
+      style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
 
       <button
-        class="btn-muted"
-        onclick="closeModal()"
-      >
-        Close
+        class="btn-outline btn-lg"
+        onclick="cancelDeleteReason()">
+        Cancel
+      </button>
+
+      <button
+        class="btn-danger btn-lg"
+        onclick="confirmDeleteReason()">
+        🗑 DELETE TASK
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- FORGOT PASSWORD -->
+
+<div id="forgotPasswordOverlay" class="hidden">
+
+  <div id="forgotPasswordBox">
+
+    <div class="forgot-header">
+
+      <h2>Forgot Password</h2>
+
+      <p>
+        Verify your account and create a new password (PIN).
+      </p>
+
+    </div>
+
+
+    <div class="forgot-field">
+
+      <label>Username</label>
+
+      <input
+        id="forgotUsername"
+        type="text"
+        autocomplete="username"
+        placeholder="Enter your username">
+
+    </div>
+
+
+    <div class="forgot-field">
+
+      <label>
+        Select Verification Parameter
+      </label>
+
+      <select
+        id="forgotVerificationType"
+        onchange="changeForgotVerification()">
+
+        <option value="phone">
+          Phone Number
+        </option>
+
+        <option value="dob">
+          Date of Birth
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="forgot-field">
+
+      <label id="forgotVerificationLabel">
+        Phone Number
+      </label>
+
+      <input
+        id="forgotVerificationValue"
+        type="tel"
+        inputmode="numeric"
+        placeholder="Enter 10-digit registered phone number">
+
+    </div>
+
+
+    <div class="forgot-field">
+
+      <label>
+        New Password (PIN)
+      </label>
+
+      <input
+        id="forgotNewPassword"
+        type="password"
+        autocomplete="new-password"
+        placeholder="Enter new PIN (min 4 chars)">
+
+    </div>
+
+
+    <div class="forgot-field">
+
+      <label>
+        Confirm New Password (PIN)
+      </label>
+
+      <input
+        id="forgotConfirmPassword"
+        type="password"
+        autocomplete="new-password"
+        placeholder="Confirm new PIN">
+
+    </div>
+
+
+    <div
+      id="forgotPasswordMsg"
+      class="message">
+    </div>
+
+
+    <div class="forgot-actions">
+
+      <button
+        type="button"
+        class="btn-outline btn-lg"
+        onclick="closeForgotPassword()">
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        id="resetPasswordBtn"
+        class="btn-primary btn-lg"
+        onclick="resetForgotPassword()">
+        🔑 Set New Password
       </button>
 
     </div>
@@ -1645,391 +1481,60 @@ tr.memo-done-row{
 
 <script>
 
-/* =====================================================
-   SUPABASE
-   ===================================================== */
+/* ============================================================
+   SUPABASE CONFIGURATION
+============================================================ */
 
 const SUPABASE_URL =
-"https://tvzrpruqkeymfuhvbalv.supabase.co";
+  "https://tvzrpruqkeymfuhvbalv.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+  "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+
+const OPERATOR_LOGIN =
+  SUPABASE_URL + "/functions/v1/operator-login";
+
+const VERIFY_SESSION =
+  SUPABASE_URL + "/functions/v1/verify-operator-session";
 
 const TASK_API =
-SUPABASE_URL + "/functions/v1/task-api";
+  SUPABASE_URL + "/functions/v1/task-api";
 
-const ADMIN_EMAIL =
-"virtualuser1@tutamail.com";
+const FORGOT_PASSWORD_API =
+  SUPABASE_URL + "/functions/v1/operator-forgot-password";
 
 const sb =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const $ =
-id => document.getElementById(id);
-
-let operators = [];
-let tasks = [];
-let busy = false;
-
-
-/* =====================================================
-   CASE TYPES
-   ===================================================== */
-
-const CASE_TYPES = [
-"A227","A228","A340","A372","A372D","A378","A378D",
-"A389","A482","A483","ABAIL","ABAILC","AMAL","APPL",
-"ARBT","ARCO","ARPL","ARPLD","BAIL","BAILC","C14A1",
-"C14A1D","C372","C372D","C378","C378D","CAPL","CAPT",
-"CAPTD","CEAP","CERA","CERE","CEXA","CLRE","CLRED",
-"CMRA","CMRAD","COMA","COMAD","COMP","CONA","CONAD",
-"COPL","COPLD","COPP","COSU","CRCL","CREF","CREFD",
-"CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL",
-"CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP",
-"EDRE","EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD",
-"FEXA","GAPL","GOVA","GOVAD","GSTAL","GSTALD","GTAP",
-"GTRE","HABC","IAPL","IAPLD","ITAP","ITRE","JAPL",
-"JAPLD","MCOA","MTAL","NA379","NA413","NA413D","NA419",
-"NA419D","NA430","NA528","NA529","NABAIL","NC413",
-"NC413D","NC419","NC419D","OLR","OSUT","PRCS","REFC",
-"REFE","RERA","RERAD","SAFO","SAFOD","SAMC","SAPL",
-"SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD",
-"STRE","STRED","TACL","TACLD","TACR","TEAP","TEST",
-"TESU","WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB",
-"WRIC","WTAP","WTAR","WTAX","WTRE"
-];
-
-let selectedCaseTypes = [];
-
-
-/* =====================================================
-   CASE TYPE DROPDOWN
-   ===================================================== */
-
-function initCtDropdown(){
-
-  $("ctPanel").innerHTML =
-    CASE_TYPES.map(ct => `
-      <div
-        class="ct-option"
-        data-val="${ct}"
-        onclick="selectCaseType(event,this)"
-      >
-        ${ct}
-      </div>
-    `).join("");
-
-}
-
-
-/*
-  IMPORTANT:
-
-  Normal click:
-      only selected item
-
-  CTRL + CLICK:
-      add/remove item
-
-  No checkbox.
-*/
-
-function selectCaseType(event,el){
-
-  event.stopPropagation();
-
-  const val =
-    el.getAttribute("data-val");
-
-  const ctrl =
-    event.ctrlKey ||
-    event.metaKey;
-
-  if(ctrl){
-
-    const index =
-      selectedCaseTypes.indexOf(val);
-
-    if(index >= 0){
-
-      selectedCaseTypes.splice(index,1);
-
-      el.classList.remove(
-        "selected",
-        "ctrl-selected"
-      );
-
-    }else{
-
-      selectedCaseTypes.push(val);
-
-      el.classList.add(
-        "ctrl-selected"
-      );
-
-    }
-
-  }else{
-
-    selectedCaseTypes = [val];
-
-    document
-      .querySelectorAll(".ct-option")
-      .forEach(x =>
-        x.classList.remove(
-          "selected",
-          "ctrl-selected"
-        )
-      );
-
-    el.classList.add("selected");
-
-  }
-
-  updateCtDisplay();
-
-}
-
-
-function toggleCtDropdown(){
-
-  $("ctDropdown")
-    .classList.toggle("open");
-
-}
-
-
-function updateCtDisplay(){
-
-  const txt =
-    $("ctText");
-
-  if(
-    selectedCaseTypes.length === 0
-  ){
-
-    txt.textContent =
-      "Select Case Type";
-
-    txt.classList.add(
-      "placeholder"
-    );
-
-    return;
-  }
-
-  txt.classList.remove(
-    "placeholder"
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
   );
 
-  if(
-    selectedCaseTypes.length === 1
-  ){
-
-    txt.textContent =
-      selectedCaseTypes[0];
-
-  }else{
-
-    txt.textContent =
-      selectedCaseTypes[0] +
-      " +" +
-      (selectedCaseTypes.length - 1) +
-      " more";
-
-  }
-
-}
+const $ = id =>
+  document.getElementById(id);
 
 
-function clearCtDropdown(){
+/* ============================================================
+   STATE
+============================================================ */
 
-  selectedCaseTypes = [];
+let operator = null;
+let sessionToken = null;
+let myTasks = [];
+let knownTaskIds = new Set();
+let popupTask = null;
+let firstLoad = true;
+let loading = false;
+let loginTime = 0;
+let audioCtx = null;
+let beepTimer = null;
 
-  document
-    .querySelectorAll(".ct-option")
-    .forEach(el =>
-      el.classList.remove(
-        "selected",
-        "ctrl-selected"
-      )
-    );
-
-  updateCtDisplay();
-
-}
-
-
-/* outside click */
-
-document.addEventListener(
-  "click",
-  function(e){
-
-    if(
-      !e.target.closest(
-        ".ct-dropdown"
-      )
-    ){
-
-      $("ctDropdown")
-        .classList.remove("open");
-
-    }
-
-  }
-);
+let pendingHoldTaskId = null;
+let pendingDeleteTaskId = null;
 
 
-/* =====================================================
-   WORD LIMIT
-   ===================================================== */
-
-function checkWordLimit(el){
-
-  const words =
-    el.value
-      .trim()
-      .split(/\s+/)
-      .filter(
-        w => w.length > 0
-      );
-
-  const count =
-    words.length;
-
-  $("wordCount").textContent =
-    `(${count}/50)`;
-
-  if(count > 50){
-
-    el.value =
-      words
-        .slice(0,50)
-        .join(" ");
-
-    $("wordCount").textContent =
-      "(50/50)";
-
-    $("wordCount").style.color =
-      "var(--danger)";
-
-  }else{
-
-    $("wordCount").style.color =
-      count > 40
-      ? "var(--warning)"
-      : "var(--gray-400)";
-
-  }
-
-}
-
-
-/* =====================================================
-   DELETED TASK LOG
-   ===================================================== */
-
-const DELETED_KEY =
-"ahc_deleted_tasks_log";
-
-function getDeletedTasks(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(
-        DELETED_KEY
-      ) || "[]"
-    );
-
-  }catch{
-
-    return [];
-
-  }
-
-}
-
-function saveDeletedTask(
-  task,
-  reason
-){
-
-  const d =
-    getDeletedTasks();
-
-  d.push({
-    ...task,
-    deleted_reason:reason,
-    deleted_at:
-      new Date().toISOString(),
-    deleted_by:"Admin"
-  });
-
-  if(d.length > 500){
-
-    d.splice(
-      0,
-      d.length - 500
-    );
-
-  }
-
-  localStorage.setItem(
-    DELETED_KEY,
-    JSON.stringify(d)
-  );
-
-}
-
-function getDeletedByDate(date){
-
-  return getDeletedTasks()
-    .filter(t => {
-
-      if(t.task_date)
-        return t.task_date === date;
-
-      if(t.assigned_time){
-
-        const d =
-          new Intl.DateTimeFormat(
-            "en-CA",
-            {
-              timeZone:"Asia/Kolkata",
-              year:"numeric",
-              month:"2-digit",
-              day:"2-digit"
-            }
-          ).format(
-            new Date(
-              t.assigned_time
-            )
-          );
-
-        return d === date;
-
-      }
-
-      return false;
-
-    });
-
-}
-
-
-/* =====================================================
+/* ============================================================
    HELPERS
-   ===================================================== */
-
-function operatorOptionValue(v){
-  const n = Number(v);
-  return Number.isInteger(n) && n > 0 ? String(n) : "";
-}
+============================================================ */
 
 function esc(v){
 
@@ -2042,22 +1547,23 @@ function esc(v){
 
 }
 
+
 function dt(v){
 
   return v
-    ? new Date(v)
-        .toLocaleString(
-          "en-IN",
-          {
-            day:"2-digit",
-            month:"short",
-            hour:"2-digit",
-            minute:"2-digit"
-          }
-        )
+    ? new Date(v).toLocaleString(
+        "en-IN",
+        {
+          day:"2-digit",
+          month:"short",
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      )
     : "—";
 
 }
+
 
 function todayIST(){
 
@@ -2073,114 +1579,78 @@ function todayIST(){
 
 }
 
-function selectedDate(){
 
-  return $("workDate").value ||
-    todayIST();
+function formatTaskDate(t){
 
-}
+  const v =
+    t?.task_date ||
+    t?.taskDate ||
+    t?.work_date ||
+    t?.workDate ||
+    t?.assigned_for_date ||
+    t?.date;
 
-function filterByDate(list){
+  if(!v)
+    return "Not specified";
 
-  const sel =
-    selectedDate();
+  const d =
+    new Date(
+      String(v).length <= 10
+        ? String(v) + "T00:00:00"
+        : v
+    );
 
-  return list.filter(t => {
+  if(Number.isNaN(d.getTime()))
+    return String(v);
 
-    if(t.task_date)
-      return t.task_date === sel;
-
-    if(t.assigned_time){
-
-      const d =
-        new Intl.DateTimeFormat(
-          "en-CA",
-          {
-            timeZone:"Asia/Kolkata",
-            year:"numeric",
-            month:"2-digit",
-            day:"2-digit"
-          }
-        ).format(
-          new Date(
-            t.assigned_time
-          )
-        );
-
-      return d === sel;
-
+  return d.toLocaleDateString(
+    "en-IN",
+    {
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      timeZone:"Asia/Kolkata"
     }
-
-    return false;
-
-  });
+  );
 
 }
 
 
-/* =====================================================
-   ENCODE / DECODE
-   ===================================================== */
+function decodeSection(s){
 
-function encodeSection(
-  bench,
-  caseTypes,
-  section
-){
-
-  const ct =
-    caseTypes.length
-      ? caseTypes.join(",")
-      : "";
-
-  return `[${bench}|${ct}] ${section || ""}`
-    .trim();
-
-}
-
-
-function decodeSection(
-  sectionStr
-){
-
-  if(!sectionStr){
-
+  if(!s)
     return {
-      bench:"",
+      bench:"R",
       caseTypes:[],
       section:"-"
     };
 
-  }
+  const str = String(s);
 
-  const str =
-    String(sectionStr);
+  const m =
+    str.match(/^\[([RB])\|([^\]]*)\]\s*(.*)/);
 
-  const match =
-    str.match(
-      /^\[([RB])\|([^\]]*)\]\s*(.*)/
-    );
-
-  if(match){
+  if(m){
 
     return {
-      bench:match[1],
+
+      bench:m[1],
+
       caseTypes:
-        match[2]
-          ? match[2]
+        m[2]
+          ? m[2]
               .split(",")
-              .filter(
-                c => c.trim()
-              )
+              .filter(c => c.trim())
           : [],
-      section:
-        match[3] || "-"
+
+      section:m[3] || "-"
+
     };
 
   }
 
   return {
-    bench:"",
+    bench:"R",
     caseTypes:[],
     section:str || "-"
   };
@@ -2188,149 +1658,256 @@ function decodeSection(
 }
 
 
-function getCourtStr(t){
+function showMsg(t,ty){
 
-  let c =
-    t.court_no ||
-    t.courtNo ||
-    null;
+  $("loginMsg").textContent = t;
 
-  if(!c)
-    return "-";
-
-  if(Array.isArray(c))
-    return c.join(", ");
-
-  return String(c);
+  $("loginMsg").className =
+    "message show " + (ty || "info");
 
 }
 
 
-/* =====================================================
-   DUPLICATE CHECK
-   ===================================================== */
+function hideMsg(){
 
-function checkDuplicate(
-  bench,
-  court,
-  listType
-){
+  $("loginMsg").className = "message";
 
-  /*
-    If Admin Memo:
-    blank bench/court/list is allowed.
-  */
+}
 
-  if(!bench || !court || !listType)
-    return null;
 
-  if(
-    court.toLowerCase() ===
-    "in-chamber"
-  )
-    return null;
+function saveSession(){
 
-  const selBench =
-    bench.toUpperCase();
+  localStorage.setItem(
+    "ahc_operator_session",
+    JSON.stringify({
+      token:sessionToken,
+      operator:operator
+    })
+  );
 
-  const selCourt =
-    court.toLowerCase().trim();
+}
 
-  const selList =
-    listType.toLowerCase().trim();
 
-  for(
-    const task of tasks
-  ){
+function clearSession(){
 
-    const decoded =
-      decodeSection(
-        task.section_name
+  localStorage.removeItem(
+    "ahc_operator_session"
+  );
+
+  sessionToken = null;
+  operator = null;
+
+}
+
+
+/* ============================================================
+   LOGIN
+============================================================ */
+
+async function operatorLogin(){
+
+  const btn = $("loginBtn");
+
+  btn.disabled = true;
+
+  btn.innerHTML =
+    '<span class="spinner"></span> Signing in...';
+
+  showMsg(
+    "Signing in...",
+    "info"
+  );
+
+  try{
+
+    const u =
+      $("username").value.trim();
+
+    const p =
+      $("pin").value.trim();
+
+    if(!u || !p)
+      throw Error(
+        "Username and PIN required."
       );
 
-    const tBench =
-      decoded.bench
-        .toUpperCase();
 
-    const tCourt =
-      getCourtStr(task)
-        .toLowerCase()
-        .trim();
+    const r =
+      await fetch(
+        OPERATOR_LOGIN,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY
+          },
+          body:JSON.stringify({
+            username:u,
+            pin:p
+          })
+        }
+      );
 
-    const tList =
-      (task.list_type || "")
-        .toLowerCase()
-        .trim();
+
+    const t =
+      await r.text();
+
+    let j;
+
+    try{
+      j = JSON.parse(t);
+    }
+    catch{
+      throw Error("Invalid response.");
+    }
+
+
+    if(!r.ok || !j.success)
+      throw Error(
+        j.error ||
+        j.message ||
+        "Login failed."
+      );
+
+
+    sessionToken =
+      j.session_token ||
+      j.sessionToken ||
+      j.token ||
+      j.session?.token;
+
+    operator =
+      j.user ||
+      j.operator;
+
+
+    if(!sessionToken || !operator)
+      throw Error(
+        "Session data missing."
+      );
+
+
+    saveSession();
+
+    loginTime = Date.now();
+
+    hideMsg();
+
+    initTaskSound();
+
 
     if(
-      tBench === selBench &&
-      tCourt === selCourt &&
-      tList === selList
+      "Notification" in window &&
+      Notification.permission === "default"
     ){
 
-      return {
-        id:task.id,
-        bench:
-          selBench === "B"
-            ? "B (Broken)"
-            : "R (Regular)",
-        court:court,
-        list:listType
-      };
+      try{
+        await Notification.requestPermission();
+      }
+      catch(e){}
 
     }
 
+
+    await openDashboard();
+
+  }
+  catch(e){
+
+    showMsg(
+      e.message,
+      "error"
+    );
+
+    btn.disabled = false;
+
+    btn.textContent = "Sign In";
+
   }
 
-  return null;
+}
+
+
+/* ============================================================
+   VERIFY SESSION
+============================================================ */
+
+async function verifySession(){
+
+  if(!sessionToken || !operator)
+    return false;
+
+  try{
+
+    const r =
+      await fetch(
+        VERIFY_SESSION,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY,
+            "x-session-token":sessionToken
+          }
+        }
+      );
+
+
+    if(!r.ok)
+      return false;
+
+
+    const t =
+      await r.text();
+
+    let j;
+
+    try{
+      j = JSON.parse(t);
+    }
+    catch{
+      return true;
+    }
+
+
+    if(
+      j.success === false ||
+      j.authenticated === false
+    )
+      return false;
+
+
+    if(j.user || j.operator){
+
+      operator =
+        j.user ||
+        j.operator;
+
+      saveSession();
+
+    }
+
+
+    return true;
+
+  }
+  catch(e){
+
+    return false;
+
+  }
 
 }
 
 
-function showWarning(msg){
-
-  $("duplicateMsg")
-    .textContent = msg;
-
-  $("duplicateWarning")
-    .classList.add("show");
-
-}
-
-function hideWarning(){
-
-  $("duplicateWarning")
-    .classList.remove("show");
-
-}
-
-
-/* =====================================================
-   API
-   ===================================================== */
-
-function adminHeaders(){
-
-  return {
-    "Content-Type":
-      "application/json",
-    "apikey":
-      SUPABASE_KEY
-  };
-
-}
-
+/* ============================================================
+   TASK API
+============================================================ */
 
 async function taskApi(body){
 
-  const session =
-    (await sb.auth.getSession())
-      .data.session;
-
-  if(!session)
-    throw Error(
-      "Session expired."
-    );
+  if(!sessionToken)
+    throw Error("Session expired.");
 
   const r =
     await fetch(
@@ -2338,812 +1915,404 @@ async function taskApi(body){
       {
         method:"POST",
         headers:{
-          ...adminHeaders(),
-          "Authorization":
-            "Bearer " +
-            session.access_token
+          "Content-Type":"application/json",
+          "apikey":SUPABASE_KEY,
+          "x-session-token":sessionToken
         },
-        body:
-          JSON.stringify(body)
+        body:JSON.stringify(body)
       }
     );
 
-  const text =
+
+  const t =
     await r.text();
 
   let j;
 
   try{
-
-    j = JSON.parse(text);
-
-  }catch{
-
+    j = JSON.parse(t);
+  }
+  catch{
     throw Error(
-      "Invalid response."
+      "Invalid API response."
     );
-
   }
 
-  if(
-    !r.ok ||
-    !j.success
-  ){
 
+  if(!r.ok || !j.success)
     throw Error(
       j.error ||
       "API error."
     );
 
-  }
 
   return j;
 
 }
 
 
-/* =====================================================
-   ADMIN LOGIN
-   ===================================================== */
+/* ============================================================
+   OPEN DASHBOARD
+============================================================ */
 
-async function login(){
+async function openDashboard(){
 
-  const id =
-    $("adminId")
-      .value
-      .trim();
+  $("loginCard")
+    .classList
+    .add("hidden");
 
-  if(
-    id.toLowerCase() !==
-    "admin"
-  ){
+  $("app")
+    .classList
+    .remove("hidden");
 
-    $("loginMsg")
-      .textContent =
-      "Invalid Admin ID";
 
-    return;
+  const n =
+    operator.full_name ||
+    operator.username ||
+    "Operator";
 
-  }
+  const u =
+    operator.username ||
+    "";
 
-  $("loginMsg")
-    .textContent =
-    "Signing in...";
 
-  try{
+  $("operatorInfo").innerHTML =
+    `<span style="font-weight:700">${esc(n)}</span>` +
+    `${u ? " · " + esc(u) : ""}`;
 
-    const {
-      error
-    } =
-      await sb.auth
-        .signInWithPassword({
-          email:ADMIN_EMAIL,
-          password:
-            $("password").value
-        });
 
-    if(error)
-      throw error;
+  firstLoad = true;
 
-    $("loginCard")
-      .classList.add(
-        "hidden"
-      );
-
-    $("app")
-      .classList.remove(
-        "hidden"
-      );
-
-    $("workDate").value =
-      todayIST();
-
-    initCtDropdown();
-
-    await loadOperators();
-
-    await refreshAll();
-
-  }catch(e){
-
-    $("loginMsg")
-      .textContent =
-      e.message;
-
-  }
+  await refreshAll();
 
 }
 
 
-async function logout(){
+/* ============================================================
+   DATE
+============================================================ */
 
-  await sb.auth.signOut();
+function selectedWorkDate(){
 
-  location.reload();
+  return $("workDate").value ||
+    todayIST();
 
 }
 
 
-/* =====================================================
-   OPERATORS
-   ===================================================== */
+function taskWorkDate(t){
 
-async function loadOperators(){
-  const select = $("operatorSelect");
+  const v =
+    t?.task_date ||
+    t?.taskDate ||
+    t?.work_date ||
+    t?.workDate ||
+    t?.assigned_for_date ||
+    t?.date;
 
-  // Always keep Admin as the first/default option.
-  select.innerHTML = '<option value="">Admin</option>';
-  select.disabled = true;
 
-  try{
-    let list = [];
+  if(v){
 
-    // Primary source: task-api
-    try{
-      const j = await taskApi({ action:"operators" });
-      if(Array.isArray(j?.operators)){
-        list = j.operators;
-      }
-    }catch(apiError){
-      console.warn("task-api operators failed:", apiError);
+    const str = String(v);
+
+    if(
+      /^\d{4}-\d{2}-\d{2}$/.test(str)
+    )
+      return str;
+
+
+    const d = new Date(str);
+
+    if(!Number.isNaN(d.getTime())){
+
+      return new Intl.DateTimeFormat(
+        "en-CA",
+        {
+          timeZone:"Asia/Kolkata",
+          year:"numeric",
+          month:"2-digit",
+          day:"2-digit"
+        }
+      ).format(d);
+
     }
 
-    // Fallback: read operators directly from user_profiles.
-    // This prevents the Assign To dropdown from becoming Admin-only
-    // when the Edge Function returns an incomplete/empty operator list.
-    if(!list.length){
-      const { data, error } = await sb
-        .from("user_profiles")
-        .select("id,username,full_name,active")
-        .eq("active", true)
-        .order("id", { ascending:true });
+  }
 
-      if(error) throw error;
-      list = data || [];
+
+  if(t?.assigned_time){
+
+    const d =
+      new Date(t.assigned_time);
+
+    if(!Number.isNaN(d.getTime())){
+
+      return new Intl.DateTimeFormat(
+        "en-CA",
+        {
+          timeZone:"Asia/Kolkata",
+          year:"numeric",
+          month:"2-digit",
+          day:"2-digit"
+        }
+      ).format(d);
+
     }
 
-    // Remove admin/invalid rows and normalize the objects.
-    operators = list
-      .map(o => ({
-        id: Number(o.id),
-        username: o.username || "",
-        full_name: o.full_name || o.username || `Operator ${o.id}`,
-        active: o.active !== false
-      }))
-      .filter(o =>
-        Number.isInteger(o.id) &&
-        o.id > 0 &&
-        o.active &&
-        String(o.username).toLowerCase() !== "admin"
-      )
-      .sort((a,b) => a.id - b.id);
-
-    // Rebuild the dropdown.
-    select.innerHTML =
-      '<option value="">Admin</option>' +
-      operators.map(o =>
-        `<option value="${operatorOptionValue(o.id)}">${esc(o.full_name)} [${esc(o.id)}]</option>`
-      ).join("");
-
-    select.disabled = false;
-
-    if(!operators.length){
-      select.innerHTML = '<option value="">Admin</option>';
-      select.disabled = false;
-      console.warn("No active operators were returned.");
-    }
-
-  }catch(e){
-    console.error("Unable to load operators:", e);
-
-    // Do not leave a broken/empty select.
-    select.innerHTML = '<option value="">Admin</option>';
-    select.disabled = false;
-
-    $("taskMsg").textContent =
-      "Operator list could not be loaded. Check user_profiles/RLS.";
-  }
-}
-
-
-/* =====================================================
-   CREATE TASK
-   ===================================================== */
-
-async function createTask(){
-
-  hideWarning();
-
-  const bench =
-    $("benchType").value;
-
-  const court =
-    $("courtNo").value;
-
-  const listType =
-    $("listType").value;
-
-  /*
-    Admin Memo can have
-    blank Bench/Court/List.
-  */
-
-  const assigned =
-    $("operatorSelect").value;
-
-  if(
-    !assigned
-  ){
-
-    /*
-      Admin memo:
-      no mandatory bench/court/list.
-    */
-
-    await submitTask();
-
-    return;
-
   }
 
-  /*
-    Normal operator task:
-    Bench and Court are required.
-  */
 
-  if(!bench){
-
-    alert(
-      "Please select Bench."
-    );
-
-    return;
-
-  }
-
-  if(!court){
-
-    alert(
-      "Please select Court / Chamber."
-    );
-
-    return;
-
-  }
-
-  const dupe =
-    checkDuplicate(
-      bench,
-      court,
-      listType
-    );
-
-  if(dupe){
-
-    showWarning(
-      `${dupe.bench} + "${dupe.court}" + ${dupe.list} already exists (Task #${dupe.id}).`
-    );
-
-    return;
-
-  }
-
-  await submitTask();
+  return "";
 
 }
 
 
-async function forceCreateTask(){
+function filterTasksForDate(list){
 
-  hideWarning();
+  const sel =
+    selectedWorkDate();
 
-  await submitTask();
-
-}
-
-
-/* =====================================================
-   SUBMIT TASK
-   ===================================================== */
-
-async function submitTask(){
-
-  $("taskMsg")
-    .textContent =
-    "Saving...";
-
-  try{
-
-    const assigned =
-      operatorOptionValue(
-        $("operatorSelect").value
-      );
-
-    const bench =
-      $("benchType").value;
-
-    const caseTypes =
-      [...selectedCaseTypes];
-
-    const rawSection =
-      $("sectionName")
-        .value
-        .trim();
-
-    const rawRemarks =
-      $("remarks")
-        .value
-        .trim();
-
-    /*
-      For Admin Memo:
-
-      if Bench is blank,
-      encoded section becomes:
-
-      [|CASE] Section
-
-      if Case Type is also blank:
-
-      [|] Section
-
-      This allows memo without
-      bench/court.
-    */
-
-    const encodedSection =
-      encodeSection(
-        bench,
-        caseTypes,
-        rawSection
-      );
-
-
-    const courtValue =
-      $("courtNo").value ||
-      null;
-
-
-    const listValue =
-      $("listType").value ||
-      null;
-
-
-    const j =
-      await taskApi({
-
-        action:"create",
-
-        court_no:
-          courtValue,
-
-        section_name:
-          encodedSection,
-
-        list_type:
-          listValue,
-
-        case_type:
-          caseTypes.length === 1
-            ? caseTypes[0]
-            : (
-                caseTypes.length
-                  ? caseTypes
-                  : ""
-              ),
-
-        priority:"Normal",
-
-        remarks:
-          rawRemarks,
-
-        assigned_to:
-          assigned
-            ? Number(assigned)
-            : null,
-
-        task_date:
-          selectedDate()
-
-      });
-
-
-    $("taskMsg")
-      .textContent =
-        j.message ||
-        (
-          assigned
-            ? "✓ Assigned"
-            : "✓ Admin Memo saved"
-        );
-
-
-    /*
-      RESET FORM
-    */
-
-    $("benchType").value =
-      "";
-
-    $("courtNo").value =
-      "";
-
-    $("sectionName").value =
-      "";
-
-    $("listType").value =
-      "";
-
-    $("remarks").value =
-      "";
-
-    $("operatorSelect").value =
-      "";
-
-    $("wordCount")
-      .textContent =
-      "(0/50)";
-
-    $("wordCount")
-      .style.color =
-      "var(--gray-400)";
-
-    clearCtDropdown();
-
-    await refreshAll();
-
-  }catch(e){
-
-    $("taskMsg")
-      .textContent =
-      e.message;
-
-  }
+  return (list || [])
+    .filter(
+      t => taskWorkDate(t) === sel
+    );
 
 }
 
 
-/* =====================================================
-   REFRESH
-   ===================================================== */
+/* ============================================================
+   REFRESH & LOAD TASKS
+============================================================ */
 
 async function refreshAll(){
 
-  if(busy)
+  if(loading)
     return;
 
-  busy = true;
+  loading = true;
 
   try{
 
-    $("dateLabel")
-      .textContent =
-      selectedDate();
+    await loadMyTasks();
 
-    const j =
-      await taskApi({
-        action:"all_tasks",
-        date:
-          selectedDate()
-      });
+    await loadDoneToday();
 
-    tasks =
-      filterByDate(
-        j.tasks || []
-      );
-
-    renderTasks();
-
-  }catch(e){
+  }
+  catch(e){
 
     console.error(e);
 
-    if(
-      /session expired/i
-        .test(e.message)
-    ){
+  }
+  finally{
 
-      location.reload();
-
-    }
-
-  }finally{
-
-    busy = false;
+    loading = false;
 
   }
 
 }
 
 
-/* =====================================================
-   RENDER TASKS
-   ===================================================== */
+async function loadMyTasks(){
 
-function renderTasks(){
+  const j =
+    await taskApi({
+      action:"my_tasks"
+    });
 
-  if(!tasks.length){
 
-    $("totalCount")
-      .textContent = "0";
+  const incoming =
+    j.tasks || [];
 
-    $("pendingCount")
-      .textContent = "0";
 
-    $("holdCount")
-      .textContent = "0";
+  const activeAll =
+    incoming.filter(t => {
 
-    $("doneCount")
-      .textContent = "0";
+      const st =
+        String(t.status || "")
+          .toLowerCase();
 
-    $("memoCount")
-      .textContent = "0";
+      return (
+        st !== "done" &&
+        st !== "completed" &&
+        st !== "deleted"
+      );
 
-    $("taskRows")
-      .innerHTML =
-        `<tr>
-          <td colspan="12"
-              style="text-align:center;padding:40px;color:var(--gray-500)">
-            No tasks for this date.
-          </td>
-        </tr>`;
+    });
+
+
+  const active =
+    filterTasksForDate(
+      activeAll
+    );
+
+
+  const newTasks =
+    active.filter(
+      t =>
+        !knownTaskIds.has(
+          Number(t.id)
+        )
+    );
+
+
+  if(
+    !firstLoad &&
+    newTasks.length
+  ){
+
+    newTasks.sort(
+      (a,b) => {
+
+        if(
+          a.priority === "Urgent" &&
+          b.priority !== "Urgent"
+        )
+          return -1;
+
+        if(
+          a.priority !== "Urgent" &&
+          b.priority === "Urgent"
+        )
+          return 1;
+
+        return (
+          Number(b.id) -
+          Number(a.id)
+        );
+
+      }
+    );
+
+
+    showNewTask(
+      newTasks[0]
+    );
+
+  }
+
+
+  knownTaskIds =
+    new Set(
+      activeAll.map(
+        t => Number(t.id)
+      )
+    );
+
+
+  myTasks = active;
+
+  renderMyTasks();
+
+  firstLoad = false;
+
+}
+
+
+/* ============================================================
+   COMPLETED TASKS
+============================================================ */
+
+async function loadDoneToday(){
+
+  const j =
+    await taskApi({
+      action:"today_done",
+      date:selectedWorkDate()
+    });
+
+
+  const rows =
+    j.tasks || [];
+
+
+  $("doneCount").textContent =
+    rows.length;
+
+
+  if(!rows.length){
+
+    $("doneRows").innerHTML =
+      `
+      <tr>
+        <td
+          colspan="8"
+          style="text-align:center;padding:30px;color:var(--gray-500)">
+          No tasks completed today.
+        </td>
+      </tr>
+      `;
 
     return;
 
   }
 
 
-  $("totalCount")
-    .textContent =
-    tasks.length;
+  $("doneRows").innerHTML =
+    rows.map(t => {
 
-  $("pendingCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "pending"
-    ).length;
-
-  $("holdCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "hold"
-    ).length;
-
-  $("doneCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "done"
-    ).length;
-
-  $("memoCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        !t.assigned_to &&
-        !t.admin_memo_done
-    ).length;
-
-
-  $("taskRows")
-    .innerHTML =
-    tasks.map(t => {
-
-      const status =
-        String(
-          t.status ||
-          "Pending"
-        );
-
-      const memo =
-        !t.assigned_to;
-
-      const green =
-        memo &&
-        t.admin_memo_done === true;
-
-      const rc =
-        green
-          ? "memo-done-row"
-          : memo
-            ? "memo-row"
-            : "";
-
-      const sb2 =
-        status === "Done"
-          ? '<span class="badge badge-done">DONE</span>'
-          : status === "Hold"
-            ? '<span class="badge badge-hold">HOLD</span>'
-            : '<span class="badge badge-pending">PENDING</span>';
-
-
-      const decoded =
+      const d =
         decodeSection(
           t.section_name
         );
 
 
-      const benchBadge =
-        decoded.bench === "B"
+      const cb =
+        d.caseTypes.length
 
-          ? '<span class="badge badge-b">B</span>'
-
-          : decoded.bench === "R"
-
-            ? '<span class="badge badge-r">R</span>'
-
-            : '<span class="badge badge-memo">—</span>';
-
-
-      const courtStr =
-        getCourtStr(t);
-
-
-      let caseBadges =
-        '<span style="color:var(--gray-400)">-</span>';
-
-
-      if(
-        decoded.caseTypes.length
-      ){
-
-        caseBadges =
-          decoded.caseTypes
+        ? d.caseTypes
             .map(
               c =>
-                `<span class="badge badge-case">
-                  ${esc(c)}
-                </span>`
+                `<span class="badge badge-case">${esc(c)}</span>`
             )
-            .join("");
+            .join(" ")
 
-      }
+        : `<span style="color:var(--gray-400)">-</span>`;
 
 
       return `
-      <tr class="${rc}">
+        <tr>
 
-        <td>
-          <b>#${esc(t.id)}</b>
-        </td>
+          <td>
+            <b>#${esc(t.id)}</b>
+          </td>
 
-        <td>
-          ${benchBadge}
-        </td>
+          <td>
+            <span
+              class="badge ${
+                d.bench === "B"
+                  ? "badge-b"
+                  : "badge-r"
+              }">
+              ${d.bench}
+            </span>
+          </td>
 
-        <td>
-          <b>${esc(courtStr)}</b>
-        </td>
+          <td>
+            ${esc(t.court_no || "-")}
+          </td>
 
-        <td>
-          ${esc(t.list_type || "-")}
-        </td>
-       <td>
+          <td>
+            ${esc(t.list_type || "-")}
+          </td>
 
-          ${
-            memo
-              ? '<span class="badge badge-memo">MEMO</span>'
-              : esc(
-                  t.operator?.full_name ||
-                  "-"
-                )
-          }
+          <td>
+            ${esc(d.section)}
+          </td>
 
-        </td>
-       <td>
-          ${esc(decoded.section)}
-        </td>
-       <td style="max-width:150px">
-          ${esc(t.remarks || "-")}
-        </td>
-       <td>
-          <div class="case-cell">
-            ${caseBadges}
-          </div>
-        </td>
-       <td>
-          ${sb2}
-        </td>
+          <td>
+            ${cb}
+          </td>
 
-        <td
-          style="white-space:nowrap;font-size:12px"
-        >
-          ${dt(t.assigned_time)}
-        </td>
+          <td style="max-width:200px">
+            ${esc(t.remarks || "-")}
+          </td>
 
-        <td
-          style="white-space:nowrap;font-size:12px"
-        >
-          ${dt(t.completed_time)}
-        </td>
+          <td
+            style="white-space:nowrap;font-size:13px">
+            ${dt(t.completed_time)}
+          </td>
 
-        <td class="no-print">
-
-          <div class="action">
-
-            ${
-              memo
-                ? `
-                  <button
-                    class="btn-sm ${
-                      green
-                        ? "btn-muted"
-                        : "btn-success"
-                    }"
-                    onclick="toggleMemo(${t.id},${!green})"
-                  >
-                    ${green ? "↩" : "✓"}
-                  </button>
-                `
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status !== "Done"
-                ? `
-                  <button
-                    class="btn-sm btn-outline"
-                    onclick="reassign(${t.id})"
-                  >
-                    Re
-                  </button>
-                `
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status === "Hold"
-                ? `
-                  <button
-                    class="btn-sm btn-success"
-                    onclick="resumeTask(${t.id})"
-                  >
-                    ▶
-                  </button>
-                `
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status === "Pending"
-                ? `
-                  <button
-                    class="btn-sm btn-warning"
-                    onclick="holdTask(${t.id})"
-                  >
-                    ⏸
-                  </button>
-                `
-                : ""
-            }
-
-
-            <button
-              class="btn-sm btn-danger"
-              onclick="deleteTask(${t.id})"
-            >
-              ✕
-            </button>
-
-          </div>
-
-        </td>
-
-      </tr>
+        </tr>
       `;
 
     }).join("");
@@ -3151,184 +2320,126 @@ function renderTasks(){
 }
 
 
-/* =====================================================
-   MEMO
-   ===================================================== */
+/* ============================================================
+   HOLD REASONS
+   UPDATED WITH:
+   WRONGLY
+   WRONGLY BY SECTION
+============================================================ */
 
-async function toggleMemo(
-  id,
-  done
-){
+const HOLD_REASONS = [
 
-  try{
+  "IN-CHAMBER INSTEAD OF 201",
 
-    await taskApi({
-      action:"memo_done",
-      task_id:Number(id),
-      done
-    });
+  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
 
-    await refreshAll();
+  "SECTION COMPLIANCE MUST BE ADDED",
 
-  }catch(e){
+  "SECTION NOT FEEDED YET",
 
-    alert(e.message);
+  "SERIAL NUMBER ISSUE",
 
-  }
+  "TIMING NOT IN COURT HEADER",
 
-}
+  "TIMING NOT IN SHORT ORDER REMARK",
 
+  "TU MUST BE ADDED",
 
-/* =====================================================
-   REASSIGN
-   ===================================================== */
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
 
-async function reassign(id){
+  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
 
-  const task =
-    tasks.find(
-      t => t.id === id
-    );
+  "WRONGLY",
 
-  if(!task){
+  "WRONGLY BY SECTION"
 
-    alert(
-      "Task not found"
-    );
-
-    return;
-
-  }
+].sort(
+  (a,b) =>
+    a.localeCompare(b)
+);
 
 
-  const names =
-    operators
+function initHoldReasons(){
+
+  const sel =
+    $("holdReasonSelect");
+
+
+  sel.innerHTML =
+    `
+    <option value="">
+      — Select Hold Reason —
+    </option>
+    ` +
+
+    HOLD_REASONS
       .map(
-        o =>
-          `${o.full_name} [${o.id}]`
+        r =>
+          `<option value="${esc(r)}">${esc(r)}</option>`
       )
-      .join("\n");
-
-
-  const answer =
-    prompt(
-      "REASSIGN\n\n" +
-      names +
-      "\n\nEnter Operator ID:"
-    );
-
-
-  const n =
-    Number(answer);
-
-
-  if(
-    !Number.isInteger(n)
-  )
-    return;
-
-
-  try{
-
-    await taskApi({
-      action:"reassign",
-      task_id:id,
-      assigned_to:n
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
-  }
+      .join("");
 
 }
 
 
-/* =====================================================
-   HOLD
-   ===================================================== */
+function openHoldReason(id){
 
-async function holdTask(id){
+  pendingHoldTaskId =
+    Number(id);
+
+
+  $("holdReasonTaskLabel")
+    .textContent =
+      "Task #" +
+      id +
+      " — select the reason for putting this task on hold.";
+
+
+  $("holdReasonSelect").value =
+    "";
+
+
+  $("holdReasonOverlay")
+    .classList
+    .remove("hidden");
+
+
+  setTimeout(
+    () =>
+      $("holdReasonSelect").focus(),
+    50
+  );
+
+}
+
+
+function cancelHoldReason(){
+
+  pendingHoldTaskId =
+    null;
+
+  $("holdReasonOverlay")
+    .classList
+    .add("hidden");
+
+}
+
+
+async function confirmHoldReason(){
+
+  const id =
+    pendingHoldTaskId;
 
   const reason =
-    prompt(
-      "Hold reason:"
-    );
-
-  if(
-    !reason?.trim()
-  )
-    return;
-
-  try{
-
-    await taskApi({
-      action:"hold",
-      task_id:id,
-      reason:
-        reason.trim()
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
-  }
-
-}
+    $("holdReasonSelect")
+      .value
+      .trim();
 
 
-/* =====================================================
-   RESUME
-   ===================================================== */
-
-async function resumeTask(id){
-
-  if(
-    !confirm("Resume?")
-  )
-    return;
-
-  try{
-
-    await taskApi({
-      action:"resume",
-      task_id:id
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
-  }
-
-}
-
-
-/* =====================================================
-   DELETE
-   ===================================================== */
-
-async function deleteTask(id){
-
-  const reason =
-    prompt(
-      `Delete Task #${id}?\nReason:`
-    );
-
-  if(
-    !reason?.trim()
-  ){
+  if(!id || !reason){
 
     alert(
-      "Cancelled."
+      "Please select a Hold Reason."
     );
 
     return;
@@ -3336,44 +2447,663 @@ async function deleteTask(id){
   }
 
 
-  if(
-    !confirm(
-      `Confirm delete #${id}?`
-    )
-  )
-    return;
+  const btn =
+    document.querySelector(
+      "#holdReasonBox .btn-warning"
+    );
+
+
+  if(btn){
+
+    btn.disabled = true;
+
+    btn.textContent =
+      "Saving…";
+
+  }
 
 
   try{
 
-    const task =
-      tasks.find(
-        t => t.id === id
+    const j =
+      await taskApi({
+
+        action:"hold",
+
+        task_id:Number(id),
+
+        reason:reason
+
+      });
+
+
+    if(!j.success)
+      throw Error(
+        j.error ||
+        "Unable to hold."
       );
 
-    if(task){
 
-      saveDeletedTask(
-        task,
-        reason.trim()
+    cancelHoldReason();
+
+
+    await refreshAll();
+
+  }
+  catch(e){
+
+    if(
+      e.message
+        .toLowerCase()
+        .includes("unknown")
+    ){
+
+      alert(
+        "⚠️ Backend update required!\n\n" +
+        "Supabase Edge Function 'task-api' " +
+        "me USER ke liye 'hold' action " +
+        "aur reason support add karein."
+      );
+
+    }
+    else{
+
+      alert(
+        "Hold failed: " +
+        e.message
       );
 
     }
 
+  }
+  finally{
 
-    await taskApi({
-      action:"delete",
-      task_id:id,
-      reason:
-        reason.trim()
-    });
+    if(btn){
+
+      btn.disabled = false;
+
+      btn.textContent =
+        "⏸ HOLD TASK";
+
+    }
+
+  }
+
+}
+
+
+/* ============================================================
+   DELETE REASONS
+============================================================ */
+
+const DELETE_REASONS = [
+
+  "HOLD BY SECTION NOT FEEDED",
+
+  "IN-CHAMBER INSTEAD OF 201",
+
+  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+
+  "SECTION COMPLIANCE MUST BE ADDED",
+
+  "SECTION NOT FEEDED YET",
+
+  "SERIAL NUMBER ISSUE",
+
+  "TIMING NOT IN COURT HEADER",
+
+  "TIMING NOT IN SHORT ORDER REMARK",
+
+  "TU MUST BE ADDED",
+
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
+
+  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
+
+  "WRONGLY BY SECTION"
+
+].sort(
+  (a,b) =>
+    a.localeCompare(b)
+);
+
+
+function initDeleteReasons(){
+
+  const sel =
+    $("deleteReasonSelect");
+
+
+  sel.innerHTML =
+    `
+    <option value="">
+      — Select Delete Reason —
+    </option>
+    ` +
+
+    DELETE_REASONS
+      .map(
+        r =>
+          `<option value="${esc(r)}">${esc(r)}</option>`
+      )
+      .join("");
+
+}
+
+
+function openDeleteReason(id){
+
+  pendingDeleteTaskId =
+    Number(id);
+
+
+  $("deleteReasonTaskLabel")
+    .textContent =
+      "Task #" +
+      id +
+      " — select the reason for deleting this task.";
+
+
+  $("deleteReasonSelect").value =
+    "";
+
+
+  $("deleteReasonOverlay")
+    .classList
+    .remove("hidden");
+
+
+  setTimeout(
+    () =>
+      $("deleteReasonSelect").focus(),
+    50
+  );
+
+}
+
+
+function cancelDeleteReason(){
+
+  pendingDeleteTaskId =
+    null;
+
+  $("deleteReasonOverlay")
+    .classList
+    .add("hidden");
+
+}
+
+
+async function confirmDeleteReason(){
+
+  const id =
+    pendingDeleteTaskId;
+
+  const reason =
+    $("deleteReasonSelect")
+      .value
+      .trim();
+
+
+  if(!id || !reason){
+
+    alert(
+      "Please select a Delete Reason."
+    );
+
+    return;
+
+  }
+
+
+  const btn =
+    document.querySelector(
+      "#deleteReasonOverlay .btn-danger"
+    );
+
+
+  if(btn){
+
+    btn.disabled = true;
+
+    btn.textContent =
+      "Deleting…";
+
+  }
+
+
+  try{
+
+    const j =
+      await taskApi({
+
+        action:"delete",
+
+        task_id:Number(id),
+
+        reason:reason
+
+      });
+
+
+    if(!j.success)
+      throw Error(
+        j.error ||
+        "Unable to delete."
+      );
+
+
+    cancelDeleteReason();
+
+    knownTaskIds.delete(
+      Number(id)
+    );
 
     await refreshAll();
 
-  }catch(e){
+  }
+  catch(e){
 
     alert(
       "Delete failed: " +
+      e.message
+    );
+
+  }
+  finally{
+
+    if(btn){
+
+      btn.disabled = false;
+
+      btn.textContent =
+        "🗑 DELETE TASK";
+
+    }
+
+  }
+
+}
+
+
+/* ============================================================
+   RENDER TASKS
+============================================================ */
+
+function renderMyTasks(){
+
+  const pending =
+    myTasks.filter(
+      t =>
+        String(t.status) ===
+        "Pending"
+    );
+
+
+  const hold =
+    myTasks.filter(
+      t =>
+        String(t.status) ===
+        "Hold"
+    );
+
+
+  $("pendingCount").textContent =
+    pending.length;
+
+  $("holdCount").textContent =
+    hold.length;
+
+
+  if(!myTasks.length){
+
+    $("currentTasks").innerHTML =
+      `
+      <div class="empty-state">
+
+        <p>
+          No pending or hold task assigned to you.
+        </p>
+
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  $("currentTasks").innerHTML =
+    myTasks.map(t => {
+
+      const urgent =
+        t.priority === "Urgent";
+
+      const held =
+        String(t.status) ===
+        "Hold";
+
+
+      const d =
+        decodeSection(
+          t.section_name
+        );
+
+
+      const cc =
+        held
+          ? "hold-card"
+          : (
+              urgent
+                ? "urgent-card"
+                : ""
+            );
+
+
+      const cb =
+        d.caseTypes.length
+
+        ? `
+          <div class="case-types">
+
+            ${
+              d.caseTypes
+                .map(
+                  c =>
+                    `<span class="badge badge-case">${esc(c)}</span>`
+                )
+                .join("")
+            }
+
+          </div>
+          `
+
+        : `
+          <span
+            style="color:var(--gray-400);font-size:13px">
+            -
+          </span>
+          `;
+
+
+      const holdReason =
+        t.hold_reason ||
+        t.holdReason ||
+        t.remarks ||
+        "";
+
+
+      const holdHtml =
+        held
+
+        ? `
+          <div class="hold-reason-box">
+
+            <b>⏸ Hold Reason:</b>
+
+            ${esc(
+              holdReason ||
+              "Task on hold"
+            )}
+
+          </div>
+          `
+
+        : "";
+
+
+      let actions = `
+
+        <button
+          class="btn-warning btn-lg"
+          onclick="openHoldReason(${Number(t.id)})">
+          ⏸ HOLD
+        </button>
+
+        <button
+          class="btn-success btn-lg"
+          onclick="completeTask(${Number(t.id)})">
+          ✓ DONE
+        </button>
+
+      `;
+
+
+      if(held){
+
+        actions = `
+
+          <button
+            class="btn-primary btn-lg"
+            onclick="resumeTask(${Number(t.id)})">
+            ▶ RESUME
+          </button>
+
+          <button
+            class="btn-success btn-lg"
+            onclick="completeTask(${Number(t.id)})">
+            ✓ DONE
+          </button>
+
+        `;
+
+      }
+
+
+      return `
+
+        <div class="task-card ${cc}">
+
+          <div class="task-header">
+
+            <span class="task-id">
+              #${esc(t.id)}
+            </span>
+
+            <span
+              class="badge ${
+                d.bench === "B"
+                  ? "badge-b"
+                  : "badge-r"
+              }">
+
+              ${
+                d.bench === "B"
+                  ? "B · Broken"
+                  : "R · Regular"
+              }
+
+            </span>
+
+
+            ${
+              urgent
+                ? `
+                  <span
+                    class="badge badge-urgent">
+                    ⚡ URGENT
+                  </span>
+                  `
+                : ""
+            }
+
+
+            ${
+              held
+                ? `
+                  <span
+                    class="badge badge-hold">
+                    ⏸ ON HOLD
+                  </span>
+                  `
+                : ""
+            }
+
+
+            ${
+              !urgent && !held
+                ? `
+                  <span
+                    class="badge badge-pending">
+                    ⏳ PENDING
+                  </span>
+                  `
+                : ""
+            }
+
+          </div>
+
+
+          <div class="task-meta">
+
+
+            <div class="meta-item">
+
+              <div class="meta-label">
+                Court / Chamber
+              </div>
+
+              <div class="meta-value big">
+                ${esc(t.court_no || "-")}
+              </div>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <div class="meta-label">
+                List Type
+              </div>
+
+              <div class="meta-value big">
+                ${esc(t.list_type || "-")}
+              </div>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <div class="meta-label">
+                Task Date
+              </div>
+
+              <div class="meta-value">
+
+                <span
+                  class="badge task-date-badge">
+
+                  📅
+                  ${esc(
+                    formatTaskDate(t)
+                  )}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <div class="meta-label">
+                Section
+              </div>
+
+              <div class="meta-value">
+                ${esc(d.section)}
+              </div>
+
+            </div>
+
+
+            <div class="meta-item">
+
+              <div class="meta-label">
+                Case Type
+              </div>
+
+              ${cb}
+
+            </div>
+
+
+          </div>
+
+
+          ${
+            t.remarks && !held
+              ? `
+                <div class="task-remarks">
+
+                  <b>💬 Comment:</b>
+
+                  ${esc(t.remarks)}
+
+                </div>
+                `
+              : ""
+          }
+
+
+          ${holdHtml}
+
+
+          <div class="task-actions">
+
+            ${actions}
+
+          </div>
+
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* ============================================================
+   COMPLETE & RESUME
+============================================================ */
+
+async function completeTask(id){
+
+  try{
+
+    const j =
+      await taskApi({
+
+        action:"complete",
+
+        task_id:Number(id)
+
+      });
+
+
+    if(!j.success)
+      throw Error(
+        j.error ||
+        "Unable to complete."
+      );
+
+
+    knownTaskIds.delete(
+      Number(id)
+    );
+
+
+    await refreshAll();
+
+  }
+  catch(e){
+
+    alert(
+      "Error: " +
       e.message
     );
 
@@ -3382,783 +3112,961 @@ async function deleteTask(id){
 }
 
 
-/* =====================================================
-   REPORT
-   ===================================================== */
+async function resumeTask(id){
 
-async function openReport(){
+  try{
 
-  $("modalContent")
-    .innerHTML = `
+    const j =
+      await taskApi({
 
-    <h2>
-      📊 Date-wise Report
-    </h2>
+        action:"resume",
 
-    <div class="report-controls no-print">
+        task_id:Number(id)
 
-      <div class="field">
-
-        <label>
-          Date:
-        </label>
-
-        <input
-          type="date"
-          id="reportDate"
-          value="${selectedDate()}"
-        >
-
-      </div>
-
-      <button
-        class="btn-primary"
-        onclick="generateReport()"
-      >
-        Generate
-      </button>
-
-    </div>
-
-    <div id="reportResults"></div>
-
-  `;
+      });
 
 
-  $("modal")
-    .classList.remove(
-      "hidden"
+    if(!j.success)
+      throw Error(
+        j.error ||
+        "Unable to resume task."
+      );
+
+
+    knownTaskIds.add(
+      Number(id)
     );
 
 
+    await refreshAll();
+
+  }
+  catch(e){
+
+    if(
+      e.message
+        .toLowerCase()
+        .includes("unknown") ||
+
+      e.message
+        .toLowerCase()
+        .includes("resume")
+    ){
+
+      alert(
+        "⚠️ Backend update required!\n\n" +
+        "Supabase Edge Function 'task-api' " +
+        "me USER ke liye 'resume' action add karein."
+      );
+
+    }
+    else{
+
+      alert(
+        "Resume failed: " +
+        e.message
+      );
+
+    }
+
+  }
+
+}
+
+
+/* ============================================================
+   SOUND & NOTIFICATIONS
+============================================================ */
+
+function initTaskSound(){
+
+  try{
+
+    const AC =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AC)
+      return;
+
+
+    if(!audioCtx)
+      audioCtx = new AC();
+
+
+    if(
+      audioCtx.state ===
+      "suspended"
+    ){
+
+      audioCtx
+        .resume()
+        .catch(()=>{});
+
+    }
+
+  }
+  catch(e){
+
+    console.warn(
+      "Audio init failed",
+      e
+    );
+
+  }
+
+}
+
+
+function beepOnce(){
+
+  try{
+
+    if(!audioCtx)
+      return;
+
+
+    if(
+      audioCtx.state ===
+      "suspended"
+    ){
+
+      audioCtx
+        .resume()
+        .catch(()=>{});
+
+    }
+
+
+    const now =
+      audioCtx.currentTime;
+
+
+    const osc =
+      audioCtx.createOscillator();
+
+
+    const gain =
+      audioCtx.createGain();
+
+
+    osc.type = "sine";
+
+
+    osc.frequency.setValueAtTime(
+      880,
+      now
+    );
+
+
+    osc.frequency.exponentialRampToValueAtTime(
+      660,
+      now + .16
+    );
+
+
+    gain.gain.setValueAtTime(
+      .0001,
+      now
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+      .22,
+      now + .015
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+      .0001,
+      now + .20
+    );
+
+
+    osc.connect(gain);
+
+    gain.connect(
+      audioCtx.destination
+    );
+
+
+    osc.start(now);
+
+    osc.stop(
+      now + .21
+    );
+
+  }
+  catch(e){
+
+    console.warn(
+      "Beep failed",
+      e
+    );
+
+  }
+
+}
+
+
+function startTaskAlarm(){
+
+  initTaskSound();
+
+  stopTaskAlarm();
+
+  let count = 0;
+
+  beepOnce();
+
+
+  beepTimer =
+    setInterval(
+      () => {
+
+        count++;
+
+        if(count >= 5){
+
+          stopTaskAlarm();
+
+          return;
+
+        }
+
+        beepOnce();
+
+      },
+      650
+    );
+
+}
+
+
+function stopTaskAlarm(){
+
+  if(beepTimer){
+
+    clearInterval(
+      beepTimer
+    );
+
+    beepTimer = null;
+
+  }
+
+}
+
+
+/* ============================================================
+   NEW TASK POPUP
+============================================================ */
+
+function showNewTask(t){
+
+  popupTask = t;
+
+  const urgent =
+    t.priority === "Urgent";
+
+
+  $("newTaskBox").className =
+    urgent
+      ? "urgent-popup"
+      : "normal-popup";
+
+
+  $("popupPriority").innerHTML =
+
+    urgent
+
+      ? `
+        <span
+          class="badge badge-urgent flash"
+          style="font-size:13px;padding:6px 14px">
+          ⚡ URGENT
+        </span>
+        `
+
+      : `
+        <span
+          class="badge badge-pending"
+          style="font-size:13px;padding:6px 14px">
+          📋 NEW TASK
+        </span>
+        `;
+
+
+  $("popupTitle").textContent =
+    "Task #" +
+    t.id +
+    " Assigned";
+
+
+  const oneLiner =
+    `
+    🏛️ Court:
+    <b>${esc(t.court_no || "-")}</b>
+    &nbsp;|&nbsp;
+    📋 List:
+    <b>${esc(t.list_type || "-")}</b>
+    &nbsp;|&nbsp;
+    📅 Date:
+    <b>${esc(formatTaskDate(t))}</b>
+    `;
+
+
+  $("popupOneLiner").innerHTML =
+    oneLiner;
+
+
+  $("newTaskOverlay")
+    .classList
+    .remove("hidden");
+
+
+  startTaskAlarm();
+
+  notifyNewTask(t);
+
+}
+
+
+function acknowledgeTask(){
+
+  stopTaskAlarm();
+
+  initTaskSound();
+
+  $("newTaskOverlay")
+    .classList
+    .add("hidden");
+
+  popupTask = null;
+
+  try{
+    window.focus();
+  }
+  catch(e){}
+
+}
+
+
+function notifyNewTask(t){
+
+  if("Notification" in window){
+
+    if(
+      Notification.permission ===
+      "granted"
+    ){
+
+      try{
+
+        new Notification(
+
+          t.priority === "Urgent"
+            ? "⚡ URGENT AHC TASK"
+            : "📋 New AHC Task",
+
+          {
+
+            body:
+              "Task #" +
+              t.id +
+              " | Date: " +
+              formatTaskDate(t) +
+              " | " +
+              (t.court_no || "") +
+              " | " +
+              (t.list_type || ""),
+
+            requireInteraction:true
+
+          }
+
+        );
+
+      }
+      catch(e){}
+
+    }
+    else if(
+      Notification.permission ===
+      "default"
+    ){
+
+      Notification
+        .requestPermission()
+        .catch(()=>{});
+
+    }
+
+  }
+
+
+  try{
+    window.focus();
+  }
+  catch(e){}
+
+}
+
+
+/* ============================================================
+   FORGOT PASSWORD
+============================================================ */
+
+function openForgotPassword(){
+
+  $("forgotPasswordOverlay")
+    .classList
+    .remove("hidden");
+
+
+  $("forgotUsername").value =
+    $("username").value.trim();
+
+
+  $("forgotVerificationType").value =
+    "phone";
+
+
+  $("forgotVerificationValue").value =
+    "";
+
+
+  $("forgotNewPassword").value =
+    "";
+
+
+  $("forgotConfirmPassword").value =
+    "";
+
+
+  $("forgotPasswordMsg")
+    .className =
+    "message";
+
+
+  changeForgotVerification();
+
+
   setTimeout(
-    () => generateReport(),
+    () =>
+      $("forgotUsername").focus(),
     100
   );
 
 }
 
 
-async function generateReport(){
+function closeForgotPassword(){
 
-  const date =
-    $("reportDate").value;
+  $("forgotPasswordOverlay")
+    .classList
+    .add("hidden");
 
-  if(!date){
 
-    alert(
-      "Select date"
+  $("forgotPasswordMsg")
+    .className =
+    "message";
+
+}
+
+
+function changeForgotVerification(){
+
+  const type =
+    $("forgotVerificationType")
+      .value;
+
+
+  const label =
+    $("forgotVerificationLabel");
+
+
+  const input =
+    $("forgotVerificationValue");
+
+
+  if(type === "dob"){
+
+    label.textContent =
+      "Date of Birth";
+
+    input.type =
+      "date";
+
+    input.inputMode =
+      "";
+
+    input.placeholder =
+      "Select your date of birth";
+
+  }
+  else{
+
+    label.textContent =
+      "Phone Number";
+
+    input.type =
+      "tel";
+
+    input.inputMode =
+      "numeric";
+
+    input.placeholder =
+      "Enter 10-digit registered phone number";
+
+  }
+
+}
+
+
+function showForgotMsg(
+  text,
+  type
+){
+
+  const box =
+    $("forgotPasswordMsg");
+
+
+  box.textContent =
+    text;
+
+
+  box.className =
+    "message show " +
+    (type || "info");
+
+}
+
+
+async function resetForgotPassword(){
+
+  const btn =
+    $("resetPasswordBtn");
+
+
+  const username =
+    $("forgotUsername")
+      .value
+      .trim();
+
+
+  const verificationType =
+    $("forgotVerificationType")
+      .value;
+
+
+  const verificationValue =
+    $("forgotVerificationValue")
+      .value
+      .trim();
+
+
+  const newPassword =
+    $("forgotNewPassword")
+      .value;
+
+
+  const confirmPassword =
+    $("forgotConfirmPassword")
+      .value;
+
+
+  if(!username){
+
+    showForgotMsg(
+      "Please enter your username.",
+      "error"
     );
+
+    $("forgotUsername").focus();
 
     return;
 
   }
 
 
-  try{
+  if(!verificationValue){
 
-    $("reportResults")
-      .innerHTML =
-        `<div
-          style="text-align:center;padding:30px;color:var(--gray-500)"
-        >
-          Loading...
-        </div>`;
+    showForgotMsg(
 
+      verificationType === "phone"
+        ? "Please enter your registered phone number."
+        : "Please select your date of birth.",
 
-    const j =
-      await taskApi({
-        action:"report",
-        date
-      });
+      "error"
 
+    );
 
-    const filtered =
-      (j.tasks || [])
-        .filter(t => {
 
-          if(t.task_date)
-            return t.task_date === date;
+    $("forgotVerificationValue")
+      .focus();
 
-          if(t.assigned_time){
-
-            const d =
-              new Intl.DateTimeFormat(
-                "en-CA",
-                {
-                  timeZone:
-                    "Asia/Kolkata",
-                  year:"numeric",
-                  month:"2-digit",
-                  day:"2-digit"
-                }
-              ).format(
-                new Date(
-                  t.assigned_time
-                )
-              );
-
-            return d === date;
-
-          }
-
-          return false;
-
-        });
-
-
-    const deleted =
-      getDeletedByDate(date);
-
-
-    j.tasks =
-      filtered;
-
-    j.deletedTasks =
-      deleted;
-
-    j.date =
-      date;
-
-
-    const pc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "pending"
-      ).length;
-
-
-    const hc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "hold"
-      ).length;
-
-
-    const dc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "done"
-      ).length;
-
-
-    $("reportResults")
-      .innerHTML = `
-
-      <div
-        style="margin-bottom:16px;padding:14px;background:var(--primary);color:#fff;border-radius:var(--radius)"
-      >
-
-        <div
-          style="font-size:24px;font-weight:800"
-        >
-          ${esc(date)}
-        </div>
-
-      </div>
-
-
-      <div class="report-summary">
-
-        <div class="report-card">
-          <h4>Total</h4>
-          <div class="count">
-            ${filtered.length}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Pending</h4>
-          <div
-            class="count"
-            style="color:var(--warning)"
-          >
-            ${pc}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Hold</h4>
-          <div
-            class="count"
-            style="color:var(--purple)"
-          >
-            ${hc}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Done</h4>
-          <div
-            class="count"
-            style="color:var(--success)"
-          >
-            ${dc}
-          </div>
-        </div>
-
-        ${
-          deleted.length
-            ? `
-              <div class="report-card">
-                <h4>Deleted</h4>
-                <div
-                  class="count"
-                  style="color:var(--danger)"
-                >
-                  ${deleted.length}
-                </div>
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-
-      ${(j.summary || [])
-        .filter(
-          s => s.total > 0
-        )
-        .map(
-          s => `
-
-          <div
-            class="card"
-            style="margin-bottom:10px;padding:14px"
-          >
-
-            <h3>
-              ${esc(
-                s.operator?.full_name ||
-                "Unassigned"
-              )}
-            </h3>
-
-            <div
-              style="font-size:14px;color:var(--gray-600)"
-            >
-
-              Total:
-              <b>${s.total}</b>
-
-              |
-
-              Pending:
-              <b>${s.pending}</b>
-
-              |
-
-              Hold:
-              <b>${s.hold}</b>
-
-              |
-
-              Done:
-              <b>${s.done}</b>
-
-            </div>
-
-          </div>
-
-        `
-        ).join("")}
-
-
-      ${
-        deleted.length
-          ? `
-
-            <div class="deleted-section">
-
-              <h3>
-                🗑 Deleted
-                (${deleted.length})
-              </h3>
-
-              ${deleted
-                .map(
-                  t => `
-
-                  <div class="deleted-item">
-
-                    <b>#${t.id}</b>
-
-                    ${esc(
-                      getCourtStr(t)
-                    )}
-
-                    —
-
-                    <span
-                      style="color:var(--danger)"
-                    >
-                      ${esc(
-                        t.deleted_reason ||
-                        ""
-                      )}
-                    </span>
-
-                  </div>
-
-                `
-                )
-                .join("")}
-
-            </div>
-
-          `
-          : ""
-      }
-
-
-      <div
-        class="action no-print"
-        style="margin-top:16px;justify-content:center"
-      >
-
-        <button
-          class="btn-primary"
-          onclick='printReport(${JSON.stringify(j).replaceAll("'","&#039;")})'
-        >
-          🖨 Print
-        </button>
-
-      </div>
-
-    `;
-
-  }catch(e){
-
-    $("reportResults")
-      .innerHTML =
-      `<div
-        style="color:var(--danger);padding:20px;text-align:center"
-      >
-        Error:
-        ${esc(e.message)}
-      </div>`;
+    return;
 
   }
 
-}
 
+  if(
+    verificationType ===
+    "phone"
+  ){
 
-/* =====================================================
-   PRINT REPORT
-   ===================================================== */
+    const digits =
+      verificationValue
+        .replace(/\D/g,"");
 
-function printReport(j){
 
-  const rows =
-    (j.tasks || [])
-      .map(t => {
+    if(digits.length !== 10){
 
-        const d =
-          decodeSection(
-            t.section_name
-          );
+      showForgotMsg(
+        "Please enter a valid 10-digit phone number.",
+        "error"
+      );
 
-        return `
-        <tr>
 
-          <td>${esc(t.id)}</td>
+      $("forgotVerificationValue")
+        .focus();
 
-          <td>${esc(d.bench)}</td>
+      return;
 
-          <td>${esc(getCourtStr(t))}</td>
-
-          <td>${esc(t.list_type || "")}</td>
-
-          <td>${esc(d.section)}</td>
-
-          <td>
-            ${d.caseTypes.join(", ") || "-"}
-          </td>
-
-          <td>${esc(t.remarks || "")}</td>
-
-          <td>
-            ${esc(
-              t.operator?.full_name ||
-              "MEMO"
-            )}
-          </td>
-
-          <td>${esc(t.status)}</td>
-
-          <td></td>
-
-        </tr>
-        `;
-
-      })
-      .join("");
-
-
-  const drows =
-    (j.deletedTasks || [])
-      .map(t => {
-
-        const d =
-          decodeSection(
-            t.section_name
-          );
-
-        return `
-        <tr class="deleted-print">
-
-          <td>${esc(t.id)}</td>
-
-          <td>${esc(d.bench)}</td>
-
-          <td>${esc(getCourtStr(t))}</td>
-
-          <td>${esc(t.list_type || "")}</td>
-
-          <td>${esc(d.section)}</td>
-
-          <td>
-            ${d.caseTypes.join(", ") || "-"}
-          </td>
-
-          <td>${esc(t.remarks || "")}</td>
-
-          <td>
-            ${esc(
-              t.operator?.full_name ||
-              ""
-            )}
-          </td>
-
-          <td>DEL</td>
-
-          <td>
-            ${esc(
-              t.deleted_reason || ""
-            )}
-          </td>
-
-        </tr>
-        `;
-
-      })
-      .join("");
-
-
-  $("printReport")
-    .innerHTML = `
-
-      <h1>
-        AHC Task Report
-      </h1>
-
-      <p>
-        Date: ${esc(j.date)}
-        |
-        Active: ${(j.tasks || []).length}
-        |
-        Deleted: ${(j.deletedTasks || []).length}
-      </p>
-
-      <table>
-
-        <thead>
-
-          <tr>
-
-            <th>ID</th>
-            <th>Bench</th>
-            <th>Court</th>
-            <th>List</th>
-            <th>Section</th>
-            <th>Case Type</th>
-            <th>Remarks</th>
-            <th>Operator</th>
-            <th>Status</th>
-            <th>Reason</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${rows}
-          ${drows}
-
-        </tbody>
-
-      </table>
-
-    `;
-
-
-  closeModal();
-
-  setTimeout(
-    () => window.print(),
-    200
-  );
-
-}
-
-
-/* =====================================================
-   PRINT TASKS
-   ===================================================== */
-
-function printTasks(){
-
-  const old =
-    $("printReport").innerHTML;
-
-  const deleted =
-    getDeletedByDate(
-      selectedDate()
-    );
-
-
-  const rows =
-    tasks.map(t => {
-
-      const d =
-        decodeSection(
-          t.section_name
-        );
-
-      return `
-      <tr>
-
-        <td>${esc(t.id)}</td>
-
-        <td>${esc(d.bench)}</td>
-
-        <td>${esc(getCourtStr(t))}</td>
-
-        <td>${esc(t.list_type || "")}</td>
-
-        <td>${esc(d.section)}</td>
-
-        <td>
-          ${d.caseTypes.join(", ") || "-"}
-        </td>
-
-        <td>${esc(t.remarks || "")}</td>
-
-        <td>
-          ${esc(
-            t.operator?.full_name ||
-            "MEMO"
-          )}
-        </td>
-
-        <td>${esc(t.status)}</td>
-
-        <td></td>
-
-      </tr>
-      `;
-
-    }).join("");
-
-
-  const drows =
-    deleted.map(t => {
-
-      const d =
-        decodeSection(
-          t.section_name
-        );
-
-      return `
-      <tr class="deleted-print">
-
-        <td>${esc(t.id)}</td>
-
-        <td>${esc(d.bench)}</td>
-
-        <td>${esc(getCourtStr(t))}</td>
-
-        <td>${esc(t.list_type || "")}</td>
-
-        <td>${esc(d.section)}</td>
-
-        <td>
-          ${d.caseTypes.join(", ") || "-"}
-        </td>
-
-        <td>${esc(t.remarks || "")}</td>
-
-        <td>
-          ${esc(
-            t.operator?.full_name ||
-            ""
-          )}
-        </td>
-
-        <td>DEL</td>
-
-        <td>
-          ${esc(
-            t.deleted_reason || ""
-          )}
-        </td>
-
-      </tr>
-      `;
-
-    }).join("");
-
-
-  $("printReport")
-    .innerHTML = `
-
-    <h1>
-      AHC Tasks
-    </h1>
-
-    <p>
-      Date: ${esc(selectedDate())}
-      |
-      Active: ${tasks.length}
-      |
-      Deleted: ${deleted.length}
-    </p>
-
-    <table>
-
-      <thead>
-
-        <tr>
-
-          <th>ID</th>
-          <th>Bench</th>
-          <th>Court</th>
-          <th>List</th>
-          <th>Section</th>
-          <th>Case Type</th>
-          <th>Remarks</th>
-          <th>Operator</th>
-          <th>Status</th>
-          <th>Reason</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        ${rows}
-        ${drows}
-
-      </tbody>
-
-    </table>
-
-  `;
-
-
-  window.print();
-
-  setTimeout(
-    () => {
-      $("printReport")
-        .innerHTML = old;
-    },
-    500
-  );
-
-}
-
-
-/* =====================================================
-   MODAL
-   ===================================================== */
-
-function closeModal(){
-
-  $("modal")
-    .classList.add(
-      "hidden"
-    );
-
-}
-
-
-/* =====================================================
-   AUTO LOGIN SESSION
-   ===================================================== */
-
-(async()=>{
-
-  const {
-    data:{
-      session
     }
-  } =
-    await sb.auth
-      .getSession();
+
+  }
 
 
-  if(session){
+  if(!newPassword){
 
-    $("loginCard")
-      .classList.add(
-        "hidden"
+    showForgotMsg(
+      "Please enter a new password (PIN).",
+      "error"
+    );
+
+
+    $("forgotNewPassword")
+      .focus();
+
+    return;
+
+  }
+
+
+  if(newPassword.length < 4){
+
+    showForgotMsg(
+      "New password must be at least 4 characters long.",
+      "error"
+    );
+
+
+    $("forgotNewPassword")
+      .focus();
+
+    return;
+
+  }
+
+
+  if(
+    newPassword !==
+    confirmPassword
+  ){
+
+    showForgotMsg(
+      "New password and confirm password do not match.",
+      "error"
+    );
+
+
+    $("forgotConfirmPassword")
+      .focus();
+
+    return;
+
+  }
+
+
+  btn.disabled = true;
+
+  btn.innerHTML =
+    '<span class="spinner"></span> Updating...';
+
+
+  showForgotMsg(
+    "Verifying your details...",
+    "info"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        FORGOT_PASSWORD_API,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY
+          },
+
+          body:JSON.stringify({
+
+            userId:username,
+
+            newPassword:newPassword,
+
+            verificationMethod:
+              verificationType,
+
+            verificationData:{
+              [verificationType]:
+                verificationValue
+            }
+
+          })
+
+        }
       );
 
-    $("app")
-      .classList.remove(
-        "hidden"
-      );
 
-    $("workDate").value =
-      todayIST();
+    const text =
+      await response.text();
 
-    initCtDropdown();
+
+    let result;
+
 
     try{
 
-      await loadOperators();
+      result =
+        JSON.parse(text);
 
-      await refreshAll();
+    }
+    catch{
 
-    }catch(e){
-
-      $("loginCard")
-        .classList.remove(
-          "hidden"
-        );
-
-      $("app")
-        .classList.add(
-          "hidden"
-        );
-
-      $("loginMsg")
-        .textContent =
-        e.message;
+      throw new Error(
+        "Invalid server response."
+      );
 
     }
 
+
+    if(
+      !response.ok ||
+      !result.success
+    ){
+
+      throw new Error(
+        result.error ||
+        result.message ||
+        "Unable to reset password. Please check your details."
+      );
+
+    }
+
+
+    showForgotMsg(
+      "✓ Password (PIN) changed successfully! Redirecting to login...",
+      "info"
+    );
+
+
+    setTimeout(
+      () => {
+
+        closeForgotPassword();
+
+        $("username").value =
+          username;
+
+        $("pin").value =
+          "";
+
+        $("pin").focus();
+
+
+        showMsg(
+          "Password changed successfully. Please login with your new password.",
+          "info"
+        );
+
+      },
+      1500
+    );
+
+
+  }
+  catch(error){
+
+    console.error(
+      "Forgot password error:",
+      error
+    );
+
+
+    let displayMsg =
+      error.message ||
+      "Unable to reset password.";
+
+
+    if(
+      error.message.includes(
+        "NetworkError"
+      ) ||
+
+      error.message.includes(
+        "Failed to fetch"
+      ) ||
+
+      error.message.includes(
+        "TypeError"
+      )
+    ){
+
+      displayMsg =
+        "⚠️ Network Error: Please check your internet connection or contact admin.";
+
+    }
+
+
+    showForgotMsg(
+      displayMsg,
+      "error"
+    );
+
+  }
+  finally{
+
+    btn.disabled = false;
+
+    btn.innerHTML =
+      "🔑 Set New Password";
+
   }
 
-})();
+}
 
 
-/* =====================================================
+/* ============================================================
+   INITIALIZE
+============================================================ */
+
+initHoldReasons();
+
+initDeleteReasons();
+
+$("workDate").value =
+  todayIST();
+
+
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+async function logout(){
+
+  if(!confirm("Logout?"))
+    return;
+
+
+  stopTaskAlarm();
+
+  clearSession();
+
+  location.reload();
+
+}
+
+
+/* ============================================================
+   KEYBOARD EVENTS
+============================================================ */
+
+$("pin").addEventListener(
+  "keydown",
+  e => {
+
+    if(e.key === "Enter")
+      operatorLogin();
+
+  }
+);
+
+
+$("forgotConfirmPassword")
+  .addEventListener(
+    "keydown",
+    e => {
+
+      if(e.key === "Enter")
+        resetForgotPassword();
+
+    }
+  );
+
+
+/* ============================================================
+   OVERLAY CLICK
+============================================================ */
+
+$("forgotPasswordOverlay")
+  .addEventListener(
+    "click",
+    e => {
+
+      if(
+        e.target.id ===
+        "forgotPasswordOverlay"
+      )
+        closeForgotPassword();
+
+    }
+  );
+
+
+$("holdReasonOverlay")
+  .addEventListener(
+    "click",
+    e => {
+
+      if(
+        e.target.id ===
+        "holdReasonOverlay"
+      )
+        cancelHoldReason();
+
+    }
+  );
+
+
+$("deleteReasonOverlay")
+  .addEventListener(
+    "click",
+    e => {
+
+      if(
+        e.target.id ===
+        "deleteReasonOverlay"
+      )
+        cancelDeleteReason();
+
+    }
+  );
+
+
+/* ============================================================
    AUTO REFRESH
-   ===================================================== */
+============================================================ */
 
 setInterval(
-  () => {
+  async () => {
 
     if(
       !$("app")
@@ -4166,13 +4074,122 @@ setInterval(
         .contains("hidden")
     ){
 
-      refreshAll();
+      if(
+        Date.now() -
+        loginTime <
+        10000
+      ){
+
+        await refreshAll();
+
+        return;
+
+      }
+
+
+      const ok =
+        await verifySession()
+          .catch(
+            () => false
+          );
+
+
+      if(!ok){
+
+        clearSession();
+
+
+        $("app")
+          .classList
+          .add("hidden");
+
+
+        $("loginCard")
+          .classList
+          .remove("hidden");
+
+
+        showMsg(
+          "Session expired. Please login again.",
+          "error"
+        );
+
+
+        $("loginBtn").disabled =
+          false;
+
+
+        $("loginBtn").textContent =
+          "Sign In";
+
+
+        return;
+
+      }
+
+
+      await refreshAll();
 
     }
 
   },
-  10000
+  2000
 );
+
+
+/* ============================================================
+   AUTO LOGIN FROM LOCAL STORAGE
+============================================================ */
+
+(async()=>{
+
+  try{
+
+    const s =
+      JSON.parse(
+        localStorage.getItem(
+          "ahc_operator_session"
+        ) ||
+        "null"
+      );
+
+
+    if(
+      s?.token &&
+      s?.operator
+    ){
+
+      sessionToken =
+        s.token;
+
+      operator =
+        s.operator;
+
+
+      loginTime =
+        Date.now() - 20000;
+
+
+      const ok =
+        await verifySession();
+
+
+      if(ok)
+        await openDashboard();
+
+      else
+        clearSession();
+
+    }
+
+  }
+  catch(e){
+
+    clearSession();
+
+  }
+
+})();
 
 </script>
 
