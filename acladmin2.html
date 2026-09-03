@@ -777,6 +777,16 @@ tr.memo-done-row{background:var(--success-light)}
     padding:18px
   }
 }
+
+#printReport .date-time-cell{
+  white-space:nowrap;
+  font-size:9px;
+}
+
+#printReport tr.deleted-print{
+  opacity:.95;
+}
+
 </style>
 </head>
 
@@ -1545,11 +1555,9 @@ function getDeletedByDate(date){
   return getDeletedTasks()
     .filter(t => {
 
-      if(t.task_date)
-        return t.task_date === date;
-
-      if(t.assigned_time){
-
+      // IMPORTANT: Deleted report is based on the actual
+      // deletion date/time, not the task assignment date.
+      if(t.deleted_at){
         const d =
           new Intl.DateTimeFormat(
             "en-CA",
@@ -1559,13 +1567,14 @@ function getDeletedByDate(date){
               month:"2-digit",
               day:"2-digit"
             }
-          ).format(
-            new Date(t.assigned_time)
-          );
+          ).format(new Date(t.deleted_at));
 
         return d === date;
-
       }
+
+      // Legacy records without deleted_at: retain old fallback.
+      if(t.task_date)
+        return t.task_date === date;
 
       return false;
 
@@ -3075,15 +3084,6 @@ async function deleteTask(id){
         t => t.id === id
       );
 
-    if(task){
-
-      saveDeletedTask(
-        task,
-        reason.trim()
-      );
-
-    }
-
     await taskApi({
 
       action:"delete",
@@ -3094,6 +3094,17 @@ async function deleteTask(id){
         reason.trim()
 
     });
+
+    // Save in the local deleted log ONLY after the server
+    // confirms that the delete succeeded.
+    if(task){
+
+      saveDeletedTask(
+        task,
+        reason.trim()
+      );
+
+    }
 
     await refreshAll();
 
@@ -3112,6 +3123,15 @@ async function deleteTask(id){
 /* =====================================================
    REPORT
    ===================================================== */
+
+function closeModal(){
+
+  const modal = $("modal");
+
+  if(modal)
+    modal.classList.add("hidden");
+
+}
 
 async function openReport(){
 
@@ -3231,6 +3251,9 @@ async function generateReport(){
     j.date =
       date;
 
+    // Keep the exact generated report available to the Print button.
+    window.__currentReport = j;
+
 
     const pc =
       filtered.filter(
@@ -3331,6 +3354,81 @@ async function generateReport(){
       </div>
 
 
+      <div class="tablewrap" style="margin-top:16px;max-height:420px">
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Bench</th>
+              <th>Court / Chamber</th>
+              <th>List Type</th>
+              <th>Assigned To</th>
+              <th>Assigned (Date &amp; Time)</th>
+              <th>From Section</th>
+              <th>Remarks</th>
+              <th>Case Type</th>
+              <th>Completed (Date &amp; Time)</th>
+              <th>Status</th>
+              <th>Delete Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filtered.map(t => {
+              const d = decodeSection(t.section_name);
+              const assignedUser =
+                t.operator?.full_name ||
+                t.assigned_to_name ||
+                t.assigned_user?.full_name ||
+                t.assigned_to_user?.full_name ||
+                "MEMO";
+              return `
+                <tr>
+                  <td>${esc(t.id)}</td>
+                  <td>${esc(d.bench)}</td>
+                  <td>${esc(getCourtStr(t))}</td>
+                  <td>${esc(t.list_type || "")}</td>
+                  <td>${esc(assignedUser)}</td>
+                  <td class="date-time-cell">${dt(t.assigned_time)}</td>
+                  <td>${esc(d.section)}</td>
+                  <td>${esc(t.remarks || "")}</td>
+                  <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+                  <td class="date-time-cell">${dt(t.completed_time)}</td>
+                  <td>${esc(t.status || "")}</td>
+                  <td>—</td>
+                </tr>`;
+            }).join("")}
+
+            ${deleted.map(t => {
+              const d = decodeSection(t.section_name);
+              const assignedUser =
+                t.operator?.full_name ||
+                t.assigned_to_name ||
+                t.assigned_user?.full_name ||
+                t.assigned_to_user?.full_name ||
+                "—";
+              return `
+                <tr class="deleted-print">
+                  <td>${esc(t.id)}</td>
+                  <td>${esc(d.bench)}</td>
+                  <td>${esc(getCourtStr(t))}</td>
+                  <td>${esc(t.list_type || "")}</td>
+                  <td>${esc(assignedUser)}</td>
+                  <td class="date-time-cell">${dt(t.assigned_time)}</td>
+                  <td>${esc(d.section)}</td>
+                  <td>${esc(t.remarks || "")}</td>
+                  <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+                  <td class="date-time-cell">${dt(t.completed_time)}</td>
+                  <td>DELETED</td>
+                  <td>${esc(t.deleted_reason || "—")}</td>
+                </tr>`;
+            }).join("")}
+          </tbody>
+        </table>
+
+      </div>
+
+
       ${(j.summary || [])
         .filter(s => s.total > 0)
         .map(s => `
@@ -3425,7 +3523,8 @@ async function generateReport(){
 
         <button
           class="btn-primary"
-          onclick='printReport(${JSON.stringify(j).replaceAll("'","&#039;")})'>
+          type="button"
+          onclick="printReport(window.__currentReport)">
 
           🖨 Print
 
@@ -3459,113 +3558,113 @@ async function generateReport(){
 
 function printReport(j){
 
-  const rows =
-    (j.tasks || [])
-      .map(t => {
+  const activeTasks = Array.isArray(j?.tasks) ? j.tasks : [];
+  const deletedTasks = Array.isArray(j?.deletedTasks) ? j.deletedTasks : [];
 
-        const d =
-          decodeSection(
-            t.section_name
-          );
+  const rows = activeTasks.map(t => {
 
-        return `
-          <tr>
-            <td>${esc(t.id)}</td>
-            <td>${esc(d.bench)}</td>
-            <td>${esc(getCourtStr(t))}</td>
-            <td>${esc(t.list_type || "")}</td>
-            <td>${esc(t.operator?.full_name || "MEMO")}</td>
-            <td>${esc(d.section)}</td>
-            <td>${esc(t.remarks || "")}</td>
-            <td>${d.caseTypes.join(", ") || "-"}</td>
-            <td>${esc(t.status)}</td>
-            <td></td>
-          </tr>
-        `;
+    const d = decodeSection(t.section_name);
 
-      })
-      .join("");
+    const assignedUser =
+      t.operator?.full_name ||
+      t.assigned_to_name ||
+      t.assigned_user?.full_name ||
+      t.assigned_to_user?.full_name ||
+      "MEMO";
 
+    return `
+      <tr>
+        <td>${esc(t.id)}</td>
+        <td>${esc(d.bench)}</td>
+        <td>${esc(getCourtStr(t))}</td>
+        <td>${esc(t.list_type || "")}</td>
+        <td>${esc(assignedUser)}</td>
+        <td class="date-time-cell">${dt(t.assigned_time)}</td>
+        <td>${esc(d.section)}</td>
+        <td>${esc(t.remarks || "")}</td>
+        <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+        <td class="date-time-cell">${dt(t.completed_time)}</td>
+        <td>${esc(t.status || "")}</td>
+        <td>—</td>
+      </tr>
+    `;
 
-  const drows =
-    (j.deletedTasks || [])
-      .map(t => {
+  }).join("");
 
-        const d =
-          decodeSection(
-            t.section_name
-          );
+  // All tasks deleted on the selected report date are included here.
+  const drows = deletedTasks.map(t => {
 
-        return `
-          <tr class="deleted-print">
+    const d = decodeSection(t.section_name);
 
-            <td>${esc(t.id)}</td>
-            <td>${esc(d.bench)}</td>
-            <td>${esc(getCourtStr(t))}</td>
-            <td>${esc(t.list_type || "")}</td>
-            <td>${esc(t.operator?.full_name || "")}</td>
-            <td>${esc(d.section)}</td>
-            <td>${esc(t.remarks || "")}</td>
-            <td>${d.caseTypes.join(", ") || "-"}</td>
-            <td>DEL</td>
-            <td>${esc(t.deleted_reason || "")}</td>
+    const assignedUser =
+      t.operator?.full_name ||
+      t.assigned_to_name ||
+      t.assigned_user?.full_name ||
+      t.assigned_to_user?.full_name ||
+      "—";
 
-          </tr>
-        `;
+    return `
+      <tr class="deleted-print">
+        <td>${esc(t.id)}</td>
+        <td>${esc(d.bench)}</td>
+        <td>${esc(getCourtStr(t))}</td>
+        <td>${esc(t.list_type || "")}</td>
+        <td>${esc(assignedUser)}</td>
+        <td class="date-time-cell">${dt(t.assigned_time)}</td>
+        <td>${esc(d.section)}</td>
+        <td>${esc(t.remarks || "")}</td>
+        <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+        <td class="date-time-cell">${dt(t.completed_time)}</td>
+        <td>DELETED</td>
+        <td>${esc(t.deleted_reason || "—")}</td>
+      </tr>
+    `;
 
-      })
-      .join("");
-
+  }).join("");
 
   $("printReport").innerHTML = `
 
     <h1>AHC Task Report</h1>
 
     <p>
-      Date: ${esc(j.date)}
+      Date: ${esc(j?.date || "")}
       |
-      Active: ${(j.tasks || []).length}
+      Active: ${activeTasks.length}
       |
-      Deleted: ${(j.deletedTasks || []).length}
+      Deleted: ${deletedTasks.length}
+      |
+      Total: ${activeTasks.length + deletedTasks.length}
     </p>
 
     <table>
-
       <thead>
-
         <tr>
-
           <th>ID</th>
           <th>Bench</th>
           <th>Court</th>
-          <th>List</th>
+          <th>List Type</th>
           <th>Assigned To</th>
+          <th>Assigned</th>
           <th>Section</th>
           <th>Remarks</th>
-          <th>Case Type</th>
+          <th>Case Types</th>
+          <th>Completed</th>
           <th>Status</th>
           <th>Reason</th>
-
         </tr>
-
       </thead>
 
       <tbody>
         ${rows}
         ${drows}
       </tbody>
-
     </table>
 
   `;
 
   closeModal();
 
-  setTimeout(
-    () => window.print(),
-    200
-  );
-
+  setTimeout(() => window.print(), 200);
 }
 
 
@@ -3583,7 +3682,6 @@ function printTasks(){
       selectedDate()
     );
 
-
   const rows =
     tasks
       .map(t => {
@@ -3593,35 +3691,34 @@ function printTasks(){
             t.section_name
           );
 
+        const assignedUser =
+          t.operator?.full_name ||
+          t.assigned_to_name ||
+          t.assigned_user?.full_name ||
+          t.assigned_to_user?.full_name ||
+          "MEMO";
+
         return `
           <tr>
 
             <td>${esc(t.id)}</td>
-
             <td>${esc(d.bench)}</td>
-
             <td>${esc(getCourtStr(t))}</td>
-
             <td>${esc(t.list_type || "")}</td>
-
-            <td>${esc(t.operator?.full_name || "MEMO")}</td>
-
+            <td>${esc(assignedUser)}</td>
+            <td class="date-time-cell">${dt(t.assigned_time)}</td>
             <td>${esc(d.section)}</td>
-
             <td>${esc(t.remarks || "")}</td>
-
-            <td>${d.caseTypes.join(", ") || "-"}</td>
-
-            <td>${esc(t.status)}</td>
-
-            <td></td>
+            <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+            <td class="date-time-cell">${dt(t.completed_time)}</td>
+            <td>${esc(t.status || "")}</td>
+            <td>—</td>
 
           </tr>
         `;
 
       })
       .join("");
-
 
   const drows =
     deleted
@@ -3632,27 +3729,27 @@ function printTasks(){
             t.section_name
           );
 
+        const assignedUser =
+          t.operator?.full_name ||
+          t.assigned_to_name ||
+          t.assigned_user?.full_name ||
+          t.assigned_to_user?.full_name ||
+          "—";
+
         return `
           <tr class="deleted-print">
 
             <td>${esc(t.id)}</td>
-
             <td>${esc(d.bench)}</td>
-
             <td>${esc(getCourtStr(t))}</td>
-
             <td>${esc(t.list_type || "")}</td>
-
-            <td>${esc(t.operator?.full_name || "")}</td>
-
+            <td>${esc(assignedUser)}</td>
+            <td class="date-time-cell">${dt(t.assigned_time)}</td>
             <td>${esc(d.section)}</td>
-
             <td>${esc(t.remarks || "")}</td>
-
-            <td>${d.caseTypes.join(", ") || "-"}</td>
-
-            <td>DEL</td>
-
+            <td>${esc(d.caseTypes.join(", ") || "-")}</td>
+            <td class="date-time-cell">${dt(t.completed_time)}</td>
+            <td>DELETED</td>
             <td>${esc(t.deleted_reason || "")}</td>
 
           </tr>
@@ -3660,7 +3757,6 @@ function printTasks(){
 
       })
       .join("");
-
 
   $("printReport").innerHTML = `
 
@@ -3677,22 +3773,20 @@ function printTasks(){
     <table>
 
       <thead>
-
         <tr>
-
           <th>ID</th>
           <th>Bench</th>
           <th>Court</th>
-          <th>List</th>
+          <th>List Type</th>
           <th>Assigned To</th>
+          <th>Assigned</th>
           <th>Section</th>
           <th>Remarks</th>
-          <th>Case Type</th>
+          <th>Case Types</th>
+          <th>Completed</th>
           <th>Status</th>
           <th>Reason</th>
-
         </tr>
-
       </thead>
 
       <tbody>
@@ -3704,9 +3798,7 @@ function printTasks(){
 
   `;
 
-
   window.print();
-
 
   setTimeout(
     () => {
@@ -3715,15 +3807,6 @@ function printTasks(){
     },
     500
   );
-
-}
-
-
-function closeModal(){
-
-  $("modal")
-    .classList
-    .add("hidden");
 
 }
 
