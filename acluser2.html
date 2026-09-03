@@ -339,37 +339,52 @@ tbody tr:last-child td{border-bottom:none}
 /* =====================================================
    ✅ UNIFIED REAL-TIME NOTIFICATION & BEEP SYSTEM
    ===================================================== */
+/* =====================================================
+   ✅ PRODUCTION-SAFE REAL-TIME & AUDIO SYSTEM
+   ===================================================== */
 let CURRENT_USER_ID = null;
 let originalTitle = document.title;
 let blinkInterval = null;
 let audioCtx = null;
 let isAcknowledged = true;
 
+// 1. Robust Audio Initialization
 function initAudio() {
     if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+            audioCtx = new AudioContext();
+        }
     }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+            console.log("Audio Context Resumed Successfully");
+        }).catch(err => console.warn("Audio resume failed:", err));
     }
 }
 
 function playBeep() {
     if (!audioCtx) return;
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 880; 
-    gainNode.gain.value = 0.15; 
-    oscillator.start();
-    setTimeout(() => oscillator.stop(), 150);
+    try {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 880; 
+        gainNode.gain.value = 0.15; 
+        oscillator.start();
+        setTimeout(() => oscillator.stop(), 150);
+    } catch (e) {
+        console.warn("Beep play failed (Browser policy):", e);
+    }
 }
 
 function startNotificationAlert() {
     if (!isAcknowledged) return;
     isAcknowledged = false;
+    
+    // Force audio init on alert
     initAudio();
     
     let showNew = true;
@@ -392,36 +407,54 @@ function stopNotificationAlert() {
     if (notifDot) notifDot.style.display = 'none';
 }
 
-// ✅ Stop alert immediately when user switches to this tab
+// Stop alert immediately when user switches to this tab
 window.addEventListener('focus', () => {
     stopNotificationAlert();
 });
 
-// ✅ Supabase Realtime Listener (Instant background notification)
+// 2. Production-Safe Supabase Realtime Setup
 function setupRealtimeNotifications() {
-    if (!CURRENT_USER_ID) return;
-    if (window.notificationChannel) sb.removeChannel(window.notificationChannel);
+    if (!CURRENT_USER_ID) {
+        console.warn("Cannot setup realtime: CURRENT_USER_ID is null");
+        return;
+    }
+
+    // Remove existing channel if any to prevent duplicates
+    if (window.notificationChannel) {
+        sb.removeChannel(window.notificationChannel);
+    }
+
+    console.log("Setting up Realtime for User ID:", CURRENT_USER_ID);
 
     window.notificationChannel = sb.channel('user-task-notifications')
         .on('postgres_changes', {
             event: 'INSERT',
             schema: 'public',
-            table: 'tasks' // ⚠️ Ensure this matches your actual Supabase table name
+            table: 'tasks' // ⚠️ Ensure this is exactly your table name
         }, (payload) => {
+            console.log("New Task Payload Received:", payload);
             const newTask = payload.new;
+            
+            // Strict type checking for production
             if (String(newTask.assigned_to) === String(CURRENT_USER_ID)) {
+                console.log("Task matches current user! Triggering alert...");
                 startNotificationAlert();
             }
         })
-        .subscribe((status) => {
-            if (status === 'SUBSCRIBED') console.log('Realtime active for user:', CURRENT_USER_ID);
+        .subscribe((status, err) => {
+            if (err) {
+                console.error("❌ Supabase Realtime Subscription Error:", err);
+            } else {
+                console.log("✅ Supabase Realtime Status:", status);
+            }
         });
 }
 
-// ✅ Allow audio on first user interaction (Browser Autoplay Policy)
+// 3. Global Interaction Listener (Crucial for Production)
+// Browser requires ANY click on the page to allow audio
 document.addEventListener('click', initAudio, { once: true });
 document.addEventListener('keydown', initAudio, { once: true });
-
+document.addEventListener('touchstart', initAudio, { once: true }); // For mobile
 
 /* ============================================================
    SUPABASE CONFIGURATION
