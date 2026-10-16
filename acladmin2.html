@@ -851,15 +851,13 @@ Logged in as: Admin
 
     <hr style="margin:24px 0;">
 
-    <h3>Existing Operators</h3>
-    <p style="color:#666; font-size:14px;">
-      Operators will appear here after the user-management functions
-      are connected.
-    </p>
+   
+<h3>Existing Operators</h3>
 
-    <div id="operatorManagementList">
-      Loading will be enabled in the next step.
-    </div>
+<div id="operatorManagementList">
+  Operators ki list load ho rahi hai...
+</div>
+
 
     <p id="userManagerMessage"
        role="status"
@@ -4105,26 +4103,17 @@ function closeUserManager() {
 }
 
 
+
 async function addOperator() {
   const message = document.getElementById("userManagerMessage");
 
-  // Form fields खोजें
-  const fullNameInput =
-    document.getElementById("operatorFullName") ||
-    document.getElementById("newOperatorFullName");
-
-  const usernameInput =
-    document.getElementById("operatorUsername") ||
-    document.getElementById("newOperatorUsername");
-
-  const pinInput =
-    document.getElementById("operatorPin") ||
-    document.getElementById("newOperatorPin");
+  const fullNameInput = document.getElementById("newOperatorName");
+  const usernameInput = document.getElementById("newOperatorUsername");
+  const pinInput = document.getElementById("newOperatorPin");
 
   if (!fullNameInput || !usernameInput || !pinInput) {
     if (message) {
-      message.textContent =
-        "Form fields ke IDs match nahi kar rahe. Add Operator form ka HTML check karna hoga.";
+      message.textContent = "Operator form ke fields nahi mile.";
       message.style.color = "#b91c1c";
     }
     return;
@@ -4135,40 +4124,36 @@ async function addOperator() {
   const pin = pinInput.value.trim();
 
   if (!full_name || !username || !pin) {
-    if (message) {
-      message.textContent =
-        "Full Name, Username aur Operator PIN teeno bharna zaroori hai.";
-      message.style.color = "#b91c1c";
-    }
+    message.textContent =
+      "Full Name, Username aur Operator PIN teeno bharna zaroori hai.";
+    message.style.color = "#b91c1c";
+    return;
+  }
+
+  if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
+    message.textContent =
+      "Username 3-30 characters ka hona chahiye. Letters, numbers, dot, underscore aur hyphen allowed hain.";
+    message.style.color = "#b91c1c";
     return;
   }
 
   if (!/^\d{4,10}$/.test(pin)) {
-    if (message) {
-      message.textContent =
-        "Operator PIN 4 se 10 digits ka hona chahiye.";
-      message.style.color = "#b91c1c";
-    }
+    message.textContent = "PIN 4 se 10 digits ka hona chahiye.";
+    message.style.color = "#b91c1c";
     return;
   }
 
-  if (message) {
-    message.textContent = "Operator add ho raha hai...";
-    message.style.color = "#555";
-  }
+  message.textContent = "Operator add ho raha hai...";
+  message.style.color = "#555";
 
   try {
-    // Existing admin login session
     const { data: sessionData, error: sessionError } =
       await sb.auth.getSession();
 
     if (sessionError || !sessionData.session?.access_token) {
-      throw new Error(
-        "Admin login session nahi mila. Dobara login karein."
-      );
+      throw new Error("Admin session nahi mila. Dobara login karein.");
     }
 
-    // Backend request
     const response = await fetch(
       `${SUPABASE_URL}/functions/v1/manage-operators`,
       {
@@ -4192,36 +4177,32 @@ async function addOperator() {
 
     if (!response.ok || result.ok !== true) {
       throw new Error(
-        result.error +
-        (result.details ? ` — ${result.details}` : "")
+        result.error ||
+        result.details ||
+        `Request failed (${response.status})`
       );
     }
 
-    // Clear PIN from the form after success
-    pinInput.value = "";
     fullNameInput.value = "";
     usernameInput.value = "";
+    pinInput.value = "";
 
-    if (message) {
-      message.textContent =
-        `Operator "${result.operator?.full_name || full_name}" successfully add ho gaya.`;
-      message.style.color = "#15803d";
-    }
+    message.textContent =
+      `Operator "${result.operator?.full_name || full_name}" successfully add ho gaya.`;
+    message.style.color = "#15803d";
 
-    // Refresh existing operator list
     if (typeof loadManagedOperators === "function") {
       await loadManagedOperators();
-    } else if (typeof loadOperators === "function") {
-      await loadOperators();
     }
   } catch (error) {
     console.error("Add operator error:", error);
 
-    if (message) {
-      message.textContent =
-        error.message || "Operator add nahi ho saka.";
-      message.style.color = "#b91c1c";
-    }
+    message.textContent =
+      error instanceof Error
+        ? error.message
+        : "Operator add nahi ho saka.";
+
+    message.style.color = "#b91c1c";
   }
 }
 
