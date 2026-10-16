@@ -755,11 +755,15 @@ tr.memo-done-row{background:var(--success-light)}
 }
 
 @media(max-width:1400px){
-  .form-line{
+  .form-line{CL ADMIN Dashboard
+Logged in as: Admin
+
     flex-wrap:wrap
   }
 
-  .form-line .fld{
+  .form-line .fld{CL ADMIN Dashboard
+Logged in as: Admin
+
     min-width:calc(20% - 10px)
   }
 }
@@ -3977,6 +3981,40 @@ setInterval(
 );
 
 </script>
+
+<script>
+function openUserManager() {
+  const modal = document.getElementById("userManagerModal");
+
+  if (!modal) {
+    alert("Manage Operators ka form HTML mein nahi mila.");
+    return;
+  }
+
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+function closeUserManager() {
+  const modal = document.getElementById("userManagerModal");
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+
+  document.body.style.overflow = "";
+}
+
+function addOperator() {
+  const message = document.getElementById("userManagerMessage");
+
+  if (message) {
+    message.textContent =
+      "Operator add karne ke liye backend function abhi connect karna baaki hai.";
+  }
+}
+</script>
+</escape>
 
 </body>
 </html>
