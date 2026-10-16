@@ -4085,15 +4085,15 @@ setInterval(
 function openUserManager() {
   const modal = document.getElementById("userManagerModal");
 
-  if (!modal) {
-    alert("Manage Operators ka form HTML mein nahi mila.");
-    return;
-  }
+  if (!modal) return;
 
   modal.style.display = "block";
   document.body.style.overflow = "hidden";
+
+  loadManagedOperators();
 }
 
+  
 function closeUserManager() {
   const modal = document.getElementById("userManagerModal");
 
