@@ -2194,127 +2194,64 @@ async function logout(){
    OPERATORS
    ===================================================== */
 
-async function loadOperators(){
+async function loadOperators() {
+  const select = $("operatorSelect");
 
-  const select =
-    $("operatorSelect");
-
-  select.innerHTML =
-    '<option value="">Admin</option>';
-
+  select.innerHTML = '<option value="">Admin</option>';
   select.disabled = true;
 
-  try{
+  try {
+    // Use the same operator-management API that loads
+    // the Existing Operators list.
+    const result = await manageOperatorsRequest({
+      action: "list"
+    });
 
-    let list = [];
-
-    try{
-
-      const j =
-        await taskApi({
-          action:"operators"
-        });
-
-      if(
-        Array.isArray(
-          j?.operators
-        )
-      )
-        list = j.operators;
-
-    }catch(apiError){
-
-      console.warn(
-        "task-api operators failed:",
-        apiError
+    if (!Array.isArray(result.operators)) {
+      throw new Error(
+        "manage-operators ने valid operators list नहीं लौटाई।"
       );
-
     }
 
-    if(!list.length){
-
-      const {
-        data,
-        error
-      } =
-        await sb
-          .from("users")
-          .select(
-            "id,username,full_name,active"
-          )
-          .eq("active",true)
-          .order(
-            "id",
-            {ascending:true}
-          );
-
-      if(error)
-        throw error;
-
-      list =
-        data || [];
-
-    }
-
-    operators =
-      list
-        .map(o => ({
-
-          id:Number(o.id),
-
-          username:
-            o.username || "",
-
-          full_name:
-            o.full_name ||
-            o.username ||
-            `Operator ${o.id}`,
-
-          active:
-            o.active !== false
-
-        }))
-        .filter(o =>
-          Number.isInteger(o.id) &&
-          o.id > 0 &&
-          o.active &&
-          String(o.username)
-            .toLowerCase() !== "admin"
-        )
-        .sort(
-          (a,b) =>
-            a.id - b.id
-        );
+    operators = result.operators
+      .map(o => ({
+        id: Number(o.id),
+        username: String(o.username || ""),
+        full_name: String(
+          o.full_name || o.username || `Operator ${o.id}`
+        ),
+        active: o.active === true
+      }))
+      .filter(o =>
+        Number.isInteger(o.id) &&
+        o.id > 0 &&
+        o.active &&
+        o.username.toLowerCase() !== "admin"
+      )
+      .sort((a, b) => a.id - b.id);
 
     select.innerHTML =
       '<option value="">Admin</option>' +
+      operators.map(o => {
+        const option = document.createElement("option");
+        option.value = String(o.id);
+        option.textContent = `${o.id} — ${o.full_name}`;
+        return option.outerHTML;
+      }).join("");
 
-      operators
-        .map(o => `
-          <option value="${operatorOptionValue(o.id)}">
-            ${esc(o.id)} — ${esc(o.full_name)}
-          </option>
-        `)
-        .join("");
-
-    select.disabled = false;
-
-  }catch(e){
-
-    console.error(
-      "Unable to load operators:",
-      e
-    );
+  } catch (error) {
+    console.error("Unable to load operators:", error);
 
     select.innerHTML =
-      '<option value="">Admin</option>';
+      '<option value="">Operators load नहीं हुए</option>';
 
+    $("taskMsg").textContent =
+      "Operators load error: " + error.message;
+
+  } finally {
     select.disabled = false;
-
   }
-
 }
-
 
 /* =====================================================
    CREATE TASK
