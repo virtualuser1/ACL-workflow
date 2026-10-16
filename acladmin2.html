@@ -4137,10 +4137,14 @@ async function addOperator() {
     return;
   }
 
-  if (!/^\d{4,10}$/.test(pin)) {
-    message.textContent = "PIN 4 se 10 digits ka hona chahiye.";
-    message.style.color = "#b91c1c";
-    return;
+ const pin = pinInput.value.trim();
+
+if (!/^[0-9]{4,10}$/.test(pin)) {
+  message.textContent =
+    "PIN mein 4 se 10 digits tak sirf 0-9 numbers daalein.";
+  message.style.color = "#b91c1c";
+  return;
+}
   }
 
   message.textContent = "Operator add ho raha hai...";
