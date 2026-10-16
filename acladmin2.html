@@ -4102,8 +4102,6 @@ function closeUserManager() {
   document.body.style.overflow = "";
 }
 
-
-
 async function addOperator() {
   const message = document.getElementById("userManagerMessage");
 
@@ -4121,9 +4119,9 @@ async function addOperator() {
 
   const full_name = fullNameInput.value.trim();
   const username = usernameInput.value.trim().toLowerCase();
-  const pin = pinInput.value.trim();
+  const pinValue = pinInput.value.trim();
 
-  if (!full_name || !username || !pin) {
+  if (!full_name || !username || !pinValue) {
     message.textContent =
       "Full Name, Username aur Operator PIN teeno bharna zaroori hai.";
     message.style.color = "#b91c1c";
@@ -4137,17 +4135,11 @@ async function addOperator() {
     return;
   }
 
- const pin = pinInput.value.trim();
-
-
-if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
-  message.textContent =
-    "PIN mein 4 se 10 letters ya numbers daalein.";
-  message.style.color = "#b91c1c";
-  return;
-}
-
-}
+  if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
+    message.textContent =
+      "PIN mein 4 se 10 letters ya numbers daalein.";
+    message.style.color = "#b91c1c";
+    return;
   }
 
   message.textContent = "Operator add ho raha hai...";
@@ -4173,9 +4165,9 @@ if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
         },
         body: JSON.stringify({
           action: "add",
-          full_name,
-          username,
-          pin
+          full_name: full_name,
+          username: username,
+          pin: pinValue
         })
       }
     );
@@ -4184,9 +4176,8 @@ if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
 
     if (!response.ok || result.ok !== true) {
       throw new Error(
-        result.error ||
-        result.details ||
-        `Request failed (${response.status})`
+        result.error +
+        (result.details ? " — " + result.details : "")
       );
     }
 
@@ -4212,6 +4203,9 @@ if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
     message.style.color = "#b91c1c";
   }
 }
+
+
+
 
 </script>
 </escape>
