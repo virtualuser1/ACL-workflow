@@ -828,8 +828,22 @@ tr.memo-done-row{background:var(--success-light)}
     </div>
 
     <div class="action">
-      <button class="btn-outline" onclick="refreshAll()">↻ Refresh</button>
-      <button class="btn-danger btn-sm" onclick="logout()">Logout</button>
+      <div class="action">
+  <button class="btn-primary btn-sm"
+          onclick="openUserManager()">
+    👥 Manage Users
+  </button>
+
+  <button class="btn-outline"
+          onclick="refreshAll()">
+    ↻ Refresh
+  </button>
+
+  <button class="btn-danger btn-sm"
+          onclick="logout()">
+    Logout
+  </button>
+</div>
     </div>
 
   </div>
