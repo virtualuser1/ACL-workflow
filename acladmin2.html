@@ -2016,7 +2016,106 @@ async function taskApi(body){
 
 }
 
+async function manageOperatorsRequest(payload) {
+  const { data: sessionData, error: sessionError } =
+    await sb.auth.getSession();
 
+  if (sessionError || !sessionData.session?.access_token) {
+    throw new Error("Admin login session नहीं मिला। कृपया दोबारा login करें।");
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/functions/v1/manage-operators`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${sessionData.session.access_token}`
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || result.ok !== true) {
+    throw new Error(
+      result.error || `Request failed (${response.status})`
+    );
+  }
+
+  return result;
+}
+
+async function loadManagedOperators() {
+  const list = document.getElementById("operatorManagementList");
+  const message = document.getElementById("userManagerMessage");
+
+  if (!list) return;
+
+  list.replaceChildren();
+
+  const loading = document.createElement("p");
+  loading.textContent = "Operators की सूची लोड हो रही है...";
+  list.appendChild(loading);
+
+  if (message) message.textContent = "";
+
+  try {
+    const result = await manageOperatorsRequest({ action: "list" });
+
+    list.replaceChildren();
+
+    if (!result.operators || result.operators.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "अभी कोई operator उपलब्ध नहीं है।";
+      list.appendChild(empty);
+      return;
+    }
+
+    result.operators.forEach((operator) => {
+      const item = document.createElement("div");
+      item.style.cssText =
+        "padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;";
+
+      const name = document.createElement("strong");
+      name.textContent =
+        operator.full_name || operator.username || "Unnamed operator";
+
+      const details = document.createElement("div");
+      details.textContent =
+        `Username: ${operator.username} | ` +
+        `Status: ${
+          operator.active
+            ? "Active"
+            : "Inactive / records need verification"
+        }`;
+
+      item.appendChild(name);
+      item.appendChild(details);
+
+      if (operator.profile_exists === false) {
+        const warning = document.createElement("div");
+        warning.textContent =
+          "Warning: user_profiles में matching record नहीं मिला।";
+        warning.style.color = "#b45309";
+        item.appendChild(warning);
+      }
+
+      list.appendChild(item);
+    });
+  } catch (error) {
+    list.replaceChildren();
+
+    const errorText = document.createElement("p");
+    errorText.textContent =
+      error.message || "Operators लोड नहीं हो सके।";
+    errorText.style.color = "#b91c1c";
+
+    list.appendChild(errorText);
+  }
+}
 /* =====================================================
    ADMIN LOGIN
    ===================================================== */
