@@ -791,7 +791,79 @@ tr.memo-done-row{background:var(--success-light)}
 </head>
 
 <body>
+<div id="userManagerModal"
+     style="display:none; position:fixed; inset:0; z-index:99999;
+            background:rgba(0,0,0,0.65); padding:20px;
+            overflow-y:auto;">
 
+  <div style="max-width:650px; margin:40px auto; background:white;
+              color:#222; padding:24px; border-radius:12px;
+              box-shadow:0 8px 30px rgba(0,0,0,0.25);">
+
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; gap:12px; margin-bottom:20px;">
+      <h2 style="margin:0;">👥 Manage Operators</h2>
+      <button type="button"
+              onclick="closeUserManager()"
+              style="border:0; background:#eee; padding:8px 12px;
+                     border-radius:6px; cursor:pointer;">
+        ✕ Close
+      </button>
+    </div>
+
+    <h3>Add New Operator</h3>
+
+    <label for="newOperatorName">Full Name</label>
+    <input id="newOperatorName"
+           type="text"
+           placeholder="Enter full name"
+           autocomplete="off"
+           style="display:block; width:100%; box-sizing:border-box;
+                  padding:10px; margin:6px 0 14px;">
+
+    <label for="newOperatorUsername">Username</label>
+    <input id="newOperatorUsername"
+           type="text"
+           placeholder="Enter username"
+           autocomplete="off"
+           style="display:block; width:100%; box-sizing:border-box;
+                  padding:10px; margin:6px 0 14px;">
+
+    <label for="newOperatorPin">Operator PIN</label>
+    <input id="newOperatorPin"
+           type="password"
+           placeholder="Set operator PIN"
+           autocomplete="new-password"
+           style="display:block; width:100%; box-sizing:border-box;
+                  padding:10px; margin:6px 0 14px;">
+
+    <button type="button"
+            onclick="addOperator()"
+            style="background:#1769aa; color:white; border:0;
+                   padding:11px 18px; border-radius:6px;
+                   cursor:pointer;">
+      ＋ Add Operator
+    </button>
+
+    <hr style="margin:24px 0;">
+
+    <h3>Existing Operators</h3>
+    <p style="color:#666; font-size:14px;">
+      Operators will appear here after the user-management functions
+      are connected.
+    </p>
+
+    <div id="operatorManagementList">
+      Loading will be enabled in the next step.
+    </div>
+
+    <p id="userManagerMessage"
+       role="status"
+       style="margin-top:14px; white-space:pre-wrap;">
+    </p>
+
+  </div>
+</div>
 <div class="wrap">
 
 <!-- LOGIN -->
