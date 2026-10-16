@@ -4104,14 +4104,127 @@ function closeUserManager() {
   document.body.style.overflow = "";
 }
 
-function addOperator() {
+
+async function addOperator() {
   const message = document.getElementById("userManagerMessage");
 
+  // Form fields खोजें
+  const fullNameInput =
+    document.getElementById("operatorFullName") ||
+    document.getElementById("newOperatorFullName");
+
+  const usernameInput =
+    document.getElementById("operatorUsername") ||
+    document.getElementById("newOperatorUsername");
+
+  const pinInput =
+    document.getElementById("operatorPin") ||
+    document.getElementById("newOperatorPin");
+
+  if (!fullNameInput || !usernameInput || !pinInput) {
+    if (message) {
+      message.textContent =
+        "Form fields ke IDs match nahi kar rahe. Add Operator form ka HTML check karna hoga.";
+      message.style.color = "#b91c1c";
+    }
+    return;
+  }
+
+  const full_name = fullNameInput.value.trim();
+  const username = usernameInput.value.trim().toLowerCase();
+  const pin = pinInput.value.trim();
+
+  if (!full_name || !username || !pin) {
+    if (message) {
+      message.textContent =
+        "Full Name, Username aur Operator PIN teeno bharna zaroori hai.";
+      message.style.color = "#b91c1c";
+    }
+    return;
+  }
+
+  if (!/^\d{4,10}$/.test(pin)) {
+    if (message) {
+      message.textContent =
+        "Operator PIN 4 se 10 digits ka hona chahiye.";
+      message.style.color = "#b91c1c";
+    }
+    return;
+  }
+
   if (message) {
-    message.textContent =
-      "Operator add karne ke liye backend function abhi connect karna baaki hai.";
+    message.textContent = "Operator add ho raha hai...";
+    message.style.color = "#555";
+  }
+
+  try {
+    // Existing admin login session
+    const { data: sessionData, error: sessionError } =
+      await sb.auth.getSession();
+
+    if (sessionError || !sessionData.session?.access_token) {
+      throw new Error(
+        "Admin login session nahi mila. Dobara login karein."
+      );
+    }
+
+    // Backend request
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/manage-operators`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY,
+          "Authorization":
+            `Bearer ${sessionData.session.access_token}`
+        },
+        body: JSON.stringify({
+          action: "add",
+          full_name,
+          username,
+          pin
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || result.ok !== true) {
+      throw new Error(
+        result.error +
+        (result.details ? ` — ${result.details}` : "")
+      );
+    }
+
+    // Clear PIN from the form after success
+    pinInput.value = "";
+    fullNameInput.value = "";
+    usernameInput.value = "";
+
+    if (message) {
+      message.textContent =
+        `Operator "${result.operator?.full_name || full_name}" successfully add ho gaya.`;
+      message.style.color = "#15803d";
+    }
+
+    // Refresh existing operator list
+    if (typeof loadManagedOperators === "function") {
+      await loadManagedOperators();
+    } else if (typeof loadOperators === "function") {
+      await loadOperators();
+    }
+  } catch (error) {
+    console.error("Add operator error:", error);
+
+    if (message) {
+      message.textContent =
+        error.message || "Operator add nahi ho saka.";
+      message.style.color = "#b91c1c";
+    }
   }
 }
+
 </script>
 </escape>
 
