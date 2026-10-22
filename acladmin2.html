@@ -2065,7 +2065,7 @@ async function loadManagedOperators() {
 
     list.replaceChildren();
 
-    if (!result.operators || result.operators.length === 0) {
+    if (!Array.isArray(result.operators) || result.operators.length === 0) {
       const empty = document.createElement("p");
       empty.textContent = "अभी कोई operator उपलब्ध नहीं है।";
       list.appendChild(empty);
@@ -2082,12 +2082,14 @@ async function loadManagedOperators() {
         operator.full_name || operator.username || "Unnamed operator";
 
       const details = document.createElement("div");
+      details.style.cssText = "margin:6px 0;";
       details.textContent =
-        `Username: ${operator.username} | ` +
-        `Status: ${
-          operator.active
-            ? "Active"
-            : "Inactive / records need verification"
+        `Username: ${operator.username} | Status: ${
+          operator.profile_exists === false
+            ? "Profile missing"
+            : operator.active
+              ? "Active"
+              : "Inactive"
         }`;
 
       item.appendChild(name);
@@ -2096,9 +2098,70 @@ async function loadManagedOperators() {
       if (operator.profile_exists === false) {
         const warning = document.createElement("div");
         warning.textContent =
-          "Warning: user_profiles में matching record नहीं मिला।";
-        warning.style.color = "#b45309";
+          "इस operator का user_profiles record नहीं मिला। Status बदलने से पहले profile ठीक करना आवश्यक है।";
+        warning.style.cssText = "color:#b45309;margin:6px 0;";
         item.appendChild(warning);
+      } else {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = operator.active
+          ? "btn-danger btn-sm"
+          : "btn-success btn-sm";
+
+        button.textContent = operator.active
+          ? "Deactivate"
+          : "Activate";
+
+        button.addEventListener("click", async () => {
+          const nextAction = operator.active ? "deactivate" : "activate";
+          const actionLabel = operator.active ? "Deactivate" : "Activate";
+
+          if (
+            !confirm(
+              `${actionLabel} operator "${operator.full_name || operator.username}"?\n\n` +
+              "PIN और पुराने tasks नहीं हटेंगे।"
+            )
+          ) {
+            return;
+          }
+
+          button.disabled = true;
+          button.textContent = "Please wait...";
+          if (message) {
+            message.textContent = `${actionLabel} किया जा रहा है...`;
+            message.style.color = "#555";
+          }
+
+          try {
+            await manageOperatorsRequest({
+              action: nextAction,
+              username: operator.username
+            });
+
+            if (message) {
+              message.textContent =
+                `Operator "${operator.username}" का status सफलतापूर्वक बदल गया।`;
+              message.style.color = "#15803d";
+            }
+
+            // Refresh Manage Operators and Assign To.
+            await loadManagedOperators();
+            await loadOperators();
+          } catch (error) {
+            if (message) {
+              message.textContent =
+                error instanceof Error
+                  ? error.message
+                  : "Operator का status नहीं बदला जा सका।";
+              message.style.color = "#b91c1c";
+            }
+
+            button.disabled = false;
+            button.textContent = actionLabel;
+          }
+        });
+
+        item.appendChild(button);
       }
 
       list.appendChild(item);
@@ -2108,12 +2171,15 @@ async function loadManagedOperators() {
 
     const errorText = document.createElement("p");
     errorText.textContent =
-      error.message || "Operators लोड नहीं हो सके।";
+      error instanceof Error
+        ? error.message
+        : "Operators लोड नहीं हो सके।";
     errorText.style.color = "#b91c1c";
 
     list.appendChild(errorText);
   }
 }
+
 /* =====================================================
    ADMIN LOGIN
    ===================================================== */
