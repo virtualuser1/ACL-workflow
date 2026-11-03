@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,4213 +5,852 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Additional Causelist Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> 
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --primary:#2563eb;
-  --primary-dark:#1d4ed8;
-  --success:#059669;
-  --success-light:#d1fae5;
-  --warning:#d97706;
-  --warning-light:#fef3c7;
-  --danger:#dc2626;
-  --danger-light:#fee2e2;
-  --purple:#7c3aed;
-  --purple-light:#ede9fe;
-
-  --gray-50:#f8fafc;
-  --gray-100:#f1f5f9;
-  --gray-200:#e2e8f0;
-  --gray-300:#cbd5e1;
-  --gray-400:#94a3b8;
-  --gray-500:#64748b;
-  --gray-600:#475569;
-  --gray-700:#334155;
-  --gray-800:#1e293b;
-  --gray-900:#0f172a;
-
-  --shadow-sm:0 1px 2px 0 rgb(0 0 0/0.05);
-  --shadow:0 1px 3px 0 rgb(0 0 0/0.1),0 1px 2px -1px rgb(0 0 0/0.1);
-  --shadow-md:0 4px 6px -1px rgb(0 0 0/0.1),0 2px 4px -2px rgb(0 0 0/0.1);
-  --shadow-lg:0 10px 15px -3px rgb(0 0 0/0.1),0 4px 6px -4px rgb(0 0 0/0.1);
-
-  --radius:10px;
-  --radius-lg:14px;
+  --primary:#2563eb;--primary-dark:#1d4ed8;--success:#059669;--success-light:#d1fae5;
+  --warning:#d97706;--warning-light:#fef3c7;--danger:#dc2626;--danger-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;--gray-50:#f8fafc;--gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;--gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;
+  --gray-600:#475569;--gray-700:#334155;--gray-800:#1e293b;--gray-900:#0f172a;
+  --shadow-sm:0 1px 2px 0 rgb(0 0 0/0.05);--shadow:0 1px 3px 0 rgb(0 0 0/0.1);
+  --radius:10px;--radius-lg:14px;
 }
-
-body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
-  background:var(--gray-50);
-  color:var(--gray-800);
-  line-height:1.5;
-  min-height:100vh;
-  font-size:15px;
-}
-
-.wrap{
-  max-width:1550px;
-  margin:0 auto;
-  padding:20px;
-}
-
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--gray-50);color:var(--gray-800);line-height:1.5;min-height:100vh;font-size:15px}
+.wrap{max-width:1550px;margin:0 auto;padding:20px}
 .hidden{display:none!important}
-
-.card{
-  background:#fff;
-  border:1px solid var(--gray-200);
-  border-radius:var(--radius-lg);
-  padding:28px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow-sm);
-}
-
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
 .card-no-pad{padding:0}
-
-.login{
-  max-width:440px;
-  margin:80px auto;
-  text-align:center;
-  padding:48px;
-}
-
-.login h1{
-  font-size:30px;
-  font-weight:800;
-  color:var(--gray-900);
-  margin-bottom:6px;
-}
-
-.login p{
-  color:var(--gray-500);
-  font-size:16px;
-  margin-bottom:30px;
-}
-
+.login{max-width:440px;margin:80px auto;text-align:center;padding:48px}
+.login h1{font-size:30px;font-weight:800;color:var(--gray-900);margin-bottom:6px}
+.login p{color:var(--gray-500);font-size:16px;margin-bottom:30px}
 h1,h2,h3{color:var(--gray-900)}
-
-h2{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:18px;
-}
-
-input,select,textarea,button{
-  font-family:inherit;
-  font-size:15px;
-}
-
-label{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  color:var(--gray-600);
-  margin-bottom:5px;
-  text-transform:uppercase;
-  letter-spacing:.4px;
-}
-
-input,select{
-  width:100%;
-  padding:12px 14px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  background:#fff;
-  color:var(--gray-800);
-  transition:border-color .2s,box-shadow .2s;
-}
-
-input:focus,select:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
-}
-
-button{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:12px 22px;
-  border:none;
-  border-radius:var(--radius);
-  font-weight:700;
-  cursor:pointer;
-  transition:all .2s;
-  font-size:15px;
-}
-
-button:hover{
-  transform:translateY(-1px);
-  box-shadow:var(--shadow);
-}
-
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-  transform:none;
-}
-
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:var(--primary-dark)}
-.btn-success{background:var(--success);color:#fff}
-.btn-success:hover{background:#047857}
-.btn-warning{background:var(--warning);color:#fff}
-.btn-warning:hover{background:#b45309}
-.btn-danger{background:var(--danger);color:#fff}
-.btn-danger:hover{background:#b91c1c}
-.btn-muted{background:var(--gray-200);color:var(--gray-700)}
-.btn-muted:hover{background:var(--gray-300)}
+h2{font-size:20px;font-weight:700;margin-bottom:18px}
+input,select,textarea,button{font-family:inherit;font-size:15px}
+label{display:block;font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+input,select{width:100%;padding:12px 14px;border:1px solid var(--gray-300);border-radius:var(--radius);background:#fff;color:var(--gray-800);transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,0.12)}
+button{display:inline-flex;align-items:center;gap:6px;padding:12px 22px;border:none;border-radius:var(--radius);font-weight:700;cursor:pointer;transition:all .2s;font-size:15px}
+button:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark)}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{background:#047857}
+.btn-warning{background:var(--warning);color:#fff}.btn-warning:hover{background:#b45309}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#b91c1c}
+.btn-muted{background:var(--gray-200);color:var(--gray-700)}.btn-muted:hover{background:var(--gray-300)}
 .btn-sm{padding:7px 14px;font-size:13px}
-.btn-outline{background:transparent;border:1px solid var(--gray-300);color:var(--gray-700)}
-.btn-outline:hover{background:var(--gray-100)}
+.btn-outline{background:transparent;border:1px solid var(--gray-300);color:var(--gray-700)}.btn-outline:hover{background:var(--gray-100)}
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.header-title h1{font-size:26px;font-weight:800;margin-bottom:2px}
+.header-sub{font-size:14px;color:var(--gray-500)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px}
+.stat{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.stat-label{font-size:13px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:32px;font-weight:800;color:var(--gray-900)}
+.stat-total .stat-value{color:var(--gray-800)}.stat-pending .stat-value{color:var(--warning)}.stat-hold .stat-value{color:var(--purple)}.stat-done .stat-value{color:var(--success)}.stat-memo .stat-value{color:var(--primary)}
+.stat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:12px}
+.stat-total .stat-icon{background:var(--gray-100);color:var(--gray-600)}.stat-pending .stat-icon{background:var(--warning-light);color:var(--warning)}.stat-hold .stat-icon{background:var(--purple-light);color:var(--purple)}.stat-done .stat-icon{background:var(--success-light);color:var(--success)}.stat-memo .stat-icon{background:rgba(37,99,235,0.1);color:var(--primary)}
 
-.header-title h1{
-  font-size:26px;
-  font-weight:800;
-  margin-bottom:2px;
-}
-
-.header-sub{
-  font-size:14px;
-  color:var(--gray-500);
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-  margin-bottom:20px;
-}
-
-.stat{
-  background:#fff;
-  border:1px solid var(--gray-200);
-  border-radius:var(--radius-lg);
-  padding:22px;
-  box-shadow:var(--shadow-sm);
-  transition:transform .2s,box-shadow .2s;
-}
-
-.stat:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-md);
-}
-
-.stat-label{
-  font-size:13px;
-  font-weight:600;
-  color:var(--gray-500);
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:6px;
-}
-
-.stat-value{
-  font-size:32px;
-  font-weight:800;
-  color:var(--gray-900);
-}
-
-.stat-total .stat-value{color:var(--gray-800)}
-.stat-pending .stat-value{color:var(--warning)}
-.stat-hold .stat-value{color:var(--purple)}
-.stat-done .stat-value{color:var(--success)}
-.stat-memo .stat-value{color:var(--primary)}
-
-.stat-icon{
-  width:42px;
-  height:42px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:19px;
-  margin-bottom:12px;
-}
-
-.stat-total .stat-icon{background:var(--gray-100);color:var(--gray-600)}
-.stat-pending .stat-icon{background:var(--warning-light);color:var(--warning)}
-.stat-hold .stat-icon{background:var(--purple-light);color:var(--purple)}
-.stat-done .stat-icon{background:var(--success-light);color:var(--success)}
-.stat-memo .stat-icon{background:rgba(37,99,235,0.1);color:var(--primary)}
-
-.form-line{
-  display:flex;
-  gap:10px;
-  align-items:flex-end;
-  flex-wrap:nowrap;
-}
-
-.form-line .fld{
-  display:flex;
-  flex-direction:column;
-  flex-shrink:0;
-}
-
-.form-line .fld select,
-.form-line .fld input{
-  margin:0;
-  padding:12px 14px;
-  font-size:14px;
-}
-
-/* NEW ORDER */
-.fld-bench{width:100px}
-.fld-court{width:150px}
-.fld-list{width:125px}
-.fld-operator{width:200px}
-.fld-btn{width:105px;flex-shrink:0}
-.fld-section{width:110px}
-.fld-remarks{width:160px}
-.fld-casetype{width:220px;position:relative}
-
-.fld-remarks textarea{
-  width:100%;
-  height:46px;
-  padding:10px 14px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  font-size:14px;
-  resize:none;
-  font-family:inherit;
-  line-height:1.4;
-}
-
-.fld-remarks textarea:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
-}
-
-.hint{
-  font-size:10px;
-  color:var(--gray-400);
-  margin-top:2px;
-}
+.assign-task-card{overflow-x:auto}
+.form-line{display:grid;grid-template-columns:80px 190px 130px 130px 90px 130px minmax(190px,1.25fr) minmax(190px,1.2fr);gap:8px;align-items:end;width:100%;min-width:1200px}
+.form-line .fld{display:flex;flex-direction:column;min-width:0;width:auto}
+.form-line .fld select,.form-line .fld input,.form-line .fld textarea,.form-line .fld .ct-trigger{margin:0;width:100%;min-width:0;min-height:46px;height:46px;padding:11px 12px;font-size:14px;line-height:22px}
+.form-line .fld textarea{box-sizing:border-box;width:100%;height:46px;min-height:46px;resize:vertical;overflow:auto}
+.form-line .fld label{min-height:20px;margin-bottom:6px}
+.fld-bench,.fld-court,.fld-list,.fld-operator,.fld-btn,.fld-section,.fld-remarks,.fld-casetype{grid-column:auto;min-width:0}
+.fld-casetype{position:relative;min-width:190px}
+.fld-btn button{width:100%;justify-content:center;padding:11px 8px;font-size:13px}
+.fld-remarks textarea{display:block;box-sizing:border-box;width:100%;min-width:0;height:46px;min-height:46px;padding:10px;border:1px solid var(--gray-300);border-radius:var(--radius);background:#fff;font-size:12px;resize:vertical;font-family:inherit;line-height:1.4}
+.fld-remarks textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,0.12)}
 
 .ct-dropdown{position:relative}
-
-.ct-trigger{
-  width:100%;
-  height:46px;
-  padding:12px 14px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  background:#fff;
-  cursor:pointer;
-  font-size:14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  color:var(--gray-800);
-  transition:border-color .2s,box-shadow .2s;
-  user-select:none;
-}
-
+.ct-trigger{width:100%;height:46px;padding:12px 14px;border:1px solid var(--gray-300);border-radius:var(--radius);background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:space-between;color:var(--gray-800);transition:border-color .2s,box-shadow .2s;user-select:none}
 .ct-trigger:hover{border-color:var(--primary)}
-
-.ct-dropdown.open .ct-trigger{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(37,99,235,.12);
-}
-
-.ct-text{
-  flex:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
+.ct-dropdown.open .ct-trigger{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.ct-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ct-text.placeholder{color:var(--gray-400)}
-
-.ct-arrow{
-  font-size:12px;
-  color:var(--gray-400);
-  margin-left:8px;
-}
-
-.ct-panel{
-  display:none;
-  position:absolute;
-  top:100%;
-  left:0;
-  width:100%;
-  min-width:220px;
-  z-index:9999;
-  background:#fff;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  box-shadow:0 12px 32px rgba(0,0,0,.18);
-  max-height:320px;
-  overflow-y:auto;
-  margin-top:4px;
-  padding:5px;
-}
-
-.ct-dropdown.open .ct-panel{display:block}
-
-.ct-option{
-  padding:9px 12px;
-  cursor:pointer;
-  font-size:13px;
-  border-radius:6px;
-  user-select:none;
-  white-space:nowrap;
-}
-
+.ct-arrow{font-size:12px;color:var(--gray-400);margin-left:8px}
+.ct-panel{display:none;position:fixed;top:0;left:0;width:min(920px,calc(100vw - 24px));min-width:min(300px,calc(100vw - 24px));max-width:calc(100vw - 24px);z-index:9999;background:#fff;border:1px solid var(--gray-300);border-radius:var(--radius);box-shadow:0 12px 32px rgba(0,0,0,.18);max-height:90px;overflow-x:auto;overflow-y:hidden;margin-top:4px;padding:5px;flex-flow:row nowrap;align-items:center;gap:4px;white-space:nowrap}
+.ct-dropdown.open .ct-panel{display:flex}
+.form-line .fld .ct-dropdown{display:block;position:relative;width:100%;min-width:0;height:auto;min-height:0;padding:0;border:0;box-shadow:none;overflow:visible;background:transparent}
+.form-line .fld .ct-trigger{box-sizing:border-box;display:flex;align-items:center;width:100%;min-width:0;height:46px;min-height:46px;padding:9px 10px;gap:6px;overflow:hidden;white-space:nowrap;border:1px solid var(--gray-300);border-radius:var(--radius);background:#fff;cursor:pointer}
+.form-line .fld .ct-text{display:block;min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:20px}
+.form-line .fld .ct-arrow{flex:0 0 auto;margin-left:2px}
+#courtPanel,#ctPanel{display:none;flex-flow:column nowrap;align-items:stretch;gap:2px;overflow-x:hidden;overflow-y:auto;white-space:normal;width:min(360px,calc(100vw - 24px));min-width:min(260px,calc(100vw - 24px));max-height:min(320px,calc(100vh - 24px));padding:6px;background:#fff;border:1px solid var(--gray-300);border-radius:8px;box-shadow:var(--shadow);box-sizing:border-box}
+.ct-dropdown.open #courtPanel,.ct-dropdown.open #ctPanel{display:flex}
+.ct-option{flex:0 0 auto;padding:9px 12px;cursor:pointer;font-size:13px;border-radius:6px;user-select:none;white-space:nowrap}
 .ct-option:hover{background:var(--gray-100)}
+.ct-option.selected{background:var(--primary);color:#fff;font-weight:700}
 
-.ct-option.selected{
-  background:var(--primary);
-  color:#fff;
-  font-weight:700;
-}
+.warning-box{display:none;margin-top:12px;padding:14px 18px;background:var(--warning-light);border:1px solid var(--warning);border-radius:var(--radius);font-size:14px;color:#92400e}
+.warning-box.show{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.warning-box .warn-actions{display:flex;gap:8px;margin-left:auto}
+.date-section{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.date-section label{font-size:15px;font-weight:700;color:var(--gray-700);margin-bottom:0}
+.date-section input{width:auto;padding:10px 16px}
+.date-hint{font-size:13px;color:var(--gray-500);padding:5px 12px;background:var(--gray-100);border-radius:20px}
 
-.ct-option.ctrl-selected{
-  background:#dbeafe;
-  color:#1d4ed8;
-  font-weight:700;
-}
-
-.ct-option.selected:hover,
-.ct-option.ctrl-selected:hover{
-  background:var(--primary);
-  color:#fff;
-}
-
-.ct-help{
-  font-size:10px;
-  color:var(--gray-400);
-  margin-top:3px;
-}
-
-.warning-box{
-  display:none;
-  margin-top:12px;
-  padding:14px 18px;
-  background:var(--warning-light);
-  border:1px solid var(--warning);
-  border-radius:var(--radius);
-  font-size:14px;
-  color:#92400e;
-}
-
-.warning-box.show{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.warning-box .warn-actions{
-  display:flex;
-  gap:8px;
-  margin-left:auto;
-}
-
-.date-section{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  flex-wrap:wrap;
-}
-
-.date-section label{
-  font-size:15px;
-  font-weight:700;
-  color:var(--gray-700);
-  margin-bottom:0;
-}
-
-.date-section input{
-  width:auto;
-  padding:10px 16px;
-}
-
-.date-hint{
-  font-size:13px;
-  color:var(--gray-500);
-  padding:5px 12px;
-  background:var(--gray-100);
-  border-radius:20px;
-}
-
-.tablewrap{
-  overflow:auto;
-  border-radius:var(--radius);
-  border:1px solid var(--gray-200);
-  max-height:600px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-th,td{
-  padding:12px 14px;
-  text-align:left;
-  border-bottom:1px solid var(--gray-200);
-  vertical-align:top;
-}
-
-th{
-  background:var(--gray-50);
-  font-weight:700;
-  color:var(--gray-600);
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  position:sticky;
-  top:0;
-  z-index:2;
-  white-space:nowrap;
-}
-
+.task-select{width:17px;height:17px;cursor:pointer;accent-color:var(--primary)}
+.tablewrap{overflow:auto;border-radius:var(--radius);border:1px solid var(--gray-200);max-height:600px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--gray-200);vertical-align:top}
+th{background:var(--gray-50);font-weight:700;color:var(--gray-600);font-size:12px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;z-index:2;white-space:nowrap}
 tbody tr:hover{background:var(--gray-50)}
 tbody tr:last-child td{border-bottom:none}
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:700;
-  white-space:nowrap;
-}
-
-.badge-r{background:var(--success-light);color:var(--success)}
-.badge-b{background:var(--danger-light);color:var(--danger)}
-.badge-pending{background:var(--warning-light);color:var(--warning)}
-.badge-hold{background:var(--purple-light);color:var(--purple)}
-.badge-done{background:var(--success-light);color:var(--success)}
-.badge-memo{background:rgba(37,99,235,0.1);color:var(--primary)}
-
-.badge-case{
-  background:var(--gray-100);
-  color:var(--gray-700);
-  display:block;
-  margin-bottom:3px;
-  font-size:12px;
-  padding:3px 8px;
-  border-radius:4px;
-}
-
+.badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge-r{background:var(--success-light);color:var(--success)}.badge-b{background:var(--danger-light);color:var(--danger)}
+.badge-pending{background:var(--warning-light);color:var(--warning)}.badge-hold{background:var(--purple-light);color:var(--purple)}
+.badge-done{background:var(--success-light);color:var(--success)}.badge-memo{background:rgba(37,99,235,0.1);color:var(--primary)}
+.badge-case{background:var(--gray-100);color:var(--gray-700);display:block;margin-bottom:3px;font-size:12px;padding:3px 8px;border-radius:4px}
 tr.memo-row{background:rgba(37,99,235,0.03)}
 tr.memo-done-row{background:var(--success-light)}
+.action{display:flex;gap:5px;flex-wrap:wrap}
+.message{font-size:14px;padding:8px 14px;border-radius:var(--radius)}
+.message:not(:empty){background:var(--gray-100);color:var(--gray-600)}
+.case-cell{display:flex;flex-direction:column;gap:2px;max-width:220px}
 
-.action{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-}
-
-.message{
-  font-size:14px;
-  padding:8px 14px;
-  border-radius:var(--radius);
-}
-
-.message:not(:empty){
-  background:var(--gray-100);
-  color:var(--gray-600);
-}
-
-.case-cell{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  max-width:220px;
-}
-
-#modal{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.6);
-  backdrop-filter:blur(4px);
-  z-index:10000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.modalbox{
-  background:#fff;
-  width:min(700px,96vw);
-  max-height:85vh;
-  overflow:auto;
-  border-radius:var(--radius-lg);
-  padding:32px;
-  box-shadow:var(--shadow-lg);
-}
-
-.report-controls{
-  display:flex;
-  gap:12px;
-  align-items:end;
-  margin-bottom:20px;
-  padding:16px;
-  background:var(--gray-50);
-  border-radius:var(--radius);
-  border:1px solid var(--gray-200);
-  flex-wrap:wrap;
-}
-
-.report-controls .field{
-  flex:1;
-  min-width:180px;
-}
-
-.report-controls input{width:100%}
-
-.report-summary{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.report-card{
-  padding:14px;
-  background:var(--gray-50);
-  border-radius:var(--radius);
-  border:1px solid var(--gray-200);
-}
-
-.report-card h4{
-  font-size:12px;
-  margin-bottom:4px;
-  color:var(--gray-700);
-}
-
-.report-card .count{
-  font-size:24px;
-  font-weight:800;
-  color:var(--gray-900);
-}
-
-.deleted-section{
-  margin-top:16px;
-  padding:16px;
-  background:var(--danger-light);
-  border:1px solid var(--danger);
-  border-radius:var(--radius);
-}
-
-.deleted-section h3{
-  color:var(--danger);
-  margin-bottom:10px;
-  font-size:15px;
-}
-
-.deleted-item{
-  padding:8px 10px;
-  border-bottom:1px solid rgba(220,38,38,.2);
-  font-size:13px;
-}
-
+#modal{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
+.modalbox{background:#fff;width:min(700px,96vw);max-height:85vh;overflow:auto;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow)}
+.report-controls{display:flex;gap:12px;align-items:end;margin-bottom:20px;padding:16px;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);flex-wrap:wrap}
+.report-controls .field{flex:1;min-width:180px}.report-controls input{width:100%}
+.report-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
+.report-card{padding:14px;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200)}
+.report-card h4{font-size:12px;margin-bottom:4px;color:var(--gray-700)}
+.report-card .count{font-size:24px;font-weight:800;color:var(--gray-900)}
+.deleted-section{margin-top:16px;padding:16px;background:var(--danger-light);border:1px solid var(--danger);border-radius:var(--radius)}
+.deleted-section h3{color:var(--danger);margin-bottom:10px;font-size:15px}
+.deleted-item{padding:8px 10px;border-bottom:1px solid rgba(220,38,38,.2);font-size:13px}
 .deleted-item:last-child{border-bottom:none}
-
 .report-print{display:none}
 
-/* HOLD MODAL */
-#holdReasonOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(15,23,42,.78);
-  backdrop-filter:blur(6px);
-  z-index:100000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
+#holdReasonOverlay{position:fixed;inset:0;background:rgba(15,23,42,.78);backdrop-filter:blur(6px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px}
+#holdReasonBox{background:#fff;width:min(620px,96vw);border-radius:var(--radius-lg);padding:30px;box-shadow:var(--shadow)}
+#holdReasonBox h3{font-size:22px;margin-bottom:8px}
+#holdReasonBox p{color:var(--gray-500);font-size:13px;margin-bottom:16px}
+#holdReasonSelect{width:100%;padding:14px 16px;border:1px solid var(--gray-300);border-radius:var(--radius);font:600 14px Inter,system-ui,sans-serif;background:#fff;color:var(--gray-800);margin-bottom:20px}
+#holdReasonSelect:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.hold-modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 
-#holdReasonBox{
-  background:#fff;
-  width:min(620px,96vw);
-  border-radius:var(--radius-lg);
-  padding:30px;
-  box-shadow:var(--shadow-lg);
-}
-
-#holdReasonBox h3{
-  font-size:22px;
-  margin-bottom:8px;
-}
-
-#holdReasonBox p{
-  color:var(--gray-500);
-  font-size:13px;
-  margin-bottom:16px;
-}
-
-#holdReasonSelect{
-  width:100%;
-  padding:14px 16px;
-  border:1px solid var(--gray-300);
-  border-radius:var(--radius);
-  font:600 14px Inter,system-ui,sans-serif;
-  background:#fff;
-  color:var(--gray-800);
-  margin-bottom:20px;
-}
-
-#holdReasonSelect:focus{
-  outline:none;
-  border-color:var(--purple);
-  box-shadow:0 0 0 3px rgba(124,58,237,.12);
-}
-
-.hold-modal-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  flex-wrap:wrap;
-}
+/* SPACE STATUS CARD STYLES */
+.space-card{background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;transition:background 0.5s}
+.space-card.status-warning{background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%)}
+.space-card.status-critical{background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%)}
+.space-card h2{color:white}
+.space-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:16px;margin-bottom:12px}
+.space-stat-label{font-size:12px;opacity:0.85;margin-bottom:4px}
+.space-stat-value{font-size:22px;font-weight:800}
+.space-progress{background:rgba(255,255,255,0.2);border-radius:10px;height:24px;overflow:hidden;margin:12px 0}
+.space-progress-bar{height:100%;transition:width 0.5s;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:white}
+.space-details{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;font-size:13px;margin-top:12px}
 
 @media print{
-  body *{visibility:hidden}
-
-  #printReport,#printReport *{visibility:visible}
-
-  #printReport{
-    display:block!important;
-    position:absolute;
-    left:0;
-    top:0;
-    width:100%;
-    padding:10px;
-    margin:0;
-    border:none;
-    box-shadow:none;
-    background:#fff;
-  }
-
-  #printReport h1{
-    font-size:16px;
-    margin-bottom:4px;
-    color:#000
-  }
-
-  #printReport p{
-    font-size:11px;
-    margin-bottom:8px;
-    color:#333
-  }
-
-  #printReport table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:9px;
-    margin-bottom:10px
-  }
-
-  #printReport table th,
-  #printReport table td{
-    padding:4px 5px;
-    border:1px solid #999;
-    text-align:left;
-    vertical-align:top
-  }
-
-  #printReport table th{
-    background:#eee!important;
-    font-weight:700;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact
-  }
-
-  #printReport .deleted-print{
-    background:#fff0f0!important;
-    -webkit-print-color-adjust:exact;
-    print-color-adjust:exact
-  }
-
-  #printReport .deleted-print td{
-    text-decoration:line-through;
-    color:#666
-  }
-
-  @page{
-    margin:8mm;
-    size:landscape
-  }
+  body *{visibility:hidden}#printReport,#printReport *{visibility:visible}
+  #printReport{display:block!important;position:absolute;left:0;top:0;width:100%;padding:10px;margin:0;border:none;box-shadow:none;background:#fff}
+  #printReport h1{font-size:16px;margin-bottom:4px;color:#000}#printReport p{font-size:11px;margin-bottom:8px;color:#333}
+  #printReport table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:10px}
+  #printReport table th,#printReport table td{padding:4px 5px;border:1px solid #999;text-align:left;vertical-align:top}
+  #printReport table th{background:#eee!important;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{margin:8mm;size:landscape}
 }
-
-@media(max-width:1400px){
-  .form-line{CL ADMIN Dashboard
-Logged in as: Admin
-
-    flex-wrap:wrap
-  }
-
-  .form-line .fld{CL ADMIN Dashboard
-Logged in as: Admin
-
-    min-width:calc(20% - 10px)
-  }
-}
-
-@media(max-width:600px){
-  .form-line .fld{
-    min-width:100%
-  }
-
-  .stats{
-    grid-template-columns:repeat(2,1fr)
-  }
-
-  .card{
-    padding:18px
-  }
-}
-
-#printReport .date-time-cell{
-  white-space:nowrap;
-  font-size:9px;
-}
-
-#printReport tr.deleted-print{
-  opacity:.95;
-}
-
+@media(max-width:1200px){.assign-task-card{overflow-x:auto}.form-line{min-width:1050px;gap:7px}}
+@media(max-width:600px){.form-line{min-width:1050px;gap:7px}.stats{grid-template-columns:repeat(2,1fr)}.card{padding:18px}}
 </style>
 </head>
 
 <body>
-<div id="userManagerModal"
-     style="display:none; position:fixed; inset:0; z-index:99999;
-            background:rgba(0,0,0,0.65); padding:20px;
-            overflow-y:auto;">
 
-  <div style="max-width:650px; margin:40px auto; background:white;
-              color:#222; padding:24px; border-radius:12px;
-              box-shadow:0 8px 30px rgba(0,0,0,0.25);">
-
-    <div style="display:flex; justify-content:space-between;
-                align-items:center; gap:12px; margin-bottom:20px;">
+<!-- USER MANAGER MODAL -->
+<div id="userManagerModal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.65); padding:20px; overflow-y:auto;">
+  <div style="max-width:750px; margin:40px auto; background:white; color:#222; padding:28px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.25);">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:20px;">
       <h2 style="margin:0;">👥 Manage Operators</h2>
-      <button type="button"
-              onclick="closeUserManager()"
-              style="border:0; background:#eee; padding:8px 12px;
-                     border-radius:6px; cursor:pointer;">
-        ✕ Close
-      </button>
+      <button type="button" onclick="closeUserManager()" style="border:0; background:#eee; padding:8px 12px; border-radius:6px; cursor:pointer;">✕ Close</button>
+    </div>
+    <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:2px solid #e2e8f0;">
+      <button id="tabAdd" onclick="switchUserTab('add')" style="padding:10px 20px; border:0; background:#2563eb; color:white; font-weight:700; border-radius:6px 6px 0 0; cursor:pointer;">➕ Add Operator</button>
+      <button id="tabReset" onclick="switchUserTab('reset')" style="padding:10px 20px; border:0; background:#e2e8f0; color:#334155; font-weight:700; border-radius:6px 6px 0 0; cursor:pointer;">🔑 Reset Password</button>
+      <button id="tabDelete" onclick="switchUserTab('delete')" style="padding:10px 20px; border:0; background:#e2e8f0; color:#334155; font-weight:700; border-radius:6px 6px 0 0; cursor:pointer;">🗑️ Delete Operator</button>
     </div>
 
-    <h3>Add New Operator</h3>
+    <div id="panelAdd">
+      <h3>Add New Operator</h3>
+      <label>Full Name</label><input id="newOperatorName" type="text" placeholder="Enter full name" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>Username</label><input id="newOperatorUsername" type="text" placeholder="Enter username" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>📱 Phone Number (for password recovery)</label><input id="newOperatorPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>Operator PIN / Password</label><input id="newOperatorPin" type="password" placeholder="Set operator PIN (4-10 chars)" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <button type="button" onclick="addOperator()" style="background:#1769aa; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">＋ Add Operator</button>
+    </div>
 
-    <label for="newOperatorName">Full Name</label>
-    <input id="newOperatorName"
-           type="text"
-           placeholder="Enter full name"
-           autocomplete="off"
-           style="display:block; width:100%; box-sizing:border-box;
-                  padding:10px; margin:6px 0 14px;">
+    <div id="panelReset" style="display:none;">
+      <h3>🔑 Reset Operator Password</h3>
+      <p style="color:#64748b; font-size:13px; margin-bottom:14px;">Agar operator apna PIN/Password bhool gaya hai, to uska registered phone number daal kar naya password set karein.</p>
+      <label>📱 Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>New Password / PIN</label><input id="resetNewPassword" type="password" placeholder="New password (4-10 chars)" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <button type="button" onclick="resetOperatorPassword()" style="background:#d97706; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">🔑 Reset Password</button>
+    </div>
 
-    <label for="newOperatorUsername">Username</label>
-    <input id="newOperatorUsername"
-           type="text"
-           placeholder="Enter username"
-           autocomplete="off"
-           style="display:block; width:100%; box-sizing:border-box;
-                  padding:10px; margin:6px 0 14px;">
+    <div id="panelDelete" style="display:none;">
+      <h3>🗑️ Delete Operator</h3>
+      <p style="color:#dc2626; font-size:13px; margin-bottom:14px; background:#fee2e2; padding:10px; border-radius:6px;">⚠️ <strong>Warning:</strong> Delete karne se pehle operator ke saare tasks ka PDF backup lena zaroori hai.</p>
+      <label>Select Operator to Delete</label>
+      <select id="deleteOperatorSelect" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;"><option value="">-- Select Operator --</option></select>
+      <div id="deleteOperatorInfo" style="display:none; background:#fff7ed; border:1px solid #fb923c; padding:12px; border-radius:6px; margin-bottom:14px;"><div id="deleteOperatorDetails"></div></div>
+      <button type="button" onclick="checkOperatorBeforeDelete()" style="background:#dc2626; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">🔍 Check & Delete</button>
+    </div>
 
-    <label for="newOperatorPin">Operator PIN</label>
-    <input id="newOperatorPin"
-           type="password"
-           placeholder="Set operator PIN"
-           autocomplete="new-password"
-           style="display:block; width:100%; box-sizing:border-box;
-                  padding:10px; margin:6px 0 14px;">
-
-    <button type="button"
-            onclick="addOperator()"
-            style="background:#1769aa; color:white; border:0;
-                   padding:11px 18px; border-radius:6px;
-                   cursor:pointer;">
-      ＋ Add Operator
-    </button>
-
-    <hr style="margin:24px 0;">
-
-   
-<h3>Existing Operators</h3>
-
-<div id="operatorManagementList">
-  Operators ki list load ho rahi hai...
-</div>
-
-
-    <p id="userManagerMessage"
-       role="status"
-       style="margin-top:14px; white-space:pre-wrap;">
-    </p>
-
+    <hr style="margin:24px 0;"><h3>Existing Operators</h3>
+    <div id="operatorManagementList">Operators ki list load ho rahi hai...</div>
+    <p id="userManagerMessage" role="status" style="margin-top:14px; white-space:pre-wrap;"></p>
   </div>
 </div>
-<div class="wrap">
 
+<div class="wrap">
 <!-- LOGIN -->
 <div id="loginCard" class="card login">
-  <h1>ACL Admin</h1>
-  <p>Admin Login</p>
-
-  <label style="text-align:left">Admin ID</label>
-  <input id="adminId" type="text" value="admin" style="margin-bottom:14px">
-
-  <label style="text-align:left">Password</label>
-  <input id="password" type="password" placeholder="Enter password" style="margin-bottom:20px">
-
-  <button class="btn-primary"
-          style="width:100%;justify-content:center;padding:14px"
-          onclick="login()">Sign In</button>
-
+  <h1>ACL Admin</h1><p>Admin Login</p>
+  <label style="text-align:left">Admin ID</label><input id="adminId" type="text" value="admin" style="margin-bottom:14px">
+  <label style="text-align:left">Password</label><input id="password" type="password" placeholder="Enter password" style="margin-bottom:20px">
+  <button class="btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="login()">Sign In</button>
   <div id="loginMsg" class="message"></div>
 </div>
 
-
 <!-- APPLICATION -->
 <div id="app" class="hidden">
-
 <!-- HEADER -->
 <div class="card">
   <div class="top">
-
-    <div class="header-title">
-      <h1>ACL ADMIN Dashboard</h1>
-      <div class="header-sub">
-        Logged in as: <b>Admin</b>
-      </div>
-    </div>
-
+    <div class="header-title"><h1>ACL ADMIN Dashboard</h1><div class="header-sub">Logged in as: <b>Admin</b></div></div>
     <div class="action">
-      <div class="action">
-  <button class="btn-primary btn-sm"
-          onclick="openUserManager()">
-    👥 Manage Users
-  </button>
-
-  <button class="btn-outline"
-          onclick="refreshAll()">
-    ↻ Refresh
-  </button>
-
-  <button class="btn-danger btn-sm"
-          onclick="logout()">
-    Logout
-  </button>
-</div>
+      <button class="btn-primary btn-sm" onclick="openUserManager()">👥 Manage Users</button>
+      <button class="btn-outline" onclick="refreshAll()">↻ Refresh</button>
+      <button class="btn-danger btn-sm" onclick="logout()">Logout</button>
     </div>
-
   </div>
 </div>
 
+<!-- SPACE STATUS CARD -->
+<div class="card space-card" id="spaceStatusCard">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
+    <div style="flex:1; min-width:300px;">
+      <h2 style="margin-bottom:12px; font-size:22px;">📊 Database Space Status</h2>
+      <div id="spaceStatusContent" style="font-size:14px;">Loading space information...</div>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn-outline" onclick="openSpaceConfig()" style="background:rgba(255,255,255,0.2); color:white; border-color:rgba(255,255,255,0.3);">⚙️ Configure</button>
+      <button class="btn-warning" onclick="triggerManualBackup()" style="background:#f59e0b; color:white;">🚀 Backup Now</button>
+    </div>
+  </div>
+</div>
 
 <!-- DATE -->
 <div class="card" style="padding:18px 28px">
   <div class="date-section">
-
-    <label>📅 Working Date:</label>
-
-    <input id="workDate"
-           type="date"
-           onchange="refreshAll()">
-
-    <span class="date-hint">
-      Selected date tasks only
-    </span>
-
+    <label>📅 Working Date:</label><input id="workDate" type="date" onchange="refreshAll()">
+    <span class="date-hint">Selected date tasks only</span>
   </div>
 </div>
-
 
 <!-- STATS -->
 <div class="stats">
-
-  <div class="stat stat-total">
-    <div class="stat-icon">📋</div>
-    <div class="stat-label">Total</div>
-    <div class="stat-value" id="totalCount">0</div>
-  </div>
-
-  <div class="stat stat-pending">
-    <div class="stat-icon">⏳</div>
-    <div class="stat-label">Pending</div>
-    <div class="stat-value" id="pendingCount">0</div>
-  </div>
-
-  <div class="stat stat-hold">
-    <div class="stat-icon">⏸</div>
-    <div class="stat-label">Hold</div>
-    <div class="stat-value" id="holdCount">0</div>
-  </div>
-
-  <div class="stat stat-done">
-    <div class="stat-icon">✓</div>
-    <div class="stat-label">Done</div>
-    <div class="stat-value" id="doneCount">0</div>
-  </div>
-
-  <div class="stat stat-memo">
-    <div class="stat-icon">📝</div>
-    <div class="stat-label">Admin</div>
-    <div class="stat-value" id="memoCount">0</div>
-  </div>
-
+  <div class="stat stat-total"><div class="stat-icon">📋</div><div class="stat-label">Total</div><div class="stat-value" id="totalCount">0</div></div>
+  <div class="stat stat-pending"><div class="stat-icon">⏳</div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div>
+  <div class="stat stat-hold"><div class="stat-icon">⏸</div><div class="stat-label">Hold</div><div class="stat-value" id="holdCount">0</div></div>
+  <div class="stat stat-done"><div class="stat-icon">✓</div><div class="stat-label">Done</div><div class="stat-value" id="doneCount">0</div></div>
+  <div class="stat stat-memo"><div class="stat-icon">📝</div><div class="stat-label">Admin</div><div class="stat-value" id="memoCount">0</div></div>
 </div>
 
-
-<!-- =====================================================
-     ASSIGN NEW TASK
-     ORDER:
-     Bench
-     Court / Chamber
-     List Type
-     Assign To
-     Assign Button
-     Section
-     Remarks
-     Case Type
-     ===================================================== -->
-
-<div class="card no-print" style="padding:22px 28px">
-
+<!-- ASSIGN NEW TASK -->
+<div class="card no-print assign-task-card" style="padding:22px 28px">
   <h2>Assign New Task</h2>
-
   <div class="form-line">
-
-    <!-- 1. BENCH -->
-    <div class="fld fld-bench">
-
-      <label>Bench</label>
-
-      <select id="benchType">
-        <option value="R" selected>Regular</option>
-        <option value="B">Broken</option>
-      </select>
-
-    </div>
-
-
-    <!-- 2. COURT / CHAMBER -->
+    <div class="fld fld-bench"><label>Bench</label><select id="benchType"><option value="R" selected>Regular</option><option value="B">Broken</option></select></div>
     <div class="fld fld-court">
-
       <label>Court / Chamber</label>
-
-      <select id="courtNo">
-
-        <option value="" selected>Select</option>
-
-         <option value="In-Chamber">In-Chamber</option>
-<option value="Residence">Residence</option>
-<option value="BROKEN">BROKEN</option>
-<option value="CJ">CJ</option>
-
-<script>
-  for(let i=1; i<=100; i++) {
-    document.write(`<option value="Court No.${i}">${i}</option>`);
-  }
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      </select>
-
-    </div>
-
-
-    <!-- 3. LIST TYPE -->
-    <div class="fld fld-list">
-
-      <label>List Type</label>
-
-      <select id="listType">
-
-        <option value="">Select</option>
-        <option>ACL-1(1012)</option>
-        <option>ACL-2(1013)</option>
-        <option>ACL-3(1014)</option>
-        <option>ACL-4(1015)</option>
-        <option>ACL-5(1016)</option>
-        <option>ACL-6(1033)</option>
-
-      </select>
-
-    </div>
-
-
-    <!-- 4. ASSIGN TO -->
-    <div class="fld fld-operator">
-
-      <label>Assign To</label>
-
-      <select id="operatorSelect">
-        <option value="">Admin</option>
-      </select>
-
-    </div>
-
-
-    <!-- 5. ASSIGN BUTTON -->
-    <div class="fld fld-btn">
-
-      <label>&nbsp;</label>
-
-      <button class="btn-success"
-              style="padding:12px 18px;white-space:nowrap"
-              onclick="createTask()">
-        ✓ Assign
-      </button>
-
-    </div>
-
-
-    <!-- 6. SECTION -->
-    <div class="fld fld-section">
-
-      <label>Section</label>
-
-      <input id="sectionName"
-             placeholder="Section">
-
-    </div>
-
-
-    <!-- 7. REMARKS -->
-    <div class="fld fld-remarks">
-
-      <label>
-        Remarks
-        <span id="wordCount"
-              style="color:var(--gray-400);font-weight:400">
-          (0/50)
-        </span>
-      </label>
-
-      <textarea id="remarks"
-                placeholder="Max 50 words"
-                oninput="checkWordLimit(this)"></textarea>
-
-    </div>
-
-
-    <!-- 8. CASE TYPE -->
-    <div class="fld fld-casetype">
-
-      <label>Case Type</label>
-
-      <div class="ct-dropdown" id="ctDropdown">
-
-        <div class="ct-trigger"
-             onclick="toggleCtDropdown()">
-
-          <span class="ct-text placeholder"
-                id="ctText">
-            Select Case Type
-          </span>
-
-          <span class="ct-arrow">▼</span>
-
-        </div>
-
-        <div class="ct-panel"
-             id="ctPanel"></div>
-
+      <div class="ct-dropdown" id="courtDropdown">
+        <div class="ct-trigger" onclick="toggleCourtDropdown()" role="button" tabindex="0"><span class="ct-text placeholder" id="courtText">Select Court / Chamber</span><span class="ct-arrow">▼</span></div>
+        <div class="ct-panel" id="courtPanel" role="listbox"></div>
       </div>
-
     </div>
-
-  </div>
-
-
-  <div id="taskMsg"
-       class="message"
-       style="margin-top:8px"></div>
-
-
-  <div class="warning-box"
-       id="duplicateWarning">
-
-    <span>⚠️</span>
-
-    <span id="duplicateMsg"></span>
-
-    <div class="warn-actions">
-
-      <button class="btn-sm btn-warning"
-              onclick="forceCreateTask()">
-        Assign Anyway
-      </button>
-
-      <button class="btn-sm btn-muted"
-              onclick="hideWarning()">
-        Cancel
-      </button>
-
+    <div class="fld fld-list"><label>List Type</label><select id="listType"><option value="">Select</option><option>ACL-1(1012)</option><option>ACL-2(1013)</option><option>ACL-3(1014)</option><option>ACL-4(1015)</option><option>ACL-5(1016)</option><option>ACL-6(1033)</option></select></div>
+    <div class="fld fld-operator"><label>Assign To</label><select id="operatorSelect"><option value="">Admin</option></select></div>
+    <div class="fld fld-btn"><label>&nbsp;</label><button class="btn-success" style="padding:12px 18px;white-space:nowrap" onclick="createTask()">✓ Assign</button></div>
+    <div class="fld fld-section"><label>Section</label><input id="sectionName" placeholder="Section"></div>
+    <div class="fld fld-remarks"><label>Remarks <span id="wordCount" style="color:var(--gray-400);font-weight:400">(0/50)</span></label><textarea id="remarks" placeholder="Max 50 words" oninput="checkWordLimit(this)"></textarea></div>
+    <div class="fld fld-casetype">
+      <label>Case Type</label>
+      <div class="ct-dropdown" id="ctDropdown">
+        <div class="ct-trigger" role="button" tabindex="0" onclick="toggleCtDropdown()"><span class="ct-text placeholder" id="ctText">Select Case Type</span><span class="ct-arrow">▼</span></div>
+        <div class="ct-panel" id="ctPanel"></div>
+      </div>
     </div>
-
   </div>
-
+  <div id="taskMsg" class="message" style="margin-top:8px"></div>
+  <div class="warning-box" id="duplicateWarning"><span>⚠️</span><span id="duplicateMsg"></span><div class="warn-actions"><button class="btn-sm btn-warning" onclick="forceCreateTask()">Assign Anyway</button><button class="btn-sm btn-muted" onclick="hideWarning()">Cancel</button></div></div>
 </div>
 
-
-<!-- =====================================================
-     TASK TABLE
-
-     ORDER:
-     ID
-     Bench
-     Court
-     List Type
-     Assigned To
-     Section
-     Remarks
-     Case Type
-     Status
-     Assigned
-     Completed
-     Action
-     ===================================================== -->
-
+<!-- TASK TABLE -->
 <div class="card card-no-pad">
-
-  <div class="top no-print"
-       style="padding:20px 28px;border-bottom:1px solid var(--gray-200)">
-
-    <h2 style="margin-bottom:0">
-      Tasks —
-      <span id="dateLabel"
-            style="color:var(--primary)"></span>
-    </h2>
-
+  <div class="top no-print" style="padding:20px 28px;border-bottom:1px solid var(--gray-200)">
+    <h2 style="margin-bottom:0">Tasks — <span id="dateLabel" style="color:var(--primary)"></span></h2>
     <div class="action">
-
-      <button class="btn-outline btn-sm"
-              onclick="openReport()">
-        📊 Report
-      </button>
-
-      <button class="btn-muted btn-sm"
-              onclick="printTasks()">
-        🖨 Print
-      </button>
-
+      <button class="btn-danger btn-sm" onclick="bulkDeleteTasks()">🗑️ Bulk Delete Selected</button>
+      <button class="btn-outline btn-sm" onclick="openReport()">📊 Report</button>
+      <button class="btn-success btn-sm" onclick="downloadSelectedDatePDF()">⬇ Download PDF</button>
+      <button class="btn-muted btn-sm" onclick="printTasks()">🖨 Print</button>
+      <button class="btn-outline btn-sm no-print" id="brokenReportBtn" type="button" onclick="generateBrokenCourtsReportPDF()">📄 Broken Courts PDF</button>
     </div>
-
   </div>
-
-
   <div class="tablewrap">
-
     <table>
-
       <thead>
-
         <tr>
-          <th>ID</th>
-          <th>Bench</th>
-          <th>Court</th>
-          <th>List Type</th>
-          <th>Assigned To</th>
-          <th>Section</th>
-          <th>Remarks</th>
-          <th>Case Type</th>
-          <th>Status</th>
-          <th>Assigned</th>
-          <th>Completed</th>
-          <th class="no-print">Action</th>
+          <th class="no-print"><input type="checkbox" id="selectAllTasks" onchange="toggleSelectAll(this.checked)" aria-label="Select all"></th>
+          <th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Assigned To</th><th>Section</th><th>Remarks</th>
+          <th>Reason</th> <!-- NEW DEDICATED COLUMN -->
+          <th>Case Type</th><th>Status</th><th>Assigned</th><th>Completed</th><th class="no-print">Action</th>
         </tr>
-
       </thead>
-
       <tbody id="taskRows"></tbody>
-
     </table>
-
   </div>
-
 </div>
-
-
-<div id="printReport"
-     class="report-print"></div>
-
+<div id="printReport" class="report-print"></div>
 </div>
 </div>
-
 
 <!-- GENERAL MODAL -->
-<div id="modal" class="hidden">
+<div id="modal" class="hidden"><div class="modalbox"><div id="modalContent"></div><div class="action no-print" style="margin-top:20px;justify-content:flex-end"><button class="btn-muted" onclick="closeModal()">Close</button></div></div></div>
 
-  <div class="modalbox">
-
-    <div id="modalContent"></div>
-
-    <div class="action no-print"
-         style="margin-top:20px;justify-content:flex-end">
-
-      <button class="btn-muted"
-              onclick="closeModal()">
-        Close
-      </button>
-
+<!-- SPACE CONFIG MODAL -->
+<div id="spaceConfigModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100000; display:flex; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:white; border-radius:12px; padding:28px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="margin:0;">⚙️ Auto Backup Configuration</h2>
+      <button onclick="closeSpaceConfig()" style="border:0; background:#eee; padding:8px 12px; border-radius:6px; cursor:pointer;">✕</button>
     </div>
-
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Auto Backup Enabled</label><select id="cfgAutoBackup" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><option value="true">Yes - Automatic</option><option value="false">No - Manual Only</option></select></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Backup Interval (Days)</label><input id="cfgBackupInterval" type="number" min="7" max="90" value="30" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitne din baad automatic backup hoga</small></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Retention Period (Months)</label><input id="cfgRetentionMonths" type="number" min="1" max="24" value="4" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitne mahine purane tasks delete honge</small></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Max Database Size (MB)</label><input id="cfgMaxSize" type="number" min="100" max="1000" value="450" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Supabase Free Tier: 500MB (Safe limit: 450MB)</small></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Warning Threshold (MB)</label><input id="cfgWarningThreshold" type="number" min="10" max="100" value="50" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitna MB bacha ho to warning dikhaye</small></div>
+    <div style="margin-bottom:20px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Critical Threshold (MB)</label><input id="cfgCriticalThreshold" type="number" min="5" max="50" value="20" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitna MB bacha ho to critical alert dikhaye</small></div>
+    <div style="display:flex; gap:10px; justify-content:flex-end;"><button class="btn-muted" onclick="closeSpaceConfig()">Cancel</button><button class="btn-primary" onclick="saveSpaceConfig()">💾 Save Configuration</button></div>
   </div>
-
 </div>
 
-
-<!-- =====================================================
-     HOLD REASON MODAL
-     ===================================================== -->
-
-<div id="holdReasonOverlay"
-     class="hidden">
-
-  <div id="holdReasonBox">
-
-    <h3>⏸ Hold Task</h3>
-
-    <p id="holdReasonTaskLabel">
-      Select the reason for putting this task on hold.
-    </p>
-
-    <select id="holdReasonSelect">
-
-      <option value="">
-        — Select Hold Reason —
-      </option>
-
-    </select>
-
-    <div class="hold-modal-actions">
-
-      <button class="btn-muted"
-              onclick="cancelHoldReason()">
-        Cancel
-      </button>
-
-      <button class="btn-warning"
-              onclick="confirmHoldReason()">
-        ⏸ HOLD TASK
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
+<!-- HOLD REASON MODAL -->
+<div id="holdReasonOverlay" class="hidden"><div id="holdReasonBox"><h3>⏸ Hold Task</h3><p id="holdReasonTaskLabel">Select the reason for putting this task on hold.</p><select id="holdReasonSelect"><option value="">— Select Hold Reason —</option></select><div class="hold-modal-actions"><button class="btn-muted" onclick="cancelHoldReason()">Cancel</button><button class="btn-warning" onclick="confirmHoldReason()">⏸ HOLD TASK</button></div></div></div>
 
 <script>
+/* ===================================================== SUPABASE CONFIG ===================================================== */
+const SUPABASE_URL = "https://tvzrpruqkeymfuhvbalv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+const TASK_API = SUPABASE_URL + "/functions/v1/task-api";
+const ADMIN_EMAIL = "virtualuser1@tutamail.com";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+let operators = [], tasks = [], busy = false, selectedTaskIds = new Set();
 
-/* =====================================================
-   SUPABASE
-   ===================================================== */
+/* ===================================================== CASE & COURT DROPDOWNS ===================================================== */
+const CASE_TYPES = ["A227","A228","A340","A372","A372D","A378","A378D","A389","A482","A483","ABAIL","ABAILC","AMAL","APPL","ARBT","ARCO","ARPL","ARPLD","BAIL","BAILC","C14A1","C14A1D","C372","C372D","C378","C378D","CAPL","CAPT","CAPTD","CEAP","CERA","CERE","CEXA","CLRE","CLRED","CMRA","CMRAD","COMA","COMAD","COMP","CONA","CONAD","COPL","COPLD","COPP","COSU","CRCL","CREF","CREFD","CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL","CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP","EDRE","EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD","FEXA","GAPL","GOVA","GOVAD","GSTAL","GSTALD","GTAP","GTRE","HABC","IAPL","IAPLD","ITAP","ITRE","JAPL","JAPLD","MCOA","MTAL","NA379","NA413","NA413D","NA419","NA419D","NA430","NA528","NA529","NABAIL","NC413","NC413D","NC419","NC419D","OLR","OSUT","PRCS","REFC","REFE","RERA","RERAD","SAFO","SAFOD","SAMC","SAPL","SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD","STRE","STRED","TACL","TACLD","TACR","TEAP","TEST","TESU","WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB","WRIC","WTAP","WTAR","WTAX","WTRE"];
+let selectedCaseTypes = [], selectedCourts = [];
 
-const SUPABASE_URL =
-  "https://tvzrpruqkeymfuhvbalv.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
-
-const TASK_API =
-  SUPABASE_URL + "/functions/v1/task-api";
-
-const ADMIN_EMAIL =
-  "virtualuser1@tutamail.com";
-
-const sb =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-const $ = id =>
-  document.getElementById(id);
-
-let operators = [];
-let tasks = [];
-let busy = false;
-
-
-/* =====================================================
-   CASE TYPES
-   ===================================================== */
-
-const CASE_TYPES = [
-
-"A227","A228","A340","A372","A372D","A378","A378D","A389",
-"A482","A483","ABAIL","ABAILC","AMAL","APPL","ARBT","ARCO",
-"ARPL","ARPLD","BAIL","BAILC","C14A1","C14A1D","C372","C372D",
-"C378","C378D","CAPL","CAPT","CAPTD","CEAP","CERA","CERE",
-"CEXA","CLRE","CLRED","CMRA","CMRAD","COMA","COMAD","COMP",
-"CONA","CONAD","COPL","COPLD","COPP","COSU","CRCL","CREF",
-"CREFD","CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL",
-"CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP","EDRE",
-"EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD","FEXA","GAPL",
-"GOVA","GOVAD","GSTAL","GSTALD","GTAP","GTRE","HABC","IAPL",
-"IAPLD","ITAP","ITRE","JAPL","JAPLD","MCOA","MTAL","NA379",
-"NA413","NA413D","NA419","NA419D","NA430","NA528","NA529",
-"NABAIL","NC413","NC413D","NC419","NC419D","OLR","OSUT",
-"PRCS","REFC","REFE","RERA","RERAD","SAFO","SAFOD","SAMC",
-"SAPL","SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD",
-"STRE","STRED","TACL","TACLD","TACR","TEAP","TEST","TESU",
-"WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB","WRIC","WTAP",
-"WTAR","WTAX","WTRE"
-
-];
-
-let selectedCaseTypes = [];
-
-
-/* =====================================================
-   CASE TYPE DROPDOWN
-   ===================================================== */
-
-function initCtDropdown(){
-
-  $("ctPanel").innerHTML =
-    CASE_TYPES.map(ct => `
-      <div class="ct-option"
-           data-val="${ct}"
-           onclick="selectCaseType(event,this)">
-        ${ct}
-      </div>
-    `).join("");
-
+function initCourtDropdown(){
+  const values = ["IN-CHAMBER", "AT RESIDENCE", "CJ", ...Array.from({length:100}, (_,i) => String(i + 1))];
+  $("courtPanel").innerHTML = values.map(value => `<div class="ct-option" data-val="${value}" role="option" onclick="selectCourt(event,this)">${value}</div>`).join("");
+  updateCourtDisplay();
 }
-
-function selectCaseType(event,el){
-
+function selectCourt(event, el){
   event.stopPropagation();
+  const value = el.getAttribute("data-val");
+  const index = selectedCourts.indexOf(value);
+  if(index >= 0){ selectedCourts.splice(index, 1); el.classList.remove("selected"); } 
+  else { selectedCourts.push(value); el.classList.add("selected"); }
+  updateCourtDisplay();
+}
+function placeDropdownPanel(dropdownId, panelId){
+  const dropdown = $(dropdownId), panel = $(panelId), trigger = dropdown?.querySelector(".ct-trigger");
+  if(!dropdown || !panel || !trigger || !dropdown.classList.contains("open")) return;
+  const rect = trigger.getBoundingClientRect(), viewportWidth = document.documentElement.clientWidth || window.innerWidth, viewportHeight = window.innerHeight;
+  const desiredWidth = Math.min(360, viewportWidth - 24), left = Math.max(12, Math.min(rect.left, viewportWidth - desiredWidth - 12));
+  const gap = 6, availableBelow = Math.max(80, viewportHeight - rect.bottom - gap - 8);
+  panel.style.position = "fixed"; panel.style.left = left + "px"; panel.style.width = desiredWidth + "px"; panel.style.right = "auto";
+  panel.style.maxHeight = Math.min(320, availableBelow) + "px"; panel.style.top = (rect.bottom + gap) + "px"; panel.style.marginTop = "0";
+}
+function toggleCourtDropdown(){ const dropdown = $("courtDropdown"); dropdown.classList.toggle("open"); if(dropdown.classList.contains("open")) placeDropdownPanel("courtDropdown", "courtPanel"); }
+function updateCourtDisplay(){
+  const text = $("courtText"); if(!text) return;
+  if(selectedCourts.length === 0){ text.textContent = "Select Court / Chamber"; text.classList.add("placeholder"); } 
+  else { text.classList.remove("placeholder"); text.textContent = selectedCourts.length === 1 ? selectedCourts[0] : `${selectedCourts[0]} +${selectedCourts.length - 1} more`; }
+}
+function clearCourtDropdown(){ selectedCourts = []; document.querySelectorAll("#courtPanel .ct-option").forEach(el => el.classList.remove("selected")); updateCourtDisplay(); }
 
-  const val =
-    el.getAttribute("data-val");
-
-  const ctrl =
-    event.ctrlKey || event.metaKey;
-
-  if(ctrl){
-
-    const index =
-      selectedCaseTypes.indexOf(val);
-
-    if(index >= 0){
-
-      selectedCaseTypes.splice(index,1);
-
-      el.classList.remove(
-        "selected",
-        "ctrl-selected"
-      );
-
-    }else{
-
-      selectedCaseTypes.push(val);
-
-      el.classList.add(
-        "ctrl-selected"
-      );
-
-    }
-
-  }else{
-
-    selectedCaseTypes = [val];
-
-    document
-      .querySelectorAll(".ct-option")
-      .forEach(x =>
-        x.classList.remove(
-          "selected",
-          "ctrl-selected"
-        )
-      );
-
-    el.classList.add("selected");
-
-  }
-
+function initCtDropdown(){ $("ctPanel").innerHTML = CASE_TYPES.map(ct => `<div class="ct-option" data-val="${ct}" role="option" onclick="selectCaseType(event,this)">${ct}</div>`).join(""); }
+function selectCaseType(event,el){
+  event.stopPropagation(); const val = el.getAttribute("data-val"), index = selectedCaseTypes.indexOf(val);
+  if(index >= 0){ selectedCaseTypes.splice(index, 1); el.classList.remove("selected"); } 
+  else { selectedCaseTypes.push(val); el.classList.add("selected"); }
   updateCtDisplay();
-
 }
-
-function toggleCtDropdown(){
-
-  $("ctDropdown")
-    .classList
-    .toggle("open");
-
-}
-
+function toggleCtDropdown(){ const dropdown = $("ctDropdown"); dropdown.classList.toggle("open"); if(dropdown.classList.contains("open")) placeDropdownPanel("ctDropdown", "ctPanel"); }
 function updateCtDisplay(){
-
-  const txt = $("ctText");
-
-  if(selectedCaseTypes.length === 0){
-
-    txt.textContent =
-      "Select Case Type";
-
-    txt.classList.add("placeholder");
-
-    return;
-
-  }
-
-  txt.classList.remove("placeholder");
-
-  if(selectedCaseTypes.length === 1){
-
-    txt.textContent =
-      selectedCaseTypes[0];
-
-  }else{
-
-    txt.textContent =
-      selectedCaseTypes[0] +
-      " +" +
-      (selectedCaseTypes.length - 1) +
-      " more";
-
-  }
-
+  const txt = $("ctText"); if(selectedCaseTypes.length === 0){ txt.textContent = "Select Case Type"; txt.classList.add("placeholder"); return; }
+  txt.classList.remove("placeholder"); txt.textContent = selectedCaseTypes.length === 1 ? selectedCaseTypes[0] : selectedCaseTypes[0] + " +" + (selectedCaseTypes.length - 1) + " more";
 }
+function clearCtDropdown(){ selectedCaseTypes = []; document.querySelectorAll("#ctPanel .ct-option").forEach(el => el.classList.remove("selected")); updateCtDisplay(); }
 
-function clearCtDropdown(){
+window.addEventListener("resize", () => { placeDropdownPanel("courtDropdown", "courtPanel"); placeDropdownPanel("ctDropdown", "ctPanel"); });
+window.addEventListener("scroll", () => { placeDropdownPanel("courtDropdown", "courtPanel"); placeDropdownPanel("ctDropdown", "ctPanel"); }, true);
+document.addEventListener("click", function(e){ if(!e.target.closest(".ct-dropdown")){ $("ctDropdown").classList.remove("open"); $("courtDropdown").classList.remove("open"); } });
 
-  selectedCaseTypes = [];
-
-  document
-    .querySelectorAll(".ct-option")
-    .forEach(el =>
-      el.classList.remove(
-        "selected",
-        "ctrl-selected"
-      )
-    );
-
-  updateCtDisplay();
-
-}
-
-document.addEventListener(
-  "click",
-  function(e){
-
-    if(!e.target.closest(".ct-dropdown")){
-
-      $("ctDropdown")
-        .classList
-        .remove("open");
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   WORD LIMIT
-   ===================================================== */
-
+/* ===================================================== HELPERS ===================================================== */
 function checkWordLimit(el){
-
-  const words =
-    el.value
-      .trim()
-      .split(/\s+/)
-      .filter(w => w.length > 0);
-
-  const count = words.length;
-
-  $("wordCount").textContent =
-    `(${count}/50)`;
-
-  if(count > 50){
-
-    el.value =
-      words
-        .slice(0,50)
-        .join(" ");
-
-    $("wordCount").textContent =
-      "(50/50)";
-
-    $("wordCount").style.color =
-      "var(--danger)";
-
-  }else{
-
-    $("wordCount").style.color =
-      count > 40
-        ? "var(--warning)"
-        : "var(--gray-400)";
-
-  }
-
+  const words = el.value.trim().split(/\s+/).filter(w => w.length > 0), count = words.length;
+  $("wordCount").textContent = `(${count}/50)`;
+  if(count > 50){ el.value = words.slice(0,50).join(" "); $("wordCount").textContent = "(50/50)"; $("wordCount").style.color = "var(--danger)"; } 
+  else { $("wordCount").style.color = count > 40 ? "var(--warning)" : "var(--gray-400)"; }
 }
-
-
-/* =====================================================
-   DELETED TASK LOG
-   ===================================================== */
-
-const DELETED_KEY =
-  "ahc_deleted_tasks_log";
-
-function getDeletedTasks(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(DELETED_KEY) || "[]"
-    );
-
-  }catch{
-
-    return [];
-
-  }
-
-}
-
+const DELETED_KEY = "ahc_deleted_tasks_log";
+function getDeletedTasks(){ try { return JSON.parse(localStorage.getItem(DELETED_KEY) || "[]"); } catch { return []; } }
 function saveDeletedTask(task,reason){
-
-  const d =
-    getDeletedTasks();
-
-  d.push({
-    ...task,
-    deleted_reason:reason,
-    deleted_at:new Date().toISOString(),
-    deleted_by:"Admin"
-  });
-
-  if(d.length > 500){
-
-    d.splice(
-      0,
-      d.length - 500
-    );
-
-  }
-
-  localStorage.setItem(
-    DELETED_KEY,
-    JSON.stringify(d)
-  );
-
+  const d = getDeletedTasks(); d.push({...task, deleted_reason:reason, deleted_at:new Date().toISOString(), deleted_by:"Admin"});
+  if(d.length > 500) d.splice(0, d.length - 500); localStorage.setItem(DELETED_KEY, JSON.stringify(d));
 }
-
 function getDeletedByDate(date){
-
-  return getDeletedTasks()
-    .filter(t => {
-
-      // IMPORTANT: Deleted report is based on the actual
-      // deletion date/time, not the task assignment date.
-      if(t.deleted_at){
-        const d =
-          new Intl.DateTimeFormat(
-            "en-CA",
-            {
-              timeZone:"Asia/Kolkata",
-              year:"numeric",
-              month:"2-digit",
-              day:"2-digit"
-            }
-          ).format(new Date(t.deleted_at));
-
-        return d === date;
-      }
-
-      // Legacy records without deleted_at: retain old fallback.
-      if(t.task_date)
-        return t.task_date === date;
-
-      return false;
-
-    });
-
-}
-
-
-/* =====================================================
-   HELPERS
-   ===================================================== */
-
-function operatorOptionValue(v){
-
-  const n = Number(v);
-
-  return Number.isInteger(n) && n > 0
-    ? String(n)
-    : "";
-
-}
-
-function esc(v){
-
-  return String(v ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-function dt(v){
-
-  return v
-    ? new Date(v).toLocaleString(
-        "en-IN",
-        {
-          day:"2-digit",
-          month:"short",
-          hour:"2-digit",
-          minute:"2-digit"
-        }
-      )
-    : "—";
-
-}
-
-function todayIST(){
-
-  return new Intl.DateTimeFormat(
-    "en-CA",
-    {
-      timeZone:"Asia/Kolkata",
-      year:"numeric",
-      month:"2-digit",
-      day:"2-digit"
-    }
-  ).format(new Date());
-
-}
-
-function selectedDate(){
-
-  return $("workDate").value ||
-         todayIST();
-
-}
-
-function filterByDate(list){
-
-  const sel =
-    selectedDate();
-
-  return list.filter(t => {
-
-    if(t.task_date)
-      return t.task_date === sel;
-
-    if(t.assigned_time){
-
-      const d =
-        new Intl.DateTimeFormat(
-          "en-CA",
-          {
-            timeZone:"Asia/Kolkata",
-            year:"numeric",
-            month:"2-digit",
-            day:"2-digit"
-          }
-        ).format(
-          new Date(t.assigned_time)
-        );
-
-      return d === sel;
-
-    }
-
-    return false;
-
+  return getDeletedTasks().filter(t => {
+    if(t.deleted_at){ const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.deleted_at)); return d === date; }
+    if(t.task_date) return t.task_date === date; return false;
   });
-
 }
-
-function encodeSection(
-  bench,
-  caseTypes,
-  section
-){
-
-  const ct =
-    caseTypes.length
-      ? caseTypes.join(",")
-      : "";
-
-  return `[${bench}|${ct}] ${section || ""}`.trim();
-
+function operatorOptionValue(v){ const n = Number(v); return Number.isInteger(n) && n > 0 ? String(n) : ""; }
+function esc(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+function dt(v){ return v ? new Date(v).toLocaleString("en-IN", {day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"}) : "—"; }
+function todayIST(){ return new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date()); }
+function selectedDate(){ return $("workDate").value || todayIST(); }
+function filterByDate(list){
+  const sel = selectedDate();
+  return list.filter(t => {
+    if(t.task_date) return t.task_date === sel;
+    if(t.assigned_time){ const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time)); return d === sel; }
+    return false;
+  });
 }
-
+function encodeSection(bench, caseTypes, section){ const ct = caseTypes.length ? caseTypes.join(",") : ""; return `[${bench}|${ct}] ${section || ""}`.trim(); }
 function decodeSection(sectionStr){
-
-  if(!sectionStr){
-
-    return {
-      bench:"",
-      caseTypes:[],
-      section:"-"
-    };
-
-  }
-
-  const str =
-    String(sectionStr);
-
-  const match =
-    str.match(
-      /^\[([RB])\|([^\]]*)\]\s*(.*)/
-    );
-
-  if(match){
-
-    return {
-
-      bench:match[1],
-
-      caseTypes:
-        match[2]
-          ? match[2]
-              .split(",")
-              .filter(c => c.trim())
-          : [],
-
-      section:
-        match[3] || "-"
-
-    };
-
-  }
-
-  return {
-    bench:"",
-    caseTypes:[],
-    section:str || "-"
-  };
-
+  if(!sectionStr) return {bench:"", caseTypes:[], section:"-"};
+  const str = String(sectionStr), match = str.match(/^\[([RB])\|([^\]]*)\]\s*(.*)/);
+  if(match) return { bench:match[1], caseTypes: match[2] ? match[2].split(",").filter(c => c.trim()) : [], section: match[3] || "-" };
+  return {bench:"", caseTypes:[], section:str || "-"};
 }
+function getCourtStr(t){ let c = t.court_no || t.courtNo || null; if(!c) return "-"; if(Array.isArray(c)) return c.join(", "); return String(c); }
 
-function getCourtStr(t){
-
-  let c =
-    t.court_no ||
-    t.courtNo ||
-    null;
-
-  if(!c) return "-";
-
-  if(Array.isArray(c))
-    return c.join(", ");
-
-  return String(c);
-
-}
-
-
-/* =====================================================
-   DUPLICATE CHECK
-   ===================================================== */
-
-function checkDuplicate(
-  bench,
-  court,
-  listType
-){
-
-  if(!bench || !court || !listType)
-    return null;
-
-  if(
-    court.toLowerCase() ===
-    "in-chamber"
-  )
-    return null;
-
-  const selBench =
-    bench.toUpperCase();
-
-  const selCourt =
-    court.toLowerCase().trim();
-
-  const selList =
-    listType.toLowerCase().trim();
-
+/* ===================================================== DUPLICATE CHECK & API ===================================================== */
+function checkDuplicate(bench, court, listType){
+  if(!bench || !court || !listType) return null; if(court.toLowerCase() === "in-chamber") return null;
+  const selBench = bench.toUpperCase(), selCourt = court.toLowerCase().trim(), selList = listType.toLowerCase().trim();
   for(const task of tasks){
-
-    const decoded =
-      decodeSection(
-        task.section_name
-      );
-
-    const tBench =
-      decoded.bench.toUpperCase();
-
-    const tCourt =
-      getCourtStr(task)
-        .toLowerCase()
-        .trim();
-
-    const tList =
-      (task.list_type || "")
-        .toLowerCase()
-        .trim();
-
-    if(
-      tBench === selBench &&
-      tCourt === selCourt &&
-      tList === selList
-    ){
-
-      return {
-
-        id:task.id,
-
-        bench:
-          selBench === "B"
-            ? "B (Broken)"
-            : "R (Regular)",
-
-        court:court,
-
-        list:listType
-
-      };
-
-    }
-
+    const decoded = decodeSection(task.section_name), tBench = decoded.bench.toUpperCase(), tCourt = getCourtStr(task).toLowerCase().trim(), tList = (task.list_type || "").toLowerCase().trim();
+    if(tBench === selBench && tCourt === selCourt && tList === selList) return {id:task.id, bench: selBench === "B" ? "B (Broken)" : "R (Regular)", court:court, list:listType};
   }
-
   return null;
-
 }
+function showWarning(msg){ $("duplicateMsg").textContent = msg; $("duplicateWarning").classList.add("show"); }
+function hideWarning(){ $("duplicateWarning").classList.remove("show"); }
 
-function showWarning(msg){
-
-  $("duplicateMsg")
-    .textContent = msg;
-
-  $("duplicateWarning")
-    .classList
-    .add("show");
-
-}
-
-function hideWarning(){
-
-  $("duplicateWarning")
-    .classList
-    .remove("show");
-
-}
-
-
-/* =====================================================
-   API
-   ===================================================== */
-
-function adminHeaders(){
-
-  return {
-    "Content-Type":"application/json",
-    "apikey":SUPABASE_KEY
-  };
-
-}
-
+function adminHeaders(){ return {"Content-Type":"application/json", "apikey":SUPABASE_KEY}; }
 async function taskApi(body){
-
-  const session =
-    (await sb.auth.getSession())
-      .data.session;
-
-  if(!session)
-    throw Error("Session expired.");
-
-  const r =
-    await fetch(
-      TASK_API,
-      {
-        method:"POST",
-
-        headers:{
-          ...adminHeaders(),
-          "Authorization":
-            "Bearer " +
-            session.access_token
-        },
-
-        body:
-          JSON.stringify(body)
-      }
-    );
-
-  const text =
-    await r.text();
-
-  let j;
-
-  try{
-
-    j = JSON.parse(text);
-
-  }catch{
-
-    throw Error(
-      "Invalid response."
-    );
-
-  }
-
-  if(!r.ok || !j.success){
-
-    throw Error(
-      j.error || "API error."
-    );
-
-  }
-
-  return j;
-
+  const session = (await sb.auth.getSession()).data.session; if(!session) throw Error("Session expired.");
+  const r = await fetch(TASK_API, { method:"POST", headers:{...adminHeaders(), "Authorization":"Bearer " + session.access_token}, body:JSON.stringify(body) });
+  const text = await r.text(); let j; try{ j = JSON.parse(text); }catch{ throw Error("Invalid response."); }
+  if(!r.ok || !j.success) throw Error(j.error || "API error."); return j;
+}
+async function manageOperatorsRequest(payload) {
+  const { data: sessionData } = await sb.auth.getSession(); if (!sessionData.session?.access_token) throw new Error("Admin session nahi mila.");
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-operators`, { method: "POST", headers: {"Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${sessionData.session.access_token}`}, body: JSON.stringify(payload) });
+  const result = await response.json(); if (!response.ok || result.ok !== true) throw new Error(result.error || `Request failed (${response.status})`); return result;
 }
 
-async function manageOperatorsRequest(payload) {
-  const { data: sessionData, error: sessionError } =
-    await sb.auth.getSession();
+/* ===================================================== LOGIN & OPERATORS ===================================================== */
+async function login(){
+  const id = $("adminId").value.trim(); if(id.toLowerCase() !== "admin"){ $("loginMsg").textContent = "Invalid Admin ID"; return; }
+  $("loginMsg").textContent = "Signing in...";
+  try{
+    const {error} = await sb.auth.signInWithPassword({email:ADMIN_EMAIL, password:$("password").value}); if(error) throw error;
+    $("loginCard").classList.add("hidden"); $("app").classList.remove("hidden"); $("workDate").value = todayIST();
+    initCtDropdown(); initCourtDropdown(); initHoldReasons(); await loadOperators(); await refreshAll(); startSpaceStatusMonitoring();
+  }catch(e){ $("loginMsg").textContent = e.message; }
+}
+async function logout(){ await sb.auth.signOut(); location.reload(); }
 
-  if (sessionError || !sessionData.session?.access_token) {
-    throw new Error("Admin login session नहीं मिला। कृपया दोबारा login करें।");
-  }
-
-  const response = await fetch(
-    `${SUPABASE_URL}/functions/v1/manage-operators`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY,
-        "Authorization": `Bearer ${sessionData.session.access_token}`
-      },
-      body: JSON.stringify(payload)
-    }
-  );
-
-  const result = await response.json();
-
-  if (!response.ok || result.ok !== true) {
-    throw new Error(
-      result.error || `Request failed (${response.status})`
-    );
-  }
-
-  return result;
+async function loadOperators() {
+  const select = $("operatorSelect"); select.innerHTML = '<option value="">Admin</option>'; select.disabled = true;
+  try {
+    const result = await manageOperatorsRequest({ action: "list" }); if (!Array.isArray(result.operators)) throw new Error("Invalid operators list.");
+    operators = result.operators.map(o => ({ id: Number(o.numeric_id || o.id), username: String(o.username || ""), full_name: String(o.full_name || o.username || `Operator ${o.numeric_id || o.id}`), active: o.active === true }))
+      .filter(o => Number.isInteger(o.id) && o.id > 0 && o.active && o.username.toLowerCase() !== "admin").sort((a, b) => a.id - b.id);
+    select.innerHTML = '<option value="">Admin</option>' + operators.map(o => `<option value="${o.id}">${o.id} — ${o.full_name}</option>`).join("");
+  } catch (error) { console.error("Unable to load operators:", error); select.innerHTML = '<option value="">Operators load nahi hue</option>'; } 
+  finally { select.disabled = false; }
 }
 
 async function loadManagedOperators() {
-  const list = document.getElementById("operatorManagementList");
-  const message = document.getElementById("userManagerMessage");
-
-  if (!list) return;
-
-  list.replaceChildren();
-
-  const loading = document.createElement("p");
-  loading.textContent = "Operators की सूची लोड हो रही है...";
-  list.appendChild(loading);
-
-  if (message) message.textContent = "";
-
+  const list = document.getElementById("operatorManagementList"), message = document.getElementById("userManagerMessage"); if (!list) return;
+  list.replaceChildren(); const loading = document.createElement("p"); loading.textContent = "Operators list load ho rahi hai..."; list.appendChild(loading); if (message) message.textContent = "";
   try {
-    const result = await manageOperatorsRequest({ action: "list" });
-
-    list.replaceChildren();
-
-    if (!Array.isArray(result.operators) || result.operators.length === 0) {
-      const empty = document.createElement("p");
-      empty.textContent = "अभी कोई operator उपलब्ध नहीं है।";
-      list.appendChild(empty);
-      return;
-    }
-
+    const result = await manageOperatorsRequest({ action: "list" }); list.replaceChildren();
+    if (!Array.isArray(result.operators) || result.operators.length === 0) { const empty = document.createElement("p"); empty.textContent = "Koi operator nahi hai."; list.appendChild(empty); return; }
     result.operators.forEach((operator) => {
-      const item = document.createElement("div");
-      item.style.cssText =
-        "padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;";
-
-      const name = document.createElement("strong");
-      name.textContent =
-        operator.full_name || operator.username || "Unnamed operator";
-
-      const details = document.createElement("div");
-      details.style.cssText = "margin:6px 0;";
-      details.textContent =
-        `Username: ${operator.username} | Status: ${
-          operator.profile_exists === false
-            ? "Profile missing"
-            : operator.active
-              ? "Active"
-              : "Inactive"
-        }`;
-
-      item.appendChild(name);
-      item.appendChild(details);
-
-      if (operator.profile_exists === false) {
-        const warning = document.createElement("div");
-        warning.textContent =
-          "इस operator का user_profiles record नहीं मिला। Status बदलने से पहले profile ठीक करना आवश्यक है।";
-        warning.style.cssText = "color:#b45309;margin:6px 0;";
-        item.appendChild(warning);
-      } else {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = operator.active
-          ? "btn-danger btn-sm"
-          : "btn-success btn-sm";
-
-        button.textContent = operator.active
-          ? "Deactivate"
-          : "Activate";
-
-        button.addEventListener("click", async () => {
-          const nextAction = operator.active ? "deactivate" : "activate";
-          const actionLabel = operator.active ? "Deactivate" : "Activate";
-
-          if (
-            !confirm(
-              `${actionLabel} operator "${operator.full_name || operator.username}"?\n\n` +
-              "PIN और पुराने tasks नहीं हटेंगे।"
-            )
-          ) {
-            return;
-          }
-
-          button.disabled = true;
-          button.textContent = "Please wait...";
-          if (message) {
-            message.textContent = `${actionLabel} किया जा रहा है...`;
-            message.style.color = "#555";
-          }
-
-          try {
-            await manageOperatorsRequest({
-              action: nextAction,
-              username: operator.username
-            });
-
-            if (message) {
-              message.textContent =
-                `Operator "${operator.username}" का status सफलतापूर्वक बदल गया।`;
-              message.style.color = "#15803d";
-            }
-
-            // Refresh Manage Operators and Assign To.
-            await loadManagedOperators();
-            await loadOperators();
-          } catch (error) {
-            if (message) {
-              message.textContent =
-                error instanceof Error
-                  ? error.message
-                  : "Operator का status नहीं बदला जा सका।";
-              message.style.color = "#b91c1c";
-            }
-
-            button.disabled = false;
-            button.textContent = actionLabel;
-          }
-        });
-
-        item.appendChild(button);
-      }
-
-      list.appendChild(item);
-    });
-  } catch (error) {
-    list.replaceChildren();
-
-    const errorText = document.createElement("p");
-    errorText.textContent =
-      error instanceof Error
-        ? error.message
-        : "Operators लोड नहीं हो सके।";
-    errorText.style.color = "#b91c1c";
-
-    list.appendChild(errorText);
-  }
-}
-
-/* =====================================================
-   ADMIN LOGIN
-   ===================================================== */
-
-async function login(){
-
-  const id =
-    $("adminId")
-      .value
-      .trim();
-
-  if(id.toLowerCase() !== "admin"){
-
-    $("loginMsg")
-      .textContent =
-      "Invalid Admin ID";
-
-    return;
-
-  }
-
-  $("loginMsg")
-    .textContent =
-    "Signing in...";
-
-  try{
-
-    const {error} =
-      await sb.auth.signInWithPassword({
-
-        email:ADMIN_EMAIL,
-
-        password:
-          $("password").value
-
+      const item = document.createElement("div"); item.style.cssText = "padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;";
+      const name = document.createElement("strong"); name.textContent = operator.full_name || operator.username || "Unnamed";
+      const details = document.createElement("div"); details.style.cssText = "margin:6px 0; font-size:13px;";
+      details.innerHTML = `Username: <b>${operator.username}</b> | ID: <b>${operator.numeric_id || 'N/A'}</b> | Phone: <b>${operator.phone || 'N/A'}</b> | Status: ${operator.active ? "✅ Active" : "❌ Inactive"}`;
+      item.appendChild(name); item.appendChild(details);
+      const button = document.createElement("button"); button.type = "button"; button.className = operator.active ? "btn-danger btn-sm" : "btn-success btn-sm"; button.textContent = operator.active ? "Deactivate" : "Activate";
+      button.addEventListener("click", async () => {
+        const nextAction = operator.active ? "deactivate" : "activate"; if (!confirm(`${nextAction} operator "${operator.username}"?`)) return;
+        button.disabled = true; try {
+          await manageOperatorsRequest({ action: nextAction, username: operator.username });
+          if (message) { message.textContent = `✅ Status changed.`; message.style.color = "#15803d"; }
+          await loadManagedOperators(); await loadOperators();
+        } catch (error) { if (message) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; } button.disabled = false; }
       });
-
-    if(error)
-      throw error;
-
-    $("loginCard")
-      .classList
-      .add("hidden");
-
-    $("app")
-      .classList
-      .remove("hidden");
-
-    $("workDate").value =
-      todayIST();
-
-    initCtDropdown();
-    initHoldReasons();
-
-    await loadOperators();
-    await refreshAll();
-
-  }catch(e){
-
-    $("loginMsg")
-      .textContent =
-      e.message;
-
-  }
-
-}
-
-async function logout(){
-
-  await sb.auth.signOut();
-
-  location.reload();
-
-}
-
-
-/* =====================================================
-   OPERATORS
-   ===================================================== */
-
-async function loadOperators() {
-  const select = $("operatorSelect");
-
-  select.innerHTML = '<option value="">Admin</option>';
-  select.disabled = true;
-
-  try {
-    // Use the same operator-management API that loads
-    // the Existing Operators list.
-    const result = await manageOperatorsRequest({
-      action: "list"
+      item.appendChild(button); list.appendChild(item);
     });
-
-    if (!Array.isArray(result.operators)) {
-      throw new Error(
-        "manage-operators ने valid operators list नहीं लौटाई।"
-      );
-    }
-
-    operators = result.operators
-      .map(o => ({
-        id: Number(o.id),
-        username: String(o.username || ""),
-        full_name: String(
-          o.full_name || o.username || `Operator ${o.id}`
-        ),
-        active: o.active === true
-      }))
-      .filter(o =>
-        Number.isInteger(o.id) &&
-        o.id > 0 &&
-        o.active &&
-        o.username.toLowerCase() !== "admin"
-      )
-      .sort((a, b) => a.id - b.id);
-
-    select.innerHTML =
-      '<option value="">Admin</option>' +
-      operators.map(o => {
-        const option = document.createElement("option");
-        option.value = String(o.id);
-        option.textContent = `${o.id} — ${o.full_name}`;
-        return option.outerHTML;
-      }).join("");
-
-  } catch (error) {
-    console.error("Unable to load operators:", error);
-
-    select.innerHTML =
-      '<option value="">Operators load नहीं हुए</option>';
-
-    $("taskMsg").textContent =
-      "Operators load error: " + error.message;
-
-  } finally {
-    select.disabled = false;
-  }
+  } catch (error) { list.replaceChildren(); const errorText = document.createElement("p"); errorText.textContent = "❌ " + error.message; errorText.style.color = "#b91c1c"; list.appendChild(errorText); }
 }
 
-/* =====================================================
-   CREATE TASK
-   ===================================================== */
-
+/* ===================================================== TASK CREATION & RENDERING ===================================================== */
 async function createTask(){
-
-  hideWarning();
-
-  const bench =
-    $("benchType").value;
-
-  const court =
-    $("courtNo").value;
-
-  const listType =
-    $("listType").value;
-
-  const assigned =
-    $("operatorSelect").value;
-
-  if(!assigned){
-
-    await submitTask();
-
-    return;
-
+  hideWarning(); const bench = $("benchType").value, courts = [...selectedCourts], listType = $("listType").value, assigned = $("operatorSelect").value;
+  if(!assigned){ if(courts.length > 1){ alert("Admin Memo ke liye ek court chunein."); return; } await submitTask(); return; }
+  if(!bench){ alert("Select Bench."); return; } if(courts.length === 0){ alert("Select Court."); return; }
+  const duplicates = []; for(const court of courts){ const dupe = checkDuplicate(bench, court, listType); if(dupe) duplicates.push({court, dupe}); }
+  if(duplicates.length){
+    const names = duplicates.map(x => `${x.court} (Task #${x.dupe.id})`).join("\n");
+    const proceed = confirm(`Duplicates:\n${names}\n\nSkip karke baaki assign karein?`); if(!proceed) return;
+    const duplicateSet = new Set(duplicates.map(x => x.court)), remaining = courts.filter(court => !duplicateSet.has(court));
+    if(!remaining.length){ showWarning("Sabhi courts ke liye task already hai."); return; }
+    await submitTask(remaining, duplicates.map(x=>x.court)); return;
   }
-
-  if(!bench){
-
-    alert(
-      "Please select Bench."
-    );
-
-    return;
-
-  }
-
-  if(!court){
-
-    alert(
-      "Please select Court / Chamber."
-    );
-
-    return;
-
-  }
-
-  const dupe =
-    checkDuplicate(
-      bench,
-      court,
-      listType
-    );
-
-  if(dupe){
-
-    showWarning(
-      `${dupe.bench} + "${dupe.court}" + ${dupe.list} already exists (Task #${dupe.id}).`
-    );
-
-    return;
-
-  }
-
-  await submitTask();
-
+  if(!confirm(`${courts.length} task(s) assign honge. Continue?`)) return; await submitTask(courts, []);
 }
-
-async function forceCreateTask(){
-
-  hideWarning();
-
-  await submitTask();
-
-}
-
-async function submitTask(){
-
-  $("taskMsg")
-    .textContent =
-    "Saving...";
-
+async function forceCreateTask(){ hideWarning(); await submitTask(); }
+async function submitTask(courtValues = null, skippedDuplicates = []){
+  $("taskMsg").textContent = "Saving...";
   try{
-
-    const assigned =
-      operatorOptionValue(
-        $("operatorSelect").value
-      );
-
-    const bench =
-      $("benchType").value;
-
-    const caseTypes =
-      [...selectedCaseTypes];
-
-    const rawSection =
-      $("sectionName")
-        .value
-        .trim();
-
-    const rawRemarks =
-      $("remarks")
-        .value
-        .trim();
-
-    const encodedSection =
-      encodeSection(
-        bench,
-        caseTypes,
-        rawSection
-      );
-
-    const courtValue =
-      $("courtNo").value ||
-      null;
-
-    const listValue =
-      $("listType").value ||
-      null;
-
-
-    /*
-      DATABASE FIELD MAPPING
-
-      court_no    -> Court
-      section_name-> Section + Bench + Case Type
-      list_type   -> List Type
-      case_type   -> Case Type
-      remarks     -> Remarks
-      assigned_to -> Assigned To
-      task_date   -> Working Date
-    */
-
-    const j =
-      await taskApi({
-
-        action:"create",
-
-        court_no:
-          courtValue,
-
-        section_name:
-          encodedSection,
-
-        list_type:
-          listValue,
-
-        case_type:
-          caseTypes.length === 1
-            ? caseTypes[0]
-            : (
-                caseTypes.length
-                  ? caseTypes
-                  : ""
-              ),
-
-        priority:"Normal",
-
-        remarks:
-          rawRemarks,
-
-        assigned_to:
-          assigned
-            ? Number(assigned)
-            : null,
-
-        task_date:
-          selectedDate()
-
-      });
-
-
-    $("taskMsg")
-      .textContent =
-      j.message ||
-      (
-        assigned
-          ? "✓ Assigned"
-          : "✓ Admin Memo saved"
-      );
-
-
-    /* RESET FORM */
-
-    $("benchType").value =
-      "R";
-
-    $("courtNo").value =
-      "";
-
-    $("sectionName").value =
-      "";
-
-    $("listType").value =
-      "";
-
-    $("remarks").value =
-      "";
-
-    $("operatorSelect").value =
-      "";
-
-    $("wordCount")
-      .textContent =
-      "(0/50)";
-
-    $("wordCount")
-      .style.color =
-      "var(--gray-400)";
-
-    clearCtDropdown();
-
-    await refreshAll();
-
-  }catch(e){
-
-    $("taskMsg")
-      .textContent =
-      e.message;
-
-  }
-
+    const assigned = operatorOptionValue($("operatorSelect").value), bench = $("benchType").value, caseTypes = [...selectedCaseTypes];
+    const rawSection = $("sectionName").value.trim(), rawRemarks = $("remarks").value.trim(), encodedSection = encodeSection(bench, caseTypes, rawSection);
+    const selectedCourtValues = courtValues === null ? [...selectedCourts] : courtValues, listValue = $("listType").value || null;
+    const courtsToCreate = selectedCourtValues.length ? selectedCourtValues : [null], created = [], failed = [];
+    for(const courtValue of courtsToCreate){
+      try{
+        const j = await taskApi({ action:"create", court_no: courtValue || null, section_name: encodedSection, list_type: listValue, case_type: caseTypes.length === 1 ? caseTypes[0] : (caseTypes.length ? caseTypes : ""), priority:"Normal", remarks:rawRemarks, assigned_to:assigned ? Number(assigned) : null, task_date:selectedDate() });
+        created.push({court:courtValue, message:j.message || "Saved"});
+      }catch(error){ failed.push({court:courtValue || "Admin Memo", message:error.message}); }
+    }
+    if(created.length){
+      $("taskMsg").textContent = `✓ ${created.length} task(s) saved`; $("benchType").value = "R"; clearCourtDropdown(); $("sectionName").value = ""; $("listType").value = ""; $("remarks").value = ""; $("operatorSelect").value = ""; $("wordCount").textContent = "(0/50)"; clearCtDropdown(); await refreshAll();
+    } else { $("taskMsg").textContent = "Koi task save nahi hua."; }
+    if(failed.length) alert("Failed: " + failed.map(x=>`${x.court}: ${x.message}`).join("\n"));
+  }catch(e){ $("taskMsg").textContent = e.message; }
 }
-
-
-/* =====================================================
-   REFRESH
-   ===================================================== */
 
 async function refreshAll(){
-
-  if(busy)
-    return;
-
-  busy = true;
-
-  try{
-
-    $("dateLabel")
-      .textContent =
-      selectedDate();
-
-    const j =
-      await taskApi({
-
-        action:"all_tasks",
-
-        date:
-          selectedDate()
-
-      });
-
-    tasks =
-      filterByDate(
-        j.tasks || []
-      );
-
-    renderTasks();
-
-  }catch(e){
-
-    console.error(e);
-
-    if(
-      /session expired/i
-        .test(e.message)
-    )
-      location.reload();
-
-  }finally{
-
-    busy = false;
-
-  }
-
+  if(busy) return; busy = true;
+  try{ $("dateLabel").textContent = selectedDate(); const j = await taskApi({action:"all_tasks", date:selectedDate()}); tasks = filterByDate(j.tasks || []); renderTasks(); }
+  catch(e){ console.error(e); if(/session expired/i.test(e.message)) location.reload(); } finally{ busy = false; }
 }
-
-
-/* =====================================================
-   RENDER TASKS
-   ===================================================== */
 
 function renderTasks(){
-
   if(!tasks.length){
-
-    $("totalCount")
-      .textContent = "0";
-
-    $("pendingCount")
-      .textContent = "0";
-
-    $("holdCount")
-      .textContent = "0";
-
-    $("doneCount")
-      .textContent = "0";
-
-    $("memoCount")
-      .textContent = "0";
-
-    $("taskRows").innerHTML = `
-      <tr>
-        <td colspan="12"
-            style="text-align:center;padding:40px;color:var(--gray-500)">
-          No tasks for this date.
-        </td>
-      </tr>
-    `;
-
-    return;
-
+    $("totalCount").textContent = "0"; $("pendingCount").textContent = "0"; $("holdCount").textContent = "0"; $("doneCount").textContent = "0"; $("memoCount").textContent = "0";
+    $("taskRows").innerHTML = `<tr><td colspan="14" style="text-align:center;padding:40px;color:var(--gray-500)">No tasks for this date.</td></tr>`; return;
   }
-
-
-  $("totalCount")
-    .textContent =
-    tasks.length;
-
-  $("pendingCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "pending"
-    ).length;
-
-  $("holdCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "hold"
-    ).length;
-
-  $("doneCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        String(t.status)
-          .toLowerCase() ===
-        "done"
-    ).length;
-
-  $("memoCount")
-    .textContent =
-    tasks.filter(
-      t =>
-        !t.assigned_to &&
-        !t.admin_memo_done
-    ).length;
-
-
-  $("taskRows").innerHTML =
-    tasks.map(t => {
-
-      const status =
-        String(
-          t.status ||
-          "Pending"
-        );
-
-      const memo =
-        !t.assigned_to;
-
-      const green =
-        memo &&
-        t.admin_memo_done === true;
-
-      const rc =
-        green
-          ? "memo-done-row"
-          : memo
-            ? "memo-row"
-            : "";
-
-
-      const statusBadge =
-        status === "Done"
-
-          ? '<span class="badge badge-done">DONE</span>'
-
-          : status === "Hold"
-
-            ? '<span class="badge badge-hold">HOLD</span>'
-
-            : '<span class="badge badge-pending">PENDING</span>';
-
-
-      const decoded =
-        decodeSection(
-          t.section_name
-        );
-
-
-      const benchBadge =
-        decoded.bench === "B"
-
-          ? '<span class="badge badge-b">B</span>'
-
-          : decoded.bench === "R"
-
-            ? '<span class="badge badge-r">R</span>'
-
-            : '<span class="badge badge-memo">—</span>';
-
-
-      const courtStr =
-        getCourtStr(t);
-
-
-      let caseBadges =
-        '<span style="color:var(--gray-400)">-</span>';
-
-
-      if(decoded.caseTypes.length){
-
-        caseBadges =
-          decoded.caseTypes
-            .map(c =>
-              `<span class="badge badge-case">${esc(c)}</span>`
-            )
-            .join("");
-
-      }
-
-
-      /*
-        IMPORTANT:
-        TABLE ORDER IS NOW
-
-        ID
-        Bench
-        Court
-        List Type
-        Assigned To
-        Section
-        Remarks
-        Case Type
-        Status
-        Assigned
-        Completed
-        Action
-      */
-
-      return `
-
-      <tr class="${rc}">
-
-        <!-- ID -->
-        <td>
-          <b>#${esc(t.id)}</b>
-        </td>
-
-
-        <!-- BENCH -->
-        <td>
-          ${benchBadge}
-        </td>
-
-
-        <!-- COURT -->
-        <td>
-          <b>${esc(courtStr)}</b>
-        </td>
-
-
-        <!-- LIST TYPE -->
-        <td>
-          ${esc(t.list_type || "-")}
-        </td>
-
-
-        <!-- ASSIGNED TO -->
-        <td>
-          ${
-            memo
-              ? '<span class="badge badge-memo">MEMO</span>'
-              : esc(
-                  t.operator?.full_name ||
-                  "-"
-                )
-          }
-        </td>
-
-
-        <!-- SECTION -->
-        <td>
-          ${esc(decoded.section)}
-        </td>
-
-
-        <!-- REMARKS -->
-        <td style="max-width:150px">
-          ${esc(t.remarks || "-")}
-        </td>
-
-
-        <!-- CASE TYPE -->
-        <td>
-          <div class="case-cell">
-            ${caseBadges}
-          </div>
-        </td>
-
-
-        <!-- STATUS -->
-        <td>
-          ${statusBadge}
-        </td>
-
-
-        <!-- ASSIGNED TIME -->
-        <td style="white-space:nowrap;font-size:12px">
-          ${dt(t.assigned_time)}
-        </td>
-
-
-        <!-- COMPLETED TIME -->
-        <td style="white-space:nowrap;font-size:12px">
-          ${dt(t.completed_time)}
-        </td>
-
-
-        <!-- ACTION -->
-        <td class="no-print">
-
-          <div class="action">
-
-            ${
-              memo
-
-                ? `
-                  <button
-                    class="btn-sm ${
-                      green
-                        ? "btn-muted"
-                        : "btn-success"
-                    }"
-                    onclick="toggleMemo(${t.id},${!green})">
-
-                    ${green ? "↩" : "✓"}
-
-                  </button>
-                `
-
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status !== "Done"
-
-                ? `
-                  <button
-                    class="btn-sm btn-outline"
-                    onclick="reassign(${t.id})">
-                    Re
-                  </button>
-                `
-
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status === "Hold"
-
-                ? `
-                  <button
-                    class="btn-sm btn-success"
-                    onclick="resumeTask(${t.id})">
-                    ▶
-                  </button>
-                `
-
-                : ""
-            }
-
-
-            ${
-              !memo &&
-              status === "Pending"
-
-                ? `
-                  <button
-                    class="btn-sm btn-warning"
-                    onclick="openHoldReason(${t.id})">
-                    ⏸
-                  </button>
-                `
-
-                : ""
-            }
-
-
-            <button
-              class="btn-sm btn-danger"
-              onclick="deleteTask(${t.id})">
-              ✕
-            </button>
-
-          </div>
-
-        </td>
-
-      </tr>
-
-      `;
-
-    }).join("");
-
+  $("totalCount").textContent = tasks.length; $("pendingCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "pending").length;
+  $("holdCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "hold").length; $("doneCount").textContent = tasks.filter(t => String(t.status).toLowerCase() === "done").length;
+  $("memoCount").textContent = tasks.filter(t => !t.assigned_to && !t.admin_memo_done).length;
+
+  $("taskRows").innerHTML = tasks.map(t => {
+    const status = String(t.status || "Pending").toLowerCase(), memo = !t.assigned_to, green = memo && t.admin_memo_done === true;
+    const rc = green ? "memo-done-row" : memo ? "memo-row" : "";
+    const statusBadge = status === "done" ? '<span class="badge badge-done">DONE</span>' : status === "hold" ? '<span class="badge badge-hold">HOLD</span>' : '<span class="badge badge-pending">PENDING</span>';
+    const decoded = decodeSection(t.section_name), benchBadge = decoded.bench === "B" ? '<span class="badge badge-b">B</span>' : decoded.bench === "R" ? '<span class="badge badge-r">R</span>' : '<span class="badge badge-memo">—</span>';
+    const courtStr = getCourtStr(t);
+    let caseBadges = '<span style="color:var(--gray-400)">-</span>'; if(decoded.caseTypes.length) caseBadges = decoded.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("");
+
+    // REASON COLUMN (Hold reason in purple)
+    const reasonDisplay = t.hold_reason ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
+    // CHECKBOX ONLY FOR PENDING TASKS
+    const isPending = status === "pending", showCheckbox = !memo && isPending;
+
+    return `<tr class="${rc}">
+      <td class="no-print">${showCheckbox ? `<input class="task-select task-row-select" type="checkbox" data-task-id="${Number(t.id)}" ${selectedTaskIds.has(Number(t.id)) ? "checked" : ""} onchange="toggleTaskSelection(${Number(t.id)}, this.checked)">` : '<span style="color:var(--gray-400)">—</span>'}</td>
+      <td><b>#${esc(t.id)}</b></td><td>${benchBadge}</td><td><b>${esc(courtStr)}</b></td><td>${esc(t.list_type || "-")}</td>
+      <td>${memo ? '<span class="badge badge-memo">MEMO</span>' : esc(t.operator?.full_name || "-")}</td><td>${esc(decoded.section)}</td><td style="max-width:150px">${esc(t.remarks || "-")}</td>
+      <td>${reasonDisplay}</td><td><div class="case-cell">${caseBadges}</div></td><td>${statusBadge}</td>
+      <td style="white-space:nowrap;font-size:12px">${dt(t.assigned_time)}</td><td style="white-space:nowrap;font-size:12px">${dt(t.completed_time)}</td>
+      <td class="no-print"><div class="action">
+        ${memo ? `<button class="btn-sm ${green ? "btn-muted" : "btn-success"}" onclick="toggleMemo(${t.id},${!green})">${green ? "↩" : "✓"}</button>` : ""}
+        ${status !== "done" ? `<button class="btn-sm btn-outline" onclick="reassign(${t.id})" title="Reassign">Re</button>` : ""}
+        ${!memo && status === "hold" ? `<button class="btn-sm btn-success" onclick="resumeTask(${t.id})">▶</button>` : ""}
+        ${!memo && status === "pending" ? `<button class="btn-sm btn-warning" onclick="openHoldReason(${t.id})">⏸</button>` : ""}
+        <button class="btn-sm btn-danger" onclick="deleteTask(${t.id})">✕</button>
+      </div></td></tr>`;
+  }).join("");
 }
 
-
-/* =====================================================
-   MEMO
-   ===================================================== */
-
-async function toggleMemo(id,done){
-
-  try{
-
-    await taskApi({
-
-      action:"memo_done",
-
-      task_id:Number(id),
-
-      done
-
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
+/* ===================================================== BULK ACTIONS & TASK OPS ===================================================== */
+function toggleSelectAll(checked) {
+  document.querySelectorAll('.task-row-select').forEach(cb => {
+    cb.checked = checked; const id = Number(cb.getAttribute('data-task-id'));
+    if (checked) selectedTaskIds.add(id); else selectedTaskIds.delete(id);
+  });
+}
+function toggleTaskSelection(id, checked) {
+  if (checked) selectedTaskIds.add(id); else selectedTaskIds.delete(id);
+  const allBoxes = document.querySelectorAll('.task-row-select'), checkedBoxes = document.querySelectorAll('.task-row-select:checked'), selectAllCb = document.getElementById('selectAllTasks');
+  if (selectAllCb) selectAllCb.checked = allBoxes.length > 0 && allBoxes.length === checkedBoxes.length;
+}
+async function bulkDeleteTasks() {
+  if (selectedTaskIds.size === 0) { alert("Please select at least one task."); return; }
+  const reason = prompt(`Delete ${selectedTaskIds.size} task(s)?\nReason:`); if (!reason?.trim()) { alert("Cancelled."); return; }
+  if (!confirm(`Confirm delete ${selectedTaskIds.size} task(s)?`)) return;
+  const idsToDelete = Array.from(selectedTaskIds); let successCount = 0, failCount = 0;
+  for (const id of idsToDelete) {
+    try { const task = tasks.find(t => t.id === id); await taskApi({ action: "delete", task_id: id, reason: reason.trim() }); if (task) saveDeletedTask(task, reason.trim()); successCount++; } 
+    catch (e) { console.error(`Failed ${id}:`, e); failCount++; }
   }
-
+  selectedTaskIds.clear(); document.getElementById('selectAllTasks').checked = false;
+  alert(`Done:\nSuccess: ${successCount}\nFailed: ${failCount}`); await refreshAll();
 }
 
-
-/* =====================================================
-   REASSIGN
-   ===================================================== */
-
+async function toggleMemo(id,done){ try{ await taskApi({action:"memo_done", task_id:Number(id), done}); await refreshAll(); }catch(e){ alert(e.message); } }
 async function reassign(id){
-
-  const task =
-    tasks.find(
-      t => t.id === id
-    );
-
-  if(!task){
-
-    alert(
-      "Task not found"
-    );
-
-    return;
-
-  }
-
-  const names =
-    operators
-      .map(
-        o =>
-          `${o.full_name} [${o.id}]`
-      )
-      .join("\n");
-
-  const answer =
-    prompt(
-      "REASSIGN\n\n" +
-      names +
-      "\n\nEnter Operator ID:"
-    );
-
-  const n =
-    Number(answer);
-
-  if(!Number.isInteger(n))
-    return;
-
-  try{
-
-    await taskApi({
-
-      action:"reassign",
-
-      task_id:id,
-
-      assigned_to:n
-
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
-  }
-
+  const task = tasks.find(t => t.id === id); if(!task){ alert("Task not found"); return; }
+  const names = operators.map(o => `${o.full_name} [${o.id}]`).join("\n"), answer = prompt("REASSIGN\n\n" + names + "\n\nEnter Operator ID:");
+  const n = Number(answer); if(!Number.isInteger(n)) return;
+  try{ await taskApi({action:"reassign", task_id:id, assigned_to:n}); await refreshAll(); }catch(e){ alert(e.message); }
 }
-
-
-/* =====================================================
-   HOLD REASONS
-   ===================================================== */
-
-const HOLD_REASONS = [
-
-  "IN-CHAMBER INSTEAD OF 201",
-
-  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
-
-  "SECTION COMPLIANCE MUST BE ADDED",
-
-  "SECTION NOT FEEDED YET",
-
-  "SERIAL NUMBER ISSUE",
-
-  "TIMING NOT IN COURT HEADER",
-
-  "TIMING NOT IN SHORT ORDER REMARK",
-
-  "TU MUST BE ADDED",
-
-  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
-
-  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
-
-  /* ADDED */
-  "WRONGLY BY SECTION"
-
-].sort(
-  (a,b) =>
-    a.localeCompare(b)
-);
-
-
-let pendingHoldTaskId =
-  null;
-
-
-function initHoldReasons(){
-
-  const sel =
-    $("holdReasonSelect");
-
-  sel.innerHTML =
-    `<option value="">
-       — Select Hold Reason —
-     </option>` +
-
-    HOLD_REASONS
-      .map(r =>
-        `<option value="${esc(r)}">
-          ${esc(r)}
-        </option>`
-      )
-      .join("");
-
-}
-
-
-function openHoldReason(id){
-
-  pendingHoldTaskId =
-    Number(id);
-
-  $("holdReasonTaskLabel")
-    .textContent =
-    "Task #" +
-    id +
-    " — select the reason for putting this task on hold.";
-
-  $("holdReasonSelect")
-    .value = "";
-
-  $("holdReasonOverlay")
-    .classList
-    .remove("hidden");
-
-  setTimeout(
-    () =>
-      $("holdReasonSelect")
-        .focus(),
-    50
-  );
-
-}
-
-
-function cancelHoldReason(){
-
-  pendingHoldTaskId =
-    null;
-
-  $("holdReasonOverlay")
-    .classList
-    .add("hidden");
-
-}
-
-
+const HOLD_REASONS = ["IN-CHAMBER INSTEAD OF 201","PH SHOULD BE FURTHER HEARING IN SHORT ORDER","SECTION COMPLIANCE MUST BE ADDED","SECTION NOT FEEDED YET","SERIAL NUMBER ISSUE","TIMING NOT IN COURT HEADER","TIMING NOT IN SHORT ORDER REMARK","TU MUST BE ADDED","VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN","VIDEO CONFERENCING WITH TIMING NOT PRESENT","WRONGLY BY SECTION"].sort((a,b) => a.localeCompare(b));
+let pendingHoldTaskId = null;
+function initHoldReasons(){ const sel = $("holdReasonSelect"); sel.innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join(""); }
+function openHoldReason(id){ pendingHoldTaskId = Number(id); $("holdReasonTaskLabel").textContent = "Task #" + id; $("holdReasonSelect").value = ""; $("holdReasonOverlay").classList.remove("hidden"); }
+function cancelHoldReason(){ pendingHoldTaskId = null; $("holdReasonOverlay").classList.add("hidden"); }
 async function confirmHoldReason(){
-
-  const id =
-    pendingHoldTaskId;
-
-  const reason =
-    $("holdReasonSelect")
-      .value
-      .trim();
-
-  if(!id || !reason){
-
-    alert(
-      "Please select a Hold Reason."
-    );
-
-    return;
-
-  }
-
-
-  const btn =
-    document.querySelector(
-      "#holdReasonBox .btn-warning"
-    );
-
-
-  if(btn){
-
-    btn.disabled = true;
-
-    btn.textContent =
-      "Saving…";
-
-  }
-
-
-  try{
-
-    await taskApi({
-
-      action:"hold",
-
-      task_id:
-        Number(id),
-
-      reason:
-        reason
-
-    });
-
-    cancelHoldReason();
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(
-      "Hold failed: " +
-      e.message
-    );
-
-  }finally{
-
-    if(btn){
-
-      btn.disabled = false;
-
-      btn.textContent =
-        "⏸ HOLD TASK";
-
-    }
-
-  }
-
+  const id = pendingHoldTaskId, reason = $("holdReasonSelect").value.trim(); if(!id || !reason){ alert("Select reason."); return; }
+  try{ await taskApi({action:"hold", task_id:Number(id), reason:reason}); cancelHoldReason(); await refreshAll(); }catch(e){ alert("Hold failed: " + e.message); }
 }
-
-
-/* =====================================================
-   RESUME
-   ===================================================== */
-
-async function resumeTask(id){
-
-  if(!confirm("Resume?"))
-    return;
-
-  try{
-
-    await taskApi({
-
-      action:"resume",
-
-      task_id:id
-
-    });
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(e.message);
-
-  }
-
-}
-
-
-/* =====================================================
-   DELETE
-   ===================================================== */
-
+async function resumeTask(id){ if(!confirm("Resume?")) return; try{ await taskApi({action:"resume", task_id:id}); await refreshAll(); }catch(e){ alert(e.message); } }
 async function deleteTask(id){
-
-  const reason =
-    prompt(
-      `Delete Task #${id}?\nReason:`
-    );
-
-  if(!reason?.trim()){
-
-    alert("Cancelled.");
-
-    return;
-
-  }
-
-  if(
-    !confirm(
-      `Confirm delete #${id}?`
-    )
-  )
-    return;
-
-  try{
-
-    const task =
-      tasks.find(
-        t => t.id === id
-      );
-
-    await taskApi({
-
-      action:"delete",
-
-      task_id:id,
-
-      reason:
-        reason.trim()
-
-    });
-
-    // Save in the local deleted log ONLY after the server
-    // confirms that the delete succeeded.
-    if(task){
-
-      saveDeletedTask(
-        task,
-        reason.trim()
-      );
-
-    }
-
-    await refreshAll();
-
-  }catch(e){
-
-    alert(
-      "Delete failed: " +
-      e.message
-    );
-
-  }
-
+  const reason = prompt(`Delete Task #${id}?\nReason:`); if(!reason?.trim()){ alert("Cancelled."); return; } if(!confirm(`Confirm delete #${id}?`)) return;
+  try{ const task = tasks.find(t => t.id === id); await taskApi({action:"delete", task_id:id, reason:reason.trim()}); if(task) saveDeletedTask(task, reason.trim()); await refreshAll(); }catch(e){ alert("Delete failed: " + e.message); }
 }
 
-
-/* =====================================================
-   REPORT
-   ===================================================== */
-
-function closeModal(){
-
-  const modal = $("modal");
-
-  if(modal)
-    modal.classList.add("hidden");
-
-}
-
+/* ===================================================== REPORTS & PDF ===================================================== */
+function closeModal(){ $("modal").classList.add("hidden"); }
 async function openReport(){
-
-  $("modalContent").innerHTML = `
-
-    <h2>📊 Date-wise Report</h2>
-
-    <div class="report-controls no-print">
-
-      <div class="field">
-
-        <label>Date:</label>
-
-        <input
-          type="date"
-          id="reportDate"
-          value="${selectedDate()}">
-
-      </div>
-
-      <button
-        class="btn-primary"
-        onclick="generateReport()">
-        Generate
-      </button>
-
-    </div>
-
-    <div id="reportResults"></div>
-
-  `;
-
-  $("modal")
-    .classList
-    .remove("hidden");
-
-  setTimeout(
-    () => generateReport(),
-    100
-  );
-
+  $("modalContent").innerHTML = `<h2>📊 Date-wise Report</h2><div class="report-controls no-print"><div class="field"><label>Date:</label><input type="date" id="reportDate" value="${selectedDate()}"></div><button class="btn-primary" onclick="generateReport()">Generate</button></div><div id="reportResults"></div>`;
+  $("modal").classList.remove("hidden"); setTimeout(() => generateReport(), 100);
 }
-
-
 async function generateReport(){
-
-  const date =
-    $("reportDate").value;
-
-  if(!date){
-
-    alert("Select date");
-
-    return;
-
-  }
-
+  const date = $("reportDate").value; if(!date){ alert("Select date"); return; }
   try{
-
-    $("reportResults").innerHTML =
-      `<div style="text-align:center;padding:30px;color:var(--gray-500)">
-        Loading...
-      </div>`;
-
-
-    const j =
-      await taskApi({
-
-        action:"report",
-
-        date
-
-      });
-
-
-    const filtered =
-      (j.tasks || [])
-        .filter(t => {
-
-          if(t.task_date)
-            return t.task_date === date;
-
-          if(t.assigned_time){
-
-            const d =
-              new Intl.DateTimeFormat(
-                "en-CA",
-                {
-                  timeZone:"Asia/Kolkata",
-                  year:"numeric",
-                  month:"2-digit",
-                  day:"2-digit"
-                }
-              ).format(
-                new Date(t.assigned_time)
-              );
-
-            return d === date;
-
-          }
-
-          return false;
-
-        });
-
-
-    const deleted =
-      getDeletedByDate(date);
-
-
-    j.tasks =
-      filtered;
-
-    j.deletedTasks =
-      deleted;
-
-    j.date =
-      date;
-
-    // Keep the exact generated report available to the Print button.
-    window.__currentReport = j;
-
-
-    const pc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "pending"
-      ).length;
-
-
-    const hc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "hold"
-      ).length;
-
-
-    const dc =
-      filtered.filter(
-        t =>
-          String(t.status)
-            .toLowerCase() ===
-          "done"
-      ).length;
-
-
-    $("reportResults").innerHTML = `
-
-      <div style="
-        margin-bottom:16px;
-        padding:14px;
-        background:var(--primary);
-        color:#fff;
-        border-radius:var(--radius)">
-
-        <div style="
-          font-size:24px;
-          font-weight:800">
-
-          ${esc(date)}
-
-        </div>
-
-      </div>
-
-
-      <div class="report-summary">
-
-        <div class="report-card">
-          <h4>Total</h4>
-          <div class="count">
-            ${filtered.length}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Pending</h4>
-          <div class="count"
-               style="color:var(--warning)">
-            ${pc}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Hold</h4>
-          <div class="count"
-               style="color:var(--purple)">
-            ${hc}
-          </div>
-        </div>
-
-        <div class="report-card">
-          <h4>Done</h4>
-          <div class="count"
-               style="color:var(--success)">
-            ${dc}
-          </div>
-        </div>
-
-        ${
-          deleted.length
-
-            ? `
-              <div class="report-card">
-                <h4>Deleted</h4>
-                <div class="count"
-                     style="color:var(--danger)">
-                  ${deleted.length}
-                </div>
-              </div>
-            `
-
-            : ""
-        }
-
-      </div>
-
-
-      <div class="tablewrap" style="margin-top:16px;max-height:420px">
-
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Bench</th>
-              <th>Court / Chamber</th>
-              <th>List Type</th>
-              <th>Assigned To</th>
-              <th>Assigned (Date &amp; Time)</th>
-              <th>From Section</th>
-              <th>Remarks</th>
-              <th>Case Type</th>
-              <th>Completed (Date &amp; Time)</th>
-              <th>Status</th>
-              <th>Delete Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${filtered.map(t => {
-              const d = decodeSection(t.section_name);
-              const assignedUser =
-                t.operator?.full_name ||
-                t.assigned_to_name ||
-                t.assigned_user?.full_name ||
-                t.assigned_to_user?.full_name ||
-                "MEMO";
-              return `
-                <tr>
-                  <td>${esc(t.id)}</td>
-                  <td>${esc(d.bench)}</td>
-                  <td>${esc(getCourtStr(t))}</td>
-                  <td>${esc(t.list_type || "")}</td>
-                  <td>${esc(assignedUser)}</td>
-                  <td class="date-time-cell">${dt(t.assigned_time)}</td>
-                  <td>${esc(d.section)}</td>
-                  <td>${esc(t.remarks || "")}</td>
-                  <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-                  <td class="date-time-cell">${dt(t.completed_time)}</td>
-                  <td>${esc(t.status || "")}</td>
-                  <td>—</td>
-                </tr>`;
-            }).join("")}
-
-            ${deleted.map(t => {
-              const d = decodeSection(t.section_name);
-              const assignedUser =
-                t.operator?.full_name ||
-                t.assigned_to_name ||
-                t.assigned_user?.full_name ||
-                t.assigned_to_user?.full_name ||
-                "—";
-              return `
-                <tr class="deleted-print">
-                  <td>${esc(t.id)}</td>
-                  <td>${esc(d.bench)}</td>
-                  <td>${esc(getCourtStr(t))}</td>
-                  <td>${esc(t.list_type || "")}</td>
-                  <td>${esc(assignedUser)}</td>
-                  <td class="date-time-cell">${dt(t.assigned_time)}</td>
-                  <td>${esc(d.section)}</td>
-                  <td>${esc(t.remarks || "")}</td>
-                  <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-                  <td class="date-time-cell">${dt(t.completed_time)}</td>
-                  <td>DELETED</td>
-                  <td>${esc(t.deleted_reason || "—")}</td>
-                </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-
-      </div>
-
-
-      ${(j.summary || [])
-        .filter(s => s.total > 0)
-        .map(s => `
-
-          <div class="card"
-               style="margin-bottom:10px;padding:14px">
-
-            <h3>
-              ${esc(
-                s.operator?.full_name ||
-                "Unassigned"
-              )}
-            </h3>
-
-            <div style="
-              font-size:14px;
-              color:var(--gray-600)">
-
-              Total:
-              <b>${s.total}</b>
-              |
-              Pending:
-              <b>${s.pending}</b>
-              |
-              Hold:
-              <b>${s.hold}</b>
-              |
-              Done:
-              <b>${s.done}</b>
-
-            </div>
-
-          </div>
-
-        `)
-        .join("")}
-
-
-      ${
-        deleted.length
-
-          ? `
-
-            <div class="deleted-section">
-
-              <h3>
-                🗑 Deleted (${deleted.length})
-              </h3>
-
-              ${
-                deleted
-                  .map(t => `
-
-                    <div class="deleted-item">
-
-                      <b>#${t.id}</b>
-
-                      ${esc(
-                        getCourtStr(t)
-                      )}
-
-                      —
-
-                      <span style="
-                        color:var(--danger)">
-
-                        ${esc(
-                          t.deleted_reason ||
-                          ""
-                        )}
-
-                      </span>
-
-                    </div>
-
-                  `)
-                  .join("")
-              }
-
-            </div>
-
-          `
-
-          : ""
-      }
-
-
-      <div class="action no-print"
-           style="
-             margin-top:16px;
-             justify-content:center">
-
-        <button
-          class="btn-primary"
-          type="button"
-          onclick="printReport(window.__currentReport)">
-
-          🖨 Print
-
-        </button>
-
-      </div>
-
-    `;
-
-  }catch(e){
-
-    $("reportResults").innerHTML =
-      `<div style="
-        color:var(--danger);
-        padding:20px;
-        text-align:center">
-
-        Error:
-        ${esc(e.message)}
-
-      </div>`;
-
-  }
-
+    $("reportResults").innerHTML = `<div style="text-align:center;padding:30px">Loading...</div>`;
+    const j = await taskApi({action:"report", date});
+    const filtered = (j.tasks || []).filter(t => { if(t.task_date) return t.task_date === date; if(t.assigned_time){ const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time)); return d === date; } return false; });
+    const deleted = getDeletedByDate(date);
+    $("reportResults").innerHTML = `<div style="margin-bottom:16px;padding:14px;background:var(--primary);color:#fff;border-radius:var(--radius)"><div style="font-size:24px;font-weight:800">${esc(date)}</div></div><div class="report-summary"><div class="report-card"><h4>Total</h4><div class="count">${filtered.length}</div></div><div class="report-card"><h4>Pending</h4><div class="count" style="color:var(--warning)">${filtered.filter(t => String(t.status).toLowerCase() === "pending").length}</div></div><div class="report-card"><h4>Hold</h4><div class="count" style="color:var(--purple)">${filtered.filter(t => String(t.status).toLowerCase() === "hold").length}</div></div><div class="report-card"><h4>Done</h4><div class="count" style="color:var(--success)">${filtered.filter(t => String(t.status).toLowerCase() === "done").length}</div></div>${deleted.length ? `<div class="report-card"><h4>Deleted</h4><div class="count" style="color:var(--danger)">${deleted.length}</div></div>` : ""}</div>`;
+  }catch(e){ $("reportResults").innerHTML = `<div style="color:var(--danger);padding:20px">Error: ${esc(e.message)}</div>`; }
 }
-
-
-/* =====================================================
-   PRINT REPORT
-   ===================================================== */
-
-function printReport(j){
-
-  const activeTasks = Array.isArray(j?.tasks) ? j.tasks : [];
-  const deletedTasks = Array.isArray(j?.deletedTasks) ? j.deletedTasks : [];
-
-  const rows = activeTasks.map(t => {
-
-    const d = decodeSection(t.section_name);
-
-    const assignedUser =
-      t.operator?.full_name ||
-      t.assigned_to_name ||
-      t.assigned_user?.full_name ||
-      t.assigned_to_user?.full_name ||
-      "MEMO";
-
-    return `
-      <tr>
-        <td>${esc(t.id)}</td>
-        <td>${esc(d.bench)}</td>
-        <td>${esc(getCourtStr(t))}</td>
-        <td>${esc(t.list_type || "")}</td>
-        <td>${esc(assignedUser)}</td>
-        <td class="date-time-cell">${dt(t.assigned_time)}</td>las
-        <td>${esc(d.section)}</td>
-        <td>${esc(t.remarks || "")}</td>
-        <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-        <td class="date-time-cell">${dt(t.completed_time)}</td>
-        <td>${esc(t.status || "")}</td>
-        <td>—</td>
-      </tr>
-    `;
-
-  }).join("");
-
-  // All tasks deleted on the selected report date are included here.
-  const drows = deletedTasks.map(t => {
-
-    const d = decodeSection(t.section_name);
-
-    const assignedUser =
-      t.operator?.full_name ||
-      t.assigned_to_name ||
-      t.assigned_user?.full_name ||
-      t.assigned_to_user?.full_name ||
-      "—";
-
-    return `
-      <tr class="deleted-print">
-        <td>${esc(t.id)}</td>
-        <td>${esc(d.bench)}</td>
-        <td>${esc(getCourtStr(t))}</td>
-        <td>${esc(t.list_type || "")}</td>
-        <td>${esc(assignedUser)}</td>
-        <td class="date-time-cell">${dt(t.assigned_time)}</td>
-        <td>${esc(d.section)}</td>
-        <td>${esc(t.remarks || "")}</td>
-        <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-        <td class="date-time-cell">${dt(t.completed_time)}</td>
-        <td>DELETED</td>
-        <td>${esc(t.deleted_reason || "—")}</td>
-      </tr>
-    `;
-
-  }).join("");
-
-  $("printReport").innerHTML = `
-
-    <h1>AHC Task Report</h1>
-
-    <p>
-      Date: ${esc(j?.date || "")}
-      |
-      Active: ${activeTasks.length}
-      |
-      Deleted: ${deletedTasks.length}
-      |
-      Total: ${activeTasks.length + deletedTasks.length}
-    </p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Bench</th>
-          <th>Court</th>
-          <th>List Type</th>
-          <th>Assigned To</th>
-          <th>Assigned</th>
-          <th>Section</th>
-          <th>Remarks</th>
-          <th>Case Types</th>
-          <th>Completed</th>
-          <th>Status</th>
-          <th>Reason</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${rows}
-        ${drows}
-      </tbody>
-    </table>
-
-  `;
-
-  closeModal();
-
-  setTimeout(() => window.print(), 200);
-}
-
-
-/* =====================================================
-   PRINT TASKS
-   ===================================================== */
-
-function printTasks(){
-
-  const old =
-    $("printReport").innerHTML;
-
-  const deleted =
-    getDeletedByDate(
-      selectedDate()
-    );
-
-  const rows =
-    tasks
-      .map(t => {
-
-        const d =
-          decodeSection(
-            t.section_name
-          );
-
-        const assignedUser =
-          t.operator?.full_name ||
-          t.assigned_to_name ||
-          t.assigned_user?.full_name ||
-          t.assigned_to_user?.full_name ||
-          "MEMO";
-
-        return `
-          <tr>
-
-            <td>${esc(t.id)}</td>
-            <td>${esc(d.bench)}</td>
-            <td>${esc(getCourtStr(t))}</td>
-            <td>${esc(t.list_type || "")}</td>
-            <td>${esc(assignedUser)}</td>
-            <td class="date-time-cell">${dt(t.assigned_time)}</td>
-            <td>${esc(d.section)}</td>
-            <td>${esc(t.remarks || "")}</td>
-            <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-            <td class="date-time-cell">${dt(t.completed_time)}</td>
-            <td>${esc(t.status || "")}</td>
-            <td>—</td>
-
-          </tr>
-        `;
-
-      })
-      .join("");
-
-  const drows =
-    deleted
-      .map(t => {
-
-        const d =
-          decodeSection(
-            t.section_name
-          );
-
-        const assignedUser =
-          t.operator?.full_name ||
-          t.assigned_to_name ||
-          t.assigned_user?.full_name ||
-          t.assigned_to_user?.full_name ||
-          "—";
-
-        return `
-          <tr class="deleted-print">
-
-            <td>${esc(t.id)}</td>
-            <td>${esc(d.bench)}</td>
-            <td>${esc(getCourtStr(t))}</td>
-            <td>${esc(t.list_type || "")}</td>
-            <td>${esc(assignedUser)}</td>
-            <td class="date-time-cell">${dt(t.assigned_time)}</td>
-            <td>${esc(d.section)}</td>
-            <td>${esc(t.remarks || "")}</td>
-            <td>${esc(d.caseTypes.join(", ") || "-")}</td>
-            <td class="date-time-cell">${dt(t.completed_time)}</td>
-            <td>DELETED</td>
-            <td>${esc(t.deleted_reason || "")}</td>
-
-          </tr>
-        `;
-
-      })
-      .join("");
-
-  $("printReport").innerHTML = `
-
-    <h1>AHC Tasks</h1>
-
-    <p>
-      Date: ${esc(selectedDate())}
-      |
-      Active: ${tasks.length}
-      |
-      Deleted: ${deleted.length}
-    </p>
-
-    <table>
-
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Bench</th>
-          <th>Court</th>
-          <th>List Type</th>
-          <th>Assigned To</th>
-          <th>Assigned</th>
-          <th>Section</th>
-          <th>Remarks</th>
-          <th>Case Types</th>
-          <th>Completed</th>
-          <th>Status</th>
-          <th>Reason</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${rows}
-        ${drows}
-      </tbody>
-
-    </table>
-
-  `;
-
-  window.print();
-
-  setTimeout(
-    () => {
-      $("printReport")
-        .innerHTML = old;
-    },
-    500
-  );
-
-}
-
-
-/* =====================================================
-   AUTO LOGIN SESSION
-   ===================================================== */
-
-(async()=>{
-
-  const {
-    data:{
-      session
-    }
-  } =
-    await sb.auth.getSession();
-
-
-  if(session){
-
-    $("loginCard")
-      .classList
-      .add("hidden");
-
-    $("app")
-      .classList
-      .remove("hidden");
-
-    $("workDate").value =
-      todayIST();
-
-    initCtDropdown();
-    initHoldReasons();
-
-
-    try{
-
-      await loadOperators();
-
-      await refreshAll();
-
-    }catch(e){
-
-      $("loginCard")
-        .classList
-        .remove("hidden");
-
-      $("app")
-        .classList
-        .add("hidden");
-
-      $("loginMsg")
-        .textContent =
-        e.message;
-
-    }
-
-  }
-
-})();
-
-
-/* =====================================================
-   AUTO REFRESH
-   ===================================================== */
-
-setInterval(
-  () => {
-
-    if(
-      !$("app")
-        .classList
-        .contains("hidden")
-    ){
-
-      refreshAll();
-
-    }
-
-  },
-  10000
-);
-
-</script>
-
-<script>
-function openUserManager() {
-  const modal = document.getElementById("userManagerModal");
-
-  if (!modal) return;
-
-  modal.style.display = "block";
-  document.body.style.overflow = "hidden";
-
-  loadManagedOperators();
-}
-
-  
-function closeUserManager() {
-  const modal = document.getElementById("userManagerModal");
-
-  if (modal) {
-    modal.style.display = "none";
-  }
-
-  document.body.style.overflow = "";
-}
-
-async function addOperator() {
-  const message = document.getElementById("userManagerMessage");
-
-  const fullNameInput = document.getElementById("newOperatorName");
-  const usernameInput = document.getElementById("newOperatorUsername");
-  const pinInput = document.getElementById("newOperatorPin");
-
-  if (!fullNameInput || !usernameInput || !pinInput) {
-    if (message) {
-      message.textContent = "Operator form ke fields nahi mile.";
-      message.style.color = "#b91c1c";
-    }
-    return;
-  }
-
-  const full_name = fullNameInput.value.trim();
-  const username = usernameInput.value.trim().toLowerCase();
-  const pinValue = pinInput.value.trim();
-
-  if (!full_name || !username || !pinValue) {
-    message.textContent =
-      "Full Name, Username aur Operator PIN teeno bharna zaroori hai.";
-    message.style.color = "#b91c1c";
-    return;
-  }
-
-  if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
-    message.textContent =
-      "Username 3-30 characters ka hona chahiye. Letters, numbers, dot, underscore aur hyphen allowed hain.";
-    message.style.color = "#b91c1c";
-    return;
-  }
-
-  if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) {
-    message.textContent =
-      "PIN mein 4 se 10 letters ya numbers daalein.";
-    message.style.color = "#b91c1c";
-    return;
-  }
-
-  message.textContent = "Operator add ho raha hai...";
-  message.style.color = "#555";
-
+async function downloadSelectedDatePDF() {
   try {
-    const { data: sessionData, error: sessionError } =
-      await sb.auth.getSession();
-
-    if (sessionError || !sessionData.session?.access_token) {
-      throw new Error("Admin session nahi mila. Dobara login karein.");
-    }
-
-    const response = await fetch(
-      `${SUPABASE_URL}/functions/v1/manage-operators`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": SUPABASE_KEY,
-          "Authorization":
-            `Bearer ${sessionData.session.access_token}`
-        },
-        body: JSON.stringify({
-          action: "add",
-          full_name: full_name,
-          username: username,
-          pin: pinValue
-        })
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || result.ok !== true) {
-      throw new Error(
-        result.error +
-        (result.details ? " — " + result.details : "")
-      );
-    }
-
-    fullNameInput.value = "";
-    usernameInput.value = "";
-    pinInput.value = "";
-
-    message.textContent =
-      `Operator "${result.operator?.full_name || full_name}" successfully add ho gaya.`;
-    message.style.color = "#15803d";
-
-    if (typeof loadManagedOperators === "function") {
-      await loadManagedOperators();
-    }
-  } catch (error) {
-    console.error("Add operator error:", error);
-
-    message.textContent =
-      error instanceof Error
-        ? error.message
-        : "Operator add nahi ho saka.";
-
-    message.style.color = "#b91c1c";
-  }
+    const result = await taskApi({ action: "report", date: selectedDate() });
+    const activeTasks = (Array.isArray(result.tasks) ? result.tasks : []).filter(t => { if (t.task_date) return t.task_date === selectedDate(); if (t.assigned_time) { const d = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date(t.assigned_time)); return d === selectedDate(); } return false; });
+    downloadReportPDF({...result, date: selectedDate(), tasks: activeTasks, deletedTasks: getDeletedByDate(selectedDate())});
+  } catch (error) { alert("PDF error: " + error.message); }
+}
+function downloadReportPDF(report) {
+  if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library load nahi hui.");
+  const activeTasks = Array.isArray(report?.tasks) ? report.tasks : [], deletedTasks = Array.isArray(report?.deletedTasks) ? report.deletedTasks : [], date = report?.date || selectedDate();
+  const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL DATE-WISE TASK REPORT", 10, 12);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.text("Date: " + date, 10, 19); doc.text("Total: " + activeTasks.length + " | Deleted: " + deletedTasks.length, 10, 25);
+  const tableRows = [];
+  activeTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.hold_reason || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); });
+  deletedTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", "—", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.deleted_reason || "—", decoded.caseTypes.join(", ") || "—", "—", "DELETED"]); });
+  if (typeof doc.autoTable !== "function") throw new Error("PDF plugin load nahi hua.");
+  doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Assigned", "Section", "Remarks", "Reason", "Case Type", "Completed", "Status"]], body: tableRows.length ? tableRows : [["—", "—", "—", "—", "—", "—", "—", "No tasks", "—", "—", "—", "—"]], theme: "grid", styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" }, headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] } });
+  doc.save("ACL_Report_" + date + ".pdf");
+}
+async function generateBrokenCourtsReportPDF() {
+  try {
+    const brokenTasks = tasks.filter(t => { const decoded = decodeSection(t.section_name); const bench = String(decoded.bench || "").toUpperCase(), status = String(t.status || "").toLowerCase(); return bench === "B" && (status === "done" || status === "completed"); });
+    const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL BROKEN COURTS — DONE TASKS", 10, 12); doc.setFontSize(10); doc.text("Date: " + selectedDate() + " | Total: " + brokenTasks.length, 10, 19);
+    const rows = brokenTasks.map(t => { const decoded = decodeSection(t.section_name); return [getCourtStr(t) || "Broken", decoded.section || "—", t.remarks || "—"]; });
+    doc.autoTable({ startY: 25, head: [["Court", "Section", "Remarks"]], body: rows.length ? rows : [["—", "—", "No tasks"]], theme: "grid", styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [180, 83, 9], textColor: [255, 255, 255] } });
+    doc.save("ACL_Broken_Courts_" + selectedDate() + ".pdf");
+  } catch (error) { alert("PDF error: " + error.message); }
+}
+function printTasks(){
+  const rows = tasks.map(t => { const d = decodeSection(t.section_name); return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(d.section)}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.hold_reason || "—")}</td><td>${esc(d.caseTypes.join(", ") || "-")}</td><td>${esc(t.status || "")}</td></tr>`; }).join("");
+  $("printReport").innerHTML = `<h1>AHC Tasks</h1><p>Date: ${esc(selectedDate())} | Total: ${tasks.length}</p><table><thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Assigned</th><th>Section</th><th>Remarks</th><th>Reason</th><th>Case Type</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
+  window.print();
 }
 
+/* ===================================================== USER MANAGER ===================================================== */
+function openUserManager() { $("userManagerModal").style.display = "block"; document.body.style.overflow = "hidden"; loadManagedOperators(); }
+function closeUserManager() { $("userManagerModal").style.display = "none"; document.body.style.overflow = ""; }
+function switchUserTab(tab) {
+  const tabs = ['add', 'reset', 'delete'];
+  tabs.forEach(t => {
+    const panel = document.getElementById(`panel${t.charAt(0).toUpperCase() + t.slice(1)}`), tabBtn = document.getElementById(`tab${t.charAt(0).toUpperCase() + t.slice(1)}`);
+    if (t === tab) { panel.style.display = 'block'; tabBtn.style.background = '#2563eb'; tabBtn.style.color = 'white'; } 
+    else { panel.style.display = 'none'; tabBtn.style.background = '#e2e8f0'; tabBtn.style.color = '#334155'; }
+  });
+  if (tab === 'delete') loadOperatorsForDelete();
+}
+async function addOperator() {
+  const message = document.getElementById("userManagerMessage"), full_name = $("newOperatorName").value.trim(), username = $("newOperatorUsername").value.trim().toLowerCase(), phone = $("newOperatorPhone").value.trim(), pinValue = $("newOperatorPin").value.trim();
+  if (!full_name || !username || !phone || !pinValue) { message.textContent = "❌ Sabhi fields bharein."; message.style.color = "#b91c1c"; return; }
+  if (!/^[6-9]\d{9}$/.test(phone)) { message.textContent = "❌ Phone 10 digits ka hona chahiye (6-9 se shuru)."; message.style.color = "#b91c1c"; return; }
+  if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) { message.textContent = "❌ Username 3-30 chars."; message.style.color = "#b91c1c"; return; }
+  if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) { message.textContent = "❌ PIN 4-10 chars."; message.style.color = "#b91c1c"; return; }
+  message.textContent = "Adding..."; message.style.color = "#555";
+  try {
+    const result = await manageOperatorsRequest({action: "add", full_name, username, phone, pin: pinValue});
+    $("newOperatorName").value = ""; $("newOperatorUsername").value = ""; $("newOperatorPhone").value = ""; $("newOperatorPin").value = "";
+    message.textContent = `✅ Operator "${result.operator?.full_name || full_name}" added.`; message.style.color = "#15803d";
+    await loadManagedOperators(); await loadOperators();
+  } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
+}
+async function resetOperatorPassword() {
+  const message = document.getElementById("userManagerMessage"), phone = $("resetPhone").value.trim(), newPassword = $("resetNewPassword").value.trim();
+  if (!phone || !newPassword) { message.textContent = "❌ Phone aur naya password dono zaroori."; message.style.color = "#b91c1c"; return; }
+  if (!/^[6-9]\d{9}$/.test(phone)) { message.textContent = "❌ Phone 10 digits."; message.style.color = "#b91c1c"; return; }
+  if (!/^[A-Za-z0-9]{4,10}$/.test(newPassword)) { message.textContent = "❌ Password 4-10 chars."; message.style.color = "#b91c1c"; return; }
+  if (!confirm(`Phone ${phone} wale operator ka password reset karein?`)) return;
+  message.textContent = "Resetting...";
+  try {
+    const result = await manageOperatorsRequest({action: "reset_password", phone, new_password: newPassword});
+    $("resetPhone").value = ""; $("resetNewPassword").value = "";
+    message.textContent = `✅ ${result.message}`; message.style.color = "#15803d";
+  } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
+}
+async function loadOperatorsForDelete() {
+  const select = $("deleteOperatorSelect"); if (!select) return;
+  try {
+    const result = await manageOperatorsRequest({ action: "list" });
+    const activeOperators = (result.operators || []).filter(o => o.active && o.username.toLowerCase() !== "admin");
+    select.innerHTML = '<option value="">-- Select Operator --</option>' + activeOperators.map(o => `<option value="${o.username}" data-id="${o.id}">${o.full_name} (${o.username}) — 📱 ${o.phone || 'N/A'}</option>`).join("");
+  } catch (error) { console.error("Load failed:", error); }
+}
+async function checkOperatorBeforeDelete() {
+  const message = document.getElementById("userManagerMessage"), select = $("deleteOperatorSelect"), username = select.value;
+  if (!username) { message.textContent = "❌ Select operator."; message.style.color = "#b91c1c"; return; }
+  const selectedOption = select.options[select.selectedIndex], operatorName = selectedOption.text;
+  message.textContent = "Checking tasks...";
+  try {
+    const allTasksResult = await taskApi({ action: "all_tasks", date: "" }), allTasks = allTasksResult.tasks || [];
+    const operatorTasks = allTasks.filter(t => String(t.assigned_to) === String(selectedOption.dataset.id)), taskCount = operatorTasks.length;
+    if (taskCount > 0) {
+      const backupConfirm = confirm(`⚠️ OPERATOR HAS ${taskCount} TASKS!\n\nPehle PDF backup lena zaroori hai.\nOK = Backup download, Cancel = Stop`);
+      if (!backupConfirm) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; }
+      const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text(`OPERATOR BACKUP — ${operatorName}`, 10, 12); doc.setFontSize(10);
+      doc.text("Generated: " + new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), 10, 19); doc.text("Tasks: " + taskCount, 10, 25);
+      const rows = operatorTasks.map(t => { const decoded = decodeSection(t.section_name); return [String(t.id), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.task_date || "—", decoded.section || "—", t.remarks || "—", t.status || "—"]; });
+      doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List", "Date", "Section", "Remarks", "Status"]], body: rows, theme: "grid", styles: { fontSize: 7, cellPadding: 1.5 }, headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255] } });
+      const fileName = `Operator_Backup_${username}_${todayIST()}.pdf`; doc.save(fileName);
+      const finalConfirm = confirm(`✅ PDF DOWNLOADED: "${fileName}"\n\nAb delete karein?\nOperator: ${operatorName}\nTasks archived honge.`);
+      if (!finalConfirm) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; }
+    } else { if (!confirm(`Operator ke paas koi task nahi. Delete karein "${operatorName}"?`)) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; } }
+    message.textContent = "Deleting...";
+    const result = await manageOperatorsRequest({action: "delete", username, backup_confirmed: true});
+    message.textContent = `✅ ${result.message}`; message.style.color = "#15803d";
+    await loadManagedOperators(); await loadOperators(); await loadOperatorsForDelete();
+  } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
+}
 
+/* ===================================================== SPACE STATUS MANAGEMENT ===================================================== */
+let spaceStatusInterval = null, lastSpaceConfig = null;
+async function loadSpaceStatus() {
+  try {
+    const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "get_status" } });
+    if (error) throw error; if (!data.success) throw new Error(data.error);
+    lastSpaceConfig = data.config; updateSpaceStatusUI(data);
+  } catch (error) { console.error("Space status failed:", error); $("spaceStatusContent").innerHTML = `<div style="opacity:0.9">❌ Space monitor nahi chal raha. Edge Function 'space-monitor' deploy karein.</div>`; }
+}
+function updateSpaceStatusUI(data) {
+  const space = data.space, config = data.config, lastBackup = data.last_backup;
+  const statusColors = { healthy: { bar: '#10b981', icon: '✅', text: 'Healthy' }, warning: { bar: '#fbbf24', icon: '⚠️', text: 'Warning' }, critical: { bar: '#fca5a5', icon: '🚨', text: 'Critical' } };
+  const status = statusColors[space.status] || statusColors.healthy;
+  const card = $("spaceStatusCard"); card.classList.remove('status-warning', 'status-critical');
+  if (space.status === 'warning') card.classList.add('status-warning'); if (space.status === 'critical') card.classList.add('status-critical');
+  const lastBackupText = lastBackup?.timestamp ? new Date(lastBackup.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : 'Never';
+  $("spaceStatusContent").innerHTML = `
+    <div class="space-grid">
+      <div><div class="space-stat-label">Current Size</div><div class="space-stat-value">${space.current_size_mb} MB</div></div>
+      <div><div class="space-stat-label">Max Limit</div><div class="space-stat-value">${space.max_size_mb} MB</div></div>
+      <div><div class="space-stat-label">Space Left</div><div class="space-stat-value">${space.remaining_mb} MB</div></div>
+      <div><div class="space-stat-label">Days Remaining</div><div class="space-stat-value">${space.days_remaining} days</div></div>
+      <div><div class="space-stat-label">Status</div><div class="space-stat-value">${status.icon} ${status.text}</div></div>
+    </div>
+    <div class="space-progress"><div class="space-progress-bar" style="background:${status.bar}; width:${space.usage_percentage}%;">${space.usage_percentage}% Used</div></div>
+    <div class="space-details">
+      <div>📋 Tasks: <b>${space.stats.tasks_count}</b> (${space.stats.tasks_table_size_mb} MB)</div>
+      <div>👥 Operators: <b>${space.stats.operators_count}</b></div>
+      <div>⏰ Last Backup: <b>${lastBackupText}</b></div>
+      <div>🔄 Auto: <b>${config.auto_backup_enabled ? 'Every ' + config.backup_interval_days + ' days' : 'Disabled'}</b></div>
+    </div>`;
+}
+function openSpaceConfig() {
+  $("spaceConfigModal").classList.remove("hidden");
+  if (lastSpaceConfig) {
+    $("cfgAutoBackup").value = String(lastSpaceConfig.auto_backup_enabled); $("cfgBackupInterval").value = lastSpaceConfig.backup_interval_days;
+    $("cfgRetentionMonths").value = lastSpaceConfig.retention_months; $("cfgMaxSize").value = lastSpaceConfig.max_database_size_mb;
+    $("cfgWarningThreshold").value = lastSpaceConfig.warning_threshold_mb; $("cfgCriticalThreshold").value = lastSpaceConfig.critical_threshold_mb;
+  }
+}
+function closeSpaceConfig() { $("spaceConfigModal").classList.add("hidden"); }
+async function saveSpaceConfig() {
+  try {
+    const config = { auto_backup_enabled: $("cfgAutoBackup").value === 'true', backup_interval_days: parseInt($("cfgBackupInterval").value), retention_months: parseInt($("cfgRetentionMonths").value), max_database_size_mb: parseInt($("cfgMaxSize").value), warning_threshold_mb: parseInt($("cfgWarningThreshold").value), critical_threshold_mb: parseInt($("cfgCriticalThreshold").value) };
+    const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "update_config", ...config } });
+    if (error) throw error; if (!data.success) throw new Error(data.error);
+    alert("✅ Configuration saved!"); closeSpaceConfig(); await loadSpaceStatus();
+  } catch (error) { alert("❌ Save failed: " + error.message); }
+}
+async function triggerManualBackup() {
+  const months = prompt("Kitne mahine purane tasks ka backup lena hai?", "4"); if (!months) return;
+  if (!confirm(`⚠️ ${months} mahine purane tasks backup + delete honge. Continue?`)) return;
+  try {
+    const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "trigger_backup", months: parseInt(months) } });
+    if (error) throw error; if (!data.success) throw new Error(data.error);
+    alert(`✅ Backup done! ${data.result?.deletedTasks || 0} tasks backed up & deleted.`); await loadSpaceStatus(); await refreshAll();
+  } catch (error) { alert("❌ Backup failed: " + error.message); }
+}
+function startSpaceStatusMonitoring() { loadSpaceStatus(); if (spaceStatusInterval) clearInterval(spaceStatusInterval); spaceStatusInterval = setInterval(loadSpaceStatus, 5 * 60 * 1000); }
 
-
+/* ===================================================== AUTO LOGIN & REFRESH ===================================================== */
+(async()=>{
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){
+    $("loginCard").classList.add("hidden"); $("app").classList.remove("hidden"); $("workDate").value = todayIST();
+    initCtDropdown(); initCourtDropdown(); initHoldReasons();
+    try{ await loadOperators(); await refreshAll(); startSpaceStatusMonitoring(); }
+    catch(e){ $("loginCard").classList.remove("hidden"); $("app").classList.add("hidden"); $("loginMsg").textContent = e.message; }
+  }
+})();
+setInterval(() => { if(!$("app").classList.contains("hidden")) refreshAll(); }, 30000);
 </script>
-</escape>
-
 </body>
 </html>
-```
