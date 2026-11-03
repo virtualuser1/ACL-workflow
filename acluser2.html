@@ -1023,6 +1023,31 @@ setInterval(async () => {
     }
   } catch(e){ clearSession(); }
 })();
+    // acluser2.html ke andar ye code add karein:
+window.addEventListener('message', function(event) {
+    // Security check: Agar aapka domain pata hai to event.origin check karein
+    // if (event.origin !== "https://aapka-parent-domain.com") return;
+
+    if (event.data && event.data.action === 'relogin') {
+        const user = event.data.username;
+        const pass = event.data.password;
+
+        console.log("Relogin request received for:", user);
+
+        // Yahan apna actual login logic likhein. 
+        // Example: Agar aap localStorage mein session save karte hain:
+        // localStorage.setItem('acl_session_user', user);
+        // localStorage.setItem('acl_session_pass', pass); // (Note: Password plain text mein save na karein, token use karein)
+        
+        // Ya fir apne login function ko call karein:
+        // performLogin(user, pass); 
+        
+        // Agar aapke paas direct login function nahi hai, to page reload karke URL mein params bhej sakte hain (kam secure):
+        // window.location.href = `?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`;
+        
+        alert(`Welcome back, ${user}!`);
+    }
+});
 </script>
 
 </body>
