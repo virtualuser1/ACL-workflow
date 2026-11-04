@@ -830,13 +830,100 @@ async function saveSpaceConfig() {
   } catch (error) { alert("❌ Save failed: " + error.message); }
 }
 async function triggerManualBackup() {
-  const months = prompt("Kitne mahine purane tasks ka backup lena hai?", "4"); if (!months) return;
-  if (!confirm(`⚠️ ${months} mahine purane tasks backup + delete honge. Continue?`)) return;
-  try {
-    const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "trigger_backup", months: parseInt(months) } });
-    if (error) throw error; if (!data.success) throw new Error(data.error);
-    alert(`✅ Backup done! ${data.result?.deletedTasks || 0} tasks backed up & deleted.`); await loadSpaceStatus(); await refreshAll();
-  } catch (error) { alert("❌ Backup failed: " + error.message); }
+    const months = prompt("Kitne mahine purane tasks ka backup lena hai?", "4");
+    if (!months) return;
+    
+    const cutoffDate = new Date();
+    cutoffDate.setMonth(cutoffDate.getMonth() - parseInt(months));
+    const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
+    
+    if (!confirm(`⚠️  ${months} mahine purane tasks (${cutoffDateStr} se pehle) backup + delete honge.\n\nPehle PDF download hogi, phir backup hoga.\nContinue?`)) return;
+    
+    try {
+        // Step 1: Pehle tasks fetch karo jo backup honge
+        const { data: allTasksResult, error: fetchError } = await sb
+            .from('tasks')
+            .select('*')
+            .or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`)
+            .order('assigned_time', { ascending: false });
+        
+        if (fetchError) throw fetchError;
+        
+        const tasksToBackup = allTasksResult || [];
+        
+        if (tasksToBackup.length === 0) {
+            alert(`✅ Koi task nahi mila ${cutoffDateStr} se pehle. Backup ki zaroorat nahi.`);
+            return;
+        }
+        
+        // Step 2: PDF Generate karo
+        const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        
+        // Header
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(18);
+        doc.text("ACL DATABASE BACKUP REPORT", 10, 15);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`Backup Date: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`, 10, 22);
+        doc.text(`Retention Period: ${months} months (Tasks before ${cutoffDateStr})`, 10, 27);
+        doc.text(`Total Tasks to Backup: ${tasksToBackup.length}`, 10, 32);
+        
+        // Get users map for operator names
+        const { data: users } = await sb.from('users').select('id, username, full_name');
+        const userMap = {};
+        (users || []).forEach(u => { userMap[u.id] = u.full_name || u.username; });
+        
+        // Table data
+        const tableRows = tasksToBackup.map(t => {
+            const decoded = decodeSection(t.section_name);
+            const operatorName = t.assigned_to ? (userMap[t.assigned_to] || 'Unknown') : 'MEMO';
+            return [
+                String(t.id),
+                decoded.bench || "-",
+                getCourtStr(t),
+                t.list_type || "-",
+                operatorName,
+                t.task_date || (t.assigned_time ? new Date(t.assigned_time).toLocaleDateString('en-CA') : "-"),
+                decoded.section || "-",
+                t.remarks || "-",
+                t.status || "Pending"
+            ];
+        });
+        
+        // Generate table
+        doc.autoTable({
+            startY: 38,
+            head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Date", "Section", "Remarks", "Status"]],
+            body: tableRows.length ? tableRows : [["-", "-", "-", "-", "-", "-", "-", "No tasks", "-"]],
+            theme: "grid",
+            styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" },
+            headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
+            alternateRowStyles: { fillColor: [248, 250, 252] }
+        });
+        
+        // Save PDF
+        const fileName = `ACL_Backup_${months}_Months_${cutoffDateStr}.pdf`;
+        doc.save(fileName);
+        
+        // Step 3: Ab actual backup trigger karo
+        const { data, error } = await sb.functions.invoke("space-monitor", { 
+            body: { action: "trigger_backup", months: parseInt(months) } 
+        });
+        
+        if (error) throw error;
+        if (!data.success) throw new Error(data.error);
+        
+        alert(`✅ SUCCESS!\n\n📄 PDF Downloaded: "${fileName}"\n🗑️  ${data.result?.deletedTasks || 0} tasks backed up & deleted from database.\n\nPDF file mein saare tasks ka complete record hai.`);
+        
+        await loadSpaceStatus();
+        await refreshAll();
+        
+    } catch (error) {
+        alert(`❌ Backup failed: ${error.message}`);
+        console.error("Backup error:", error);
+    }
 }
 function startSpaceStatusMonitoring() { loadSpaceStatus(); if (spaceStatusInterval) clearInterval(spaceStatusInterval); spaceStatusInterval = setInterval(loadSpaceStatus, 5 * 60 * 1000); }
 
