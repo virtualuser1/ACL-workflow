@@ -118,18 +118,13 @@ tr.memo-done-row{background:var(--success-light)}
 .case-cell{display:flex;flex-direction:column;gap:2px;max-width:220px}
 
 #modal{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
-.modalbox{background:#fff;width:min(700px,96vw);max-height:85vh;overflow:auto;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow)}
+.modalbox{background:#fff;width:min(1100px,96vw);max-height:92vh;overflow:auto;border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow)}
 .report-controls{display:flex;gap:12px;align-items:end;margin-bottom:20px;padding:16px;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200);flex-wrap:wrap}
-.report-controls .field{flex:1;min-width:180px}.report-controls input{width:100%}
+.report-controls .field{flex:1;min-width:180px}.report-controls input,.report-controls select{width:100%}
 .report-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px}
 .report-card{padding:14px;background:var(--gray-50);border-radius:var(--radius);border:1px solid var(--gray-200)}
 .report-card h4{font-size:12px;margin-bottom:4px;color:var(--gray-700)}
 .report-card .count{font-size:24px;font-weight:800;color:var(--gray-900)}
-.deleted-section{margin-top:16px;padding:16px;background:var(--danger-light);border:1px solid var(--danger);border-radius:var(--radius)}
-.deleted-section h3{color:var(--danger);margin-bottom:10px;font-size:15px}
-.deleted-item{padding:8px 10px;border-bottom:1px solid rgba(220,38,38,.2);font-size:13px}
-.deleted-item:last-child{border-bottom:none}
-.report-print{display:none}
 
 #holdReasonOverlay{position:fixed;inset:0;background:rgba(15,23,42,.78);backdrop-filter:blur(6px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px}
 #holdReasonBox{background:#fff;width:min(620px,96vw);border-radius:var(--radius-lg);padding:30px;box-shadow:var(--shadow)}
@@ -139,7 +134,6 @@ tr.memo-done-row{background:var(--success-light)}
 #holdReasonSelect:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.12)}
 .hold-modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 
-/* SPACE STATUS CARD STYLES */
 .space-card{background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;transition:background 0.5s}
 .space-card.status-warning{background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%)}
 .space-card.status-critical{background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%)}
@@ -152,11 +146,13 @@ tr.memo-done-row{background:var(--success-light)}
 .space-details{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;font-size:13px;margin-top:12px}
 
 @media print{
-  body *{visibility:hidden}#printReport,#printReport *{visibility:visible}
-  #printReport{display:block!important;position:absolute;left:0;top:0;width:100%;padding:10px;margin:0;border:none;box-shadow:none;background:#fff}
-  #printReport h1{font-size:16px;margin-bottom:4px;color:#000}#printReport p{font-size:11px;margin-bottom:8px;color:#333}
+  body *{visibility:hidden}
+  #printReport,#printReport *{visibility:visible}
+  #printReport{display:block!important;position:absolute;left:0;top:0;width:100%;padding:15px;margin:0;border:none;box-shadow:none;background:#fff}
+  #printReport h1{font-size:18px;margin-bottom:6px;color:#000;text-align:center}
+  #printReport p{font-size:12px;margin-bottom:10px;color:#333;text-align:center}
   #printReport table{width:100%;border-collapse:collapse;font-size:9px;margin-bottom:10px}
-  #printReport table th,#printReport table td{padding:4px 5px;border:1px solid #999;text-align:left;vertical-align:top}
+  #printReport table th,#printReport table td{padding:5px 6px;border:1px solid #999;text-align:left;vertical-align:top}
   #printReport table th{background:#eee!important;font-weight:700;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   @page{margin:8mm;size:landscape}
 }
@@ -185,7 +181,8 @@ tr.memo-done-row{background:var(--success-light)}
       <label>Full Name</label><input id="newOperatorName" type="text" placeholder="Enter full name" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>Username</label><input id="newOperatorUsername" type="text" placeholder="Enter username" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>📱 Phone Number (for password recovery)</label><input id="newOperatorPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
-      <label>Operator PIN / Password</label><input id="newOperatorPin" type="password" placeholder="Set operator PIN (4-10 chars)" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>Operator PIN / Password <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
+      <input id="newOperatorPin" type="password" placeholder="e.g. Pass@123 or Abc#2024" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <button type="button" onclick="addOperator()" style="background:#1769aa; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">＋ Add Operator</button>
     </div>
 
@@ -193,7 +190,8 @@ tr.memo-done-row{background:var(--success-light)}
       <h3>🔑 Reset Operator Password</h3>
       <p style="color:#64748b; font-size:13px; margin-bottom:14px;">Agar operator apna PIN/Password bhool gaya hai, to uska registered phone number daal kar naya password set karein.</p>
       <label>📱 Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
-      <label>New Password / PIN</label><input id="resetNewPassword" type="password" placeholder="New password (4-10 chars)" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>New Password / PIN <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
+      <input id="resetNewPassword" type="password" placeholder="e.g. Pass@123" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <button type="button" onclick="resetOperatorPassword()" style="background:#d97706; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">🔑 Reset Password</button>
     </div>
 
@@ -224,7 +222,6 @@ tr.memo-done-row{background:var(--success-light)}
 
 <!-- APPLICATION -->
 <div id="app" class="hidden">
-<!-- HEADER -->
 <div class="card">
   <div class="top">
     <div class="header-title"><h1>ACL ADMIN Dashboard</h1><div class="header-sub">Logged in as: <b>Admin</b></div></div>
@@ -236,7 +233,6 @@ tr.memo-done-row{background:var(--success-light)}
   </div>
 </div>
 
-<!-- SPACE STATUS CARD -->
 <div class="card space-card" id="spaceStatusCard">
   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;">
     <div style="flex:1; min-width:300px;">
@@ -250,7 +246,6 @@ tr.memo-done-row{background:var(--success-light)}
   </div>
 </div>
 
-<!-- DATE -->
 <div class="card" style="padding:18px 28px">
   <div class="date-section">
     <label>📅 Working Date:</label><input id="workDate" type="date" onchange="refreshAll()">
@@ -258,7 +253,6 @@ tr.memo-done-row{background:var(--success-light)}
   </div>
 </div>
 
-<!-- STATS -->
 <div class="stats">
   <div class="stat stat-total"><div class="stat-icon">📋</div><div class="stat-label">Total</div><div class="stat-value" id="totalCount">0</div></div>
   <div class="stat stat-pending"><div class="stat-icon">⏳</div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div>
@@ -267,7 +261,6 @@ tr.memo-done-row{background:var(--success-light)}
   <div class="stat stat-memo"><div class="stat-icon">📝</div><div class="stat-label">Admin</div><div class="stat-value" id="memoCount">0</div></div>
 </div>
 
-<!-- ASSIGN NEW TASK -->
 <div class="card no-print assign-task-card" style="padding:22px 28px">
   <h2>Assign New Task</h2>
   <div class="form-line">
@@ -296,7 +289,6 @@ tr.memo-done-row{background:var(--success-light)}
   <div class="warning-box" id="duplicateWarning"><span>⚠️</span><span id="duplicateMsg"></span><div class="warn-actions"><button class="btn-sm btn-warning" onclick="forceCreateTask()">Assign Anyway</button><button class="btn-sm btn-muted" onclick="hideWarning()">Cancel</button></div></div>
 </div>
 
-<!-- TASK TABLE -->
 <div class="card card-no-pad">
   <div class="top no-print" style="padding:20px 28px;border-bottom:1px solid var(--gray-200)">
     <h2 style="margin-bottom:0">Tasks — <span id="dateLabel" style="color:var(--primary)"></span></h2>
@@ -314,7 +306,7 @@ tr.memo-done-row{background:var(--success-light)}
         <tr>
           <th class="no-print"><input type="checkbox" id="selectAllTasks" onchange="toggleSelectAll(this.checked)" aria-label="Select all"></th>
           <th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Assigned To</th><th>Section</th><th>Remarks</th>
-          <th>Reason</th> <!-- NEW DEDICATED COLUMN -->
+          <th>Reason</th>
           <th>Case Type</th><th>Status</th><th>Assigned</th><th>Completed</th><th class="no-print">Action</th>
         </tr>
       </thead>
@@ -322,7 +314,7 @@ tr.memo-done-row{background:var(--success-light)}
     </table>
   </div>
 </div>
-<div id="printReport" class="report-print"></div>
+<div id="printReport" style="display:none"></div>
 </div>
 </div>
 
@@ -337,11 +329,11 @@ tr.memo-done-row{background:var(--success-light)}
       <button onclick="closeSpaceConfig()" style="border:0; background:#eee; padding:8px 12px; border-radius:6px; cursor:pointer;">✕</button>
     </div>
     <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Auto Backup Enabled</label><select id="cfgAutoBackup" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><option value="true">Yes - Automatic</option><option value="false">No - Manual Only</option></select></div>
-    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Backup Interval (Days)</label><input id="cfgBackupInterval" type="number" min="7" max="90" value="30" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitne din baad automatic backup hoga</small></div>
-    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Retention Period (Months)</label><input id="cfgRetentionMonths" type="number" min="1" max="24" value="4" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitne mahine purane tasks delete honge</small></div>
-    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Max Database Size (MB)</label><input id="cfgMaxSize" type="number" min="100" max="1000" value="450" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Supabase Free Tier: 500MB (Safe limit: 450MB)</small></div>
-    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Warning Threshold (MB)</label><input id="cfgWarningThreshold" type="number" min="10" max="100" value="50" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitna MB bacha ho to warning dikhaye</small></div>
-    <div style="margin-bottom:20px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Critical Threshold (MB)</label><input id="cfgCriticalThreshold" type="number" min="5" max="50" value="20" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><small style="color:#666;">Kitna MB bacha ho to critical alert dikhaye</small></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Backup Interval (Days)</label><input id="cfgBackupInterval" type="number" min="7" max="90" value="30" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Retention Period (Months)</label><input id="cfgRetentionMonths" type="number" min="1" max="24" value="4" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Max Database Size (MB)</label><input id="cfgMaxSize" type="number" min="100" max="1000" value="450" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+    <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Warning Threshold (MB)</label><input id="cfgWarningThreshold" type="number" min="10" max="100" value="50" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
+    <div style="margin-bottom:20px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Critical Threshold (MB)</label><input id="cfgCriticalThreshold" type="number" min="5" max="50" value="20" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></div>
     <div style="display:flex; gap:10px; justify-content:flex-end;"><button class="btn-muted" onclick="closeSpaceConfig()">Cancel</button><button class="btn-primary" onclick="saveSpaceConfig()">💾 Save Configuration</button></div>
   </div>
 </div>
@@ -586,9 +578,7 @@ function renderTasks(){
     const courtStr = getCourtStr(t);
     let caseBadges = '<span style="color:var(--gray-400)">-</span>'; if(decoded.caseTypes.length) caseBadges = decoded.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("");
 
-    // REASON COLUMN (Hold reason in purple)
-    const reasonDisplay = t.hold_reason ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
-    // CHECKBOX ONLY FOR PENDING TASKS
+    const reasonDisplay = (t.reason || t.hold_reason) ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(t.reason || t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
     const isPending = status === "pending", showCheckbox = !memo && isPending;
 
     return `<tr class="${rc}">
@@ -654,22 +644,173 @@ async function deleteTask(id){
   try{ const task = tasks.find(t => t.id === id); await taskApi({action:"delete", task_id:id, reason:reason.trim()}); if(task) saveDeletedTask(task, reason.trim()); await refreshAll(); }catch(e){ alert("Delete failed: " + e.message); }
 }
 
-/* ===================================================== REPORTS & PDF ===================================================== */
-function closeModal(){ $("modal").classList.add("hidden"); }
-async function openReport(){
-  $("modalContent").innerHTML = `<h2>📊 Date-wise Report</h2><div class="report-controls no-print"><div class="field"><label>Date:</label><input type="date" id="reportDate" value="${selectedDate()}"></div><button class="btn-primary" onclick="generateReport()">Generate</button></div><div id="reportResults"></div>`;
-  $("modal").classList.remove("hidden"); setTimeout(() => generateReport(), 100);
+/* ===================================================== REPORTS & PDF (FIXED) ===================================================== */
+function closeModal(){ $("modal").classList.add("hidden"); $("printReport").style.display = "none"; $("printReport").innerHTML = ""; }
+
+// ✅ FIX: openReport function properly defined with Court filter
+function openReport(){
+  // Court dropdown options build karo
+  const courtOptions = ['<option value="">All Courts</option>'];
+  const uniqueCourts = new Set();
+  tasks.forEach(t => { const c = getCourtStr(t); if(c && c !== "-") uniqueCourts.add(c); });
+  Array.from(uniqueCourts).sort().forEach(c => courtOptions.push(`<option value="${esc(c)}">${esc(c)}</option>`));
+
+  $("modalContent").innerHTML = `
+    <h2 style="margin-bottom:18px;">📊 Date-wise Report</h2>
+    <div class="report-controls no-print">
+      <div class="field">
+        <label>Date:</label>
+        <input type="date" id="reportDate" value="${selectedDate()}">
+      </div>
+      <div class="field">
+        <label>Court Filter:</label>
+        <select id="reportCourtFilter">${courtOptions.join("")}</select>
+      </div>
+      <div style="display:flex; gap:8px; align-items:end;">
+        <button class="btn-primary" onclick="generateReport()">🔍 Generate Report</button>
+      </div>
+    </div>
+    <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">👆 "Generate Report" button click karein</div></div>
+  `;
+  $("modal").classList.remove("hidden");
+  
+  // Auto-generate on open
+  setTimeout(() => generateReport(), 200);
 }
+
 async function generateReport(){
-  const date = $("reportDate").value; if(!date){ alert("Select date"); return; }
+  const date = $("reportDate").value;
+  const courtFilter = $("reportCourtFilter")?.value || "";
+  
+  if(!date){ alert("Select date"); return; }
+  
+  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Report Generate हो रही है...</div>`;
+  
   try{
-    $("reportResults").innerHTML = `<div style="text-align:center;padding:30px">Loading...</div>`;
     const j = await taskApi({action:"report", date});
-    const filtered = (j.tasks || []).filter(t => { if(t.task_date) return t.task_date === date; if(t.assigned_time){ const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time)); return d === date; } return false; });
-    const deleted = getDeletedByDate(date);
-    $("reportResults").innerHTML = `<div style="margin-bottom:16px;padding:14px;background:var(--primary);color:#fff;border-radius:var(--radius)"><div style="font-size:24px;font-weight:800">${esc(date)}</div></div><div class="report-summary"><div class="report-card"><h4>Total</h4><div class="count">${filtered.length}</div></div><div class="report-card"><h4>Pending</h4><div class="count" style="color:var(--warning)">${filtered.filter(t => String(t.status).toLowerCase() === "pending").length}</div></div><div class="report-card"><h4>Hold</h4><div class="count" style="color:var(--purple)">${filtered.filter(t => String(t.status).toLowerCase() === "hold").length}</div></div><div class="report-card"><h4>Done</h4><div class="count" style="color:var(--success)">${filtered.filter(t => String(t.status).toLowerCase() === "done").length}</div></div>${deleted.length ? `<div class="report-card"><h4>Deleted</h4><div class="count" style="color:var(--danger)">${deleted.length}</div></div>` : ""}</div>`;
-  }catch(e){ $("reportResults").innerHTML = `<div style="color:var(--danger);padding:20px">Error: ${esc(e.message)}</div>`; }
+    let allTasks = j.tasks || [];
+    
+    // Date filter
+    let tasks = allTasks.filter(t => { 
+      if(t.task_date) return t.task_date === date; 
+      if(t.assigned_time){ 
+        const d = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(t.assigned_time)); 
+        return d === date; 
+      } 
+      return false; 
+    });
+
+    // ✅ FIX: Court filter apply karo
+    if(courtFilter) {
+      tasks = tasks.filter(t => getCourtStr(t) === courtFilter);
+    }
+    
+    if(tasks.length === 0) {
+      $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500);">❌ ${esc(date)}${courtFilter ? ' (Court: ' + esc(courtFilter) + ')' : ''} के लिए कोई Task नहीं मिला।</div>`;
+      return;
+    }
+
+    const total = tasks.length;
+    const pending = tasks.filter(t => String(t.status).toLowerCase() === "pending").length;
+    const hold = tasks.filter(t => String(t.status).toLowerCase() === "hold").length;
+    const done = tasks.filter(t => String(t.status).toLowerCase() === "done").length;
+
+    let tableRowsHTML = "";
+    let printTableRows = "";
+
+    tasks.forEach(t => {
+      const decoded = decodeSection(t.section_name);
+      const reasonText = t.reason || t.hold_reason || "—";
+      const statusClass = String(t.status).toLowerCase() === "done" ? "done" : String(t.status).toLowerCase() === "hold" ? "hold" : "pending";
+      
+      tableRowsHTML += `<tr>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.id)}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(decoded.bench || "—")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(getCourtStr(t))}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.list_type || "—")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.operator?.full_name || "MEMO")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(decoded.section)}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.remarks || "—")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1; color:var(--purple); font-weight:700;">${esc(reasonText)}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(decoded.caseTypes.join(", ") || "—")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;"><span class="badge badge-${statusClass}">${esc(t.status)}</span></td>
+      </tr>`;
+
+      printTableRows += `<tr>
+        <td>${esc(t.id)}</td>
+        <td>${esc(decoded.bench || "—")}</td>
+        <td>${esc(getCourtStr(t))}</td>
+        <td>${esc(t.list_type || "—")}</td>
+        <td>${esc(t.operator?.full_name || "MEMO")}</td>
+        <td>${esc(decoded.section)}</td>
+        <td>${esc(t.remarks || "—")}</td>
+        <td style="color:#7c3aed; font-weight:bold;">${esc(reasonText)}</td>
+        <td>${esc(decoded.caseTypes.join(", ") || "—")}</td>
+        <td>${esc(t.status)}</td>
+      </tr>`;
+    });
+
+    const courtLabel = courtFilter ? ` | Court: ${esc(courtFilter)}` : "";
+
+    $("reportResults").innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:16px; background:var(--success-light); border:1px solid var(--success); border-radius:var(--radius); flex-wrap:wrap; gap:10px;">
+        <div style="font-size:16px; font-weight:700; color:var(--success);">✅ Report Generated for ${esc(date)}${courtLabel} (${total} Tasks)</div>
+        <button class="btn-success" onclick="doPrintReport()" style="background:var(--success); border:none; color:white; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:700;">🖨️ Print Report</button>
+      </div>
+      <div class="report-summary">
+        <div class="report-card"><h4>Total</h4><div class="count">${total}</div></div>
+        <div class="report-card"><h4>Pending</h4><div class="count" style="color:var(--warning)">${pending}</div></div>
+        <div class="report-card"><h4>Hold</h4><div class="count" style="color:var(--purple)">${hold}</div></div>
+        <div class="report-card"><h4>Done</h4><div class="count" style="color:var(--success)">${done}</div></div>
+      </div>
+      <div style="overflow-x:auto; border:1px solid var(--gray-200); border-radius:var(--radius); margin-top:16px;">
+        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+          <thead>
+            <tr style="background:var(--gray-100);">
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">ID</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Bench</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Court</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">List</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Assigned To</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Section</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Remarks</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Reason</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Case Type</th>
+              <th style="padding:8px; border-bottom:1px solid var(--gray-200); text-align:left;">Status</th>
+            </tr>
+          </thead>
+          <tbody>${tableRowsHTML}</tbody>
+        </table>
+      </div>
+    `;
+
+    // Hidden Print Area prepare karo
+    $("printReport").style.display = "block";
+    $("printReport").innerHTML = `
+      <h1>ACL Daily Task Report</h1>
+      <p>Date: ${esc(date)}${courtLabel} | Total: ${total} | Pending: ${pending} | Hold: ${hold} | Done: ${done}</p>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Assigned To</th>
+            <th>Section</th><th>Remarks</th><th>Reason</th><th>Case Type</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>${printTableRows}</tbody>
+      </table>
+    `;
+
+  } catch(e){ 
+    console.error("Report Error:", e);
+    $("reportResults").innerHTML = `<div style="color:var(--danger);padding:20px;text-align:center;">❌ Error: ${esc(e.message)}</div>`; 
+  }
 }
+
+// ✅ FIX: Print function - sirf #printReport print hoga
+function doPrintReport(){
+  window.print();
+}
+
 async function downloadSelectedDatePDF() {
   try {
     const result = await taskApi({ action: "report", date: selectedDate() });
@@ -677,6 +818,7 @@ async function downloadSelectedDatePDF() {
     downloadReportPDF({...result, date: selectedDate(), tasks: activeTasks, deletedTasks: getDeletedByDate(selectedDate())});
   } catch (error) { alert("PDF error: " + error.message); }
 }
+
 function downloadReportPDF(report) {
   if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library load nahi hui.");
   const activeTasks = Array.isArray(report?.tasks) ? report.tasks : [], deletedTasks = Array.isArray(report?.deletedTasks) ? report.deletedTasks : [], date = report?.date || selectedDate();
@@ -684,29 +826,83 @@ function downloadReportPDF(report) {
   doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL DATE-WISE TASK REPORT", 10, 12);
   doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.text("Date: " + date, 10, 19); doc.text("Total: " + activeTasks.length + " | Deleted: " + deletedTasks.length, 10, 25);
   const tableRows = [];
-  activeTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.hold_reason || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); });
+  activeTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", (t.reason || t.hold_reason) || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); });
   deletedTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", "—", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.deleted_reason || "—", decoded.caseTypes.join(", ") || "—", "—", "DELETED"]); });
   if (typeof doc.autoTable !== "function") throw new Error("PDF plugin load nahi hua.");
   doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Assigned", "Section", "Remarks", "Reason", "Case Type", "Completed", "Status"]], body: tableRows.length ? tableRows : [["—", "—", "—", "—", "—", "—", "—", "No tasks", "—", "—", "—", "—"]], theme: "grid", styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" }, headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] } });
   doc.save("ACL_Report_" + date + ".pdf");
 }
+
+// ✅ FIX: Broken Courts Report - properly working
 async function generateBrokenCourtsReportPDF() {
   try {
-    const brokenTasks = tasks.filter(t => { const decoded = decodeSection(t.section_name); const bench = String(decoded.bench || "").toUpperCase(), status = String(t.status || "").toLowerCase(); return bench === "B" && (status === "done" || status === "completed"); });
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+      alert("❌ PDF library load nahi hui. Page refresh karein.");
+      return;
+    }
+    
+    const brokenTasks = tasks.filter(t => { 
+      const decoded = decodeSection(t.section_name); 
+      const bench = String(decoded.bench || "").toUpperCase();
+      return bench === "B"; 
+    });
+    
+    if (brokenTasks.length === 0) {
+      alert("❌ Is date par koi Broken Court task nahi mila.");
+      return;
+    }
+    
     const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-    doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL BROKEN COURTS — DONE TASKS", 10, 12); doc.setFontSize(10); doc.text("Date: " + selectedDate() + " | Total: " + brokenTasks.length, 10, 19);
-    const rows = brokenTasks.map(t => { const decoded = decodeSection(t.section_name); return [getCourtStr(t) || "Broken", decoded.section || "—", t.remarks || "—"]; });
-    doc.autoTable({ startY: 25, head: [["Court", "Section", "Remarks"]], body: rows.length ? rows : [["—", "—", "No tasks"]], theme: "grid", styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [180, 83, 9], textColor: [255, 255, 255] } });
+    doc.setFont("helvetica", "bold"); 
+    doc.setFontSize(16); 
+    doc.text("ACL BROKEN COURTS REPORT", 10, 12); 
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10); 
+    doc.text("Date: " + selectedDate() + " | Total: " + brokenTasks.length, 10, 19);
+    
+    const rows = brokenTasks.map(t => { 
+      const decoded = decodeSection(t.section_name); 
+      return [
+        String(t.id),
+        getCourtStr(t) || "Broken", 
+        t.list_type || "—",
+        t.operator?.full_name || "MEMO",
+        decoded.section || "—", 
+        t.remarks || "—",
+        t.status || "—"
+      ]; 
+    });
+    
+    if (typeof doc.autoTable !== "function") {
+      alert("❌ PDF plugin load nahi hua.");
+      return;
+    }
+    
+    doc.autoTable({ 
+      startY: 25, 
+      head: [["ID", "Court", "List Type", "Assigned To", "Section", "Remarks", "Status"]], 
+      body: rows.length ? rows : [["—", "—", "—", "—", "—", "No tasks", "—"]], 
+      theme: "grid", 
+      styles: { fontSize: 8, cellPadding: 2 }, 
+      headStyles: { fillColor: [180, 83, 9], textColor: [255, 255, 255] } 
+    });
+    
     doc.save("ACL_Broken_Courts_" + selectedDate() + ".pdf");
-  } catch (error) { alert("PDF error: " + error.message); }
+    alert(`✅ Broken Courts PDF downloaded!\nTotal: ${brokenTasks.length} tasks`);
+  } catch (error) { 
+    console.error("Broken Courts PDF Error:", error);
+    alert("PDF error: " + error.message); 
+  }
 }
+
 function printTasks(){
-  const rows = tasks.map(t => { const d = decodeSection(t.section_name); return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(d.section)}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.hold_reason || "—")}</td><td>${esc(d.caseTypes.join(", ") || "-")}</td><td>${esc(t.status || "")}</td></tr>`; }).join("");
+  const rows = tasks.map(t => { const d = decodeSection(t.section_name); return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(d.section)}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.reason || t.hold_reason || "—")}</td><td>${esc(d.caseTypes.join(", ") || "-")}</td><td>${esc(t.status || "")}</td></tr>`; }).join("");
+  $("printReport").style.display = "block";
   $("printReport").innerHTML = `<h1>AHC Tasks</h1><p>Date: ${esc(selectedDate())} | Total: ${tasks.length}</p><table><thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Assigned</th><th>Section</th><th>Remarks</th><th>Reason</th><th>Case Type</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
   window.print();
 }
 
-/* ===================================================== USER MANAGER ===================================================== */
+/* ===================================================== USER MANAGER (PIN ALPHANUMERIC FIX) ===================================================== */
 function openUserManager() { $("userManagerModal").style.display = "block"; document.body.style.overflow = "hidden"; loadManagedOperators(); }
 function closeUserManager() { $("userManagerModal").style.display = "none"; document.body.style.overflow = ""; }
 function switchUserTab(tab) {
@@ -718,33 +914,110 @@ function switchUserTab(tab) {
   });
   if (tab === 'delete') loadOperatorsForDelete();
 }
+
+// ✅ FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
+function validatePin(pin) {
+  if (!pin || pin.length < 4 || pin.length > 16) {
+    return { valid: false, error: "PIN 4-16 characters ka hona chahiye." };
+  }
+  // Allow: letters, numbers, and @ # $ % & * !
+  if (!/^[A-Za-z0-9@#$%&*!]+$/.test(pin)) {
+    return { valid: false, error: "PIN mein sirf letters, numbers aur @ # $ % & * ! allowed hain." };
+  }
+  // Must contain at least 1 letter and 1 number
+  if (!/[A-Za-z]/.test(pin) || !/[0-9]/.test(pin)) {
+    return { valid: false, error: "PIN mein kam se kam 1 letter aur 1 number hona zaroori hai." };
+  }
+  return { valid: true };
+}
+
 async function addOperator() {
-  const message = document.getElementById("userManagerMessage"), full_name = $("newOperatorName").value.trim(), username = $("newOperatorUsername").value.trim().toLowerCase(), phone = $("newOperatorPhone").value.trim(), pinValue = $("newOperatorPin").value.trim();
-  if (!full_name || !username || !phone || !pinValue) { message.textContent = "❌ Sabhi fields bharein."; message.style.color = "#b91c1c"; return; }
-  if (!/^[6-9]\d{9}$/.test(phone)) { message.textContent = "❌ Phone 10 digits ka hona chahiye (6-9 se shuru)."; message.style.color = "#b91c1c"; return; }
-  if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) { message.textContent = "❌ Username 3-30 chars."; message.style.color = "#b91c1c"; return; }
-  if (!/^[A-Za-z0-9]{4,10}$/.test(pinValue)) { message.textContent = "❌ PIN 4-10 chars."; message.style.color = "#b91c1c"; return; }
-  message.textContent = "Adding..."; message.style.color = "#555";
+  const message = document.getElementById("userManagerMessage");
+  const full_name = $("newOperatorName").value.trim();
+  const username = $("newOperatorUsername").value.trim().toLowerCase();
+  const phone = $("newOperatorPhone").value.trim();
+  const pinValue = $("newOperatorPin").value.trim();
+  
+  if (!full_name || !username || !phone || !pinValue) { 
+    message.textContent = "❌ Sabhi fields bharein."; 
+    message.style.color = "#b91c1c"; 
+    return; 
+  }
+  if (!/^[6-9]\d{9}$/.test(phone)) { 
+    message.textContent = "❌ Phone 10 digits ka hona chahiye (6-9 se shuru)."; 
+    message.style.color = "#b91c1c"; 
+    return; 
+  }
+  if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) { 
+    message.textContent = "❌ Username 3-30 chars."; 
+    message.style.color = "#b91c1c"; 
+    return; 
+  }
+  
+  // ✅ FIX: New alphanumeric PIN validation
+  const pinCheck = validatePin(pinValue);
+  if (!pinCheck.valid) {
+    message.textContent = "❌ " + pinCheck.error;
+    message.style.color = "#b91c1c";
+    return;
+  }
+  
+  message.textContent = "Adding..."; 
+  message.style.color = "#555";
   try {
     const result = await manageOperatorsRequest({action: "add", full_name, username, phone, pin: pinValue});
-    $("newOperatorName").value = ""; $("newOperatorUsername").value = ""; $("newOperatorPhone").value = ""; $("newOperatorPin").value = "";
-    message.textContent = `✅ Operator "${result.operator?.full_name || full_name}" added.`; message.style.color = "#15803d";
-    await loadManagedOperators(); await loadOperators();
-  } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
+    $("newOperatorName").value = ""; 
+    $("newOperatorUsername").value = ""; 
+    $("newOperatorPhone").value = ""; 
+    $("newOperatorPin").value = "";
+    message.textContent = `✅ Operator "${result.operator?.full_name || full_name}" added.`; 
+    message.style.color = "#15803d";
+    await loadManagedOperators(); 
+    await loadOperators();
+  } catch (error) { 
+    message.textContent = "❌ " + error.message; 
+    message.style.color = "#b91c1c"; 
+  }
 }
+
 async function resetOperatorPassword() {
-  const message = document.getElementById("userManagerMessage"), phone = $("resetPhone").value.trim(), newPassword = $("resetNewPassword").value.trim();
-  if (!phone || !newPassword) { message.textContent = "❌ Phone aur naya password dono zaroori."; message.style.color = "#b91c1c"; return; }
-  if (!/^[6-9]\d{9}$/.test(phone)) { message.textContent = "❌ Phone 10 digits."; message.style.color = "#b91c1c"; return; }
-  if (!/^[A-Za-z0-9]{4,10}$/.test(newPassword)) { message.textContent = "❌ Password 4-10 chars."; message.style.color = "#b91c1c"; return; }
+  const message = document.getElementById("userManagerMessage");
+  const phone = $("resetPhone").value.trim();
+  const newPassword = $("resetNewPassword").value.trim();
+  
+  if (!phone || !newPassword) { 
+    message.textContent = "❌ Phone aur naya password dono zaroori."; 
+    message.style.color = "#b91c1c"; 
+    return; 
+  }
+  if (!/^[6-9]\d{9}$/.test(phone)) { 
+    message.textContent = "❌ Phone 10 digits."; 
+    message.style.color = "#b91c1c"; 
+    return; 
+  }
+  
+  // ✅ FIX: New alphanumeric PIN validation
+  const pinCheck = validatePin(newPassword);
+  if (!pinCheck.valid) {
+    message.textContent = "❌ " + pinCheck.error;
+    message.style.color = "#b91c1c";
+    return;
+  }
+  
   if (!confirm(`Phone ${phone} wale operator ka password reset karein?`)) return;
   message.textContent = "Resetting...";
   try {
     const result = await manageOperatorsRequest({action: "reset_password", phone, new_password: newPassword});
-    $("resetPhone").value = ""; $("resetNewPassword").value = "";
-    message.textContent = `✅ ${result.message}`; message.style.color = "#15803d";
-  } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
+    $("resetPhone").value = ""; 
+    $("resetNewPassword").value = "";
+    message.textContent = `✅ ${result.message}`; 
+    message.style.color = "#15803d";
+  } catch (error) { 
+    message.textContent = "❌ " + error.message; 
+    message.style.color = "#b91c1c"; 
+  }
 }
+
 async function loadOperatorsForDelete() {
   const select = $("deleteOperatorSelect"); if (!select) return;
   try {
@@ -753,6 +1026,7 @@ async function loadOperatorsForDelete() {
     select.innerHTML = '<option value="">-- Select Operator --</option>' + activeOperators.map(o => `<option value="${o.username}" data-id="${o.id}">${o.full_name} (${o.username}) — 📱 ${o.phone || 'N/A'}</option>`).join("");
   } catch (error) { console.error("Load failed:", error); }
 }
+
 async function checkOperatorBeforeDelete() {
   const message = document.getElementById("userManagerMessage"), select = $("deleteOperatorSelect"), username = select.value;
   if (!username) { message.textContent = "❌ Select operator."; message.style.color = "#b91c1c"; return; }
@@ -832,98 +1106,38 @@ async function saveSpaceConfig() {
 async function triggerManualBackup() {
     const months = prompt("Kitne mahine purane tasks ka backup lena hai?", "4");
     if (!months) return;
-    
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - parseInt(months));
     const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
-    
     if (!confirm(`⚠️  ${months} mahine purane tasks (${cutoffDateStr} se pehle) backup + delete honge.\n\nPehle PDF download hogi, phir backup hoga.\nContinue?`)) return;
-    
     try {
-        // Step 1: Pehle tasks fetch karo jo backup honge
-        const { data: allTasksResult, error: fetchError } = await sb
-            .from('tasks')
-            .select('*')
-            .or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`)
-            .order('assigned_time', { ascending: false });
-        
+        const { data: allTasksResult, error: fetchError } = await sb.from('tasks').select('*').or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`).order('assigned_time', { ascending: false });
         if (fetchError) throw fetchError;
-        
         const tasksToBackup = allTasksResult || [];
-        
-        if (tasksToBackup.length === 0) {
-            alert(`✅ Koi task nahi mila ${cutoffDateStr} se pehle. Backup ki zaroorat nahi.`);
-            return;
-        }
-        
-        // Step 2: PDF Generate karo
+        if (tasksToBackup.length === 0) { alert(`✅ Koi task nahi mila ${cutoffDateStr} se pehle.`); return; }
         const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-        
-        // Header
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(18);
-        doc.text("ACL DATABASE BACKUP REPORT", 10, 15);
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.text("ACL DATABASE BACKUP REPORT", 10, 15);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10);
         doc.text(`Backup Date: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`, 10, 22);
         doc.text(`Retention Period: ${months} months (Tasks before ${cutoffDateStr})`, 10, 27);
         doc.text(`Total Tasks to Backup: ${tasksToBackup.length}`, 10, 32);
-        
-        // Get users map for operator names
         const { data: users } = await sb.from('users').select('id, username, full_name');
         const userMap = {};
         (users || []).forEach(u => { userMap[u.id] = u.full_name || u.username; });
-        
-        // Table data
         const tableRows = tasksToBackup.map(t => {
             const decoded = decodeSection(t.section_name);
             const operatorName = t.assigned_to ? (userMap[t.assigned_to] || 'Unknown') : 'MEMO';
-            return [
-                String(t.id),
-                decoded.bench || "-",
-                getCourtStr(t),
-                t.list_type || "-",
-                operatorName,
-                t.task_date || (t.assigned_time ? new Date(t.assigned_time).toLocaleDateString('en-CA') : "-"),
-                decoded.section || "-",
-                t.remarks || "-",
-                t.status || "Pending"
-            ];
+            return [String(t.id), decoded.bench || "-", getCourtStr(t), t.list_type || "-", operatorName, t.task_date || (t.assigned_time ? new Date(t.assigned_time).toLocaleDateString('en-CA') : "-"), decoded.section || "-", t.remarks || "-", t.status || "Pending"];
         });
-        
-        // Generate table
-        doc.autoTable({
-            startY: 38,
-            head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Date", "Section", "Remarks", "Status"]],
-            body: tableRows.length ? tableRows : [["-", "-", "-", "-", "-", "-", "-", "No tasks", "-"]],
-            theme: "grid",
-            styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" },
-            headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] },
-            alternateRowStyles: { fillColor: [248, 250, 252] }
-        });
-        
-        // Save PDF
+        doc.autoTable({ startY: 38, head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Date", "Section", "Remarks", "Status"]], body: tableRows.length ? tableRows : [["-", "-", "-", "-", "-", "-", "-", "No tasks", "-"]], theme: "grid", styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" }, headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] } });
         const fileName = `ACL_Backup_${months}_Months_${cutoffDateStr}.pdf`;
         doc.save(fileName);
-        
-        // Step 3: Ab actual backup trigger karo
-        const { data, error } = await sb.functions.invoke("space-monitor", { 
-            body: { action: "trigger_backup", months: parseInt(months) } 
-        });
-        
+        const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "trigger_backup", months: parseInt(months) } });
         if (error) throw error;
         if (!data.success) throw new Error(data.error);
-        
-        alert(`✅ SUCCESS!\n\n📄 PDF Downloaded: "${fileName}"\n🗑️  ${data.result?.deletedTasks || 0} tasks backed up & deleted from database.\n\nPDF file mein saare tasks ka complete record hai.`);
-        
-        await loadSpaceStatus();
-        await refreshAll();
-        
-    } catch (error) {
-        alert(`❌ Backup failed: ${error.message}`);
-        console.error("Backup error:", error);
-    }
+        alert(`✅ SUCCESS!\n\n📄 PDF Downloaded: "${fileName}"\n🗑️  ${data.result?.deletedTasks || 0} tasks backed up & deleted.`);
+        await loadSpaceStatus(); await refreshAll();
+    } catch (error) { alert(`❌ Backup failed: ${error.message}`); console.error("Backup error:", error); }
 }
 function startSpaceStatusMonitoring() { loadSpaceStatus(); if (spaceStatusInterval) clearInterval(spaceStatusInterval); spaceStatusInterval = setInterval(loadSpaceStatus, 5 * 60 * 1000); }
 
