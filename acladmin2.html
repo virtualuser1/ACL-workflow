@@ -180,16 +180,16 @@ tr.memo-done-row{background:var(--success-light)}
       <h3>Add New Operator</h3>
       <label>Full Name</label><input id="newOperatorName" type="text" placeholder="Enter full name" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>Username</label><input id="newOperatorUsername" type="text" placeholder="Enter username" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
-      <label> Phone Number (for password recovery)</label><input id="newOperatorPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <label>📱 Phone Number (for password recovery)</label><input id="newOperatorPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>Operator PIN / Password <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
       <input id="newOperatorPin" type="password" placeholder="e.g. Pass@123 or Abc#2024" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <button type="button" onclick="addOperator()" style="background:#1769aa; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">＋ Add Operator</button>
     </div>
 
     <div id="panelReset" style="display:none;">
-      <h3> Reset Operator Password</h3>
-      <p style="color:#64748b; font-size:13px; margin-bottom:14px;"> if user forgot PIN/Password , then enter registered phone number to set new  password </p>
-      <label> Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
+      <h3>🔑 Reset Operator Password</h3>
+      <p style="color:#64748b; font-size:13px; margin-bottom:14px;">Agar operator apna PIN/Password bhool gaya hai, to uska registered phone number daal kar naya password set karein.</p>
+      <label>📱 Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>New Password / PIN <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
       <input id="resetNewPassword" type="password" placeholder="e.g. Pass@123" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <button type="button" onclick="resetOperatorPassword()" style="background:#d97706; color:white; border:0; padding:11px 18px; border-radius:6px; cursor:pointer; font-weight:700;">🔑 Reset Password</button>
@@ -205,7 +205,7 @@ tr.memo-done-row{background:var(--success-light)}
     </div>
 
     <hr style="margin:24px 0;"><h3>Existing Operators</h3>
-    <div id="operatorManagementList"> User List loadngi...</div>
+    <div id="operatorManagementList">Operators ki list load ho rahi hai...</div>
     <p id="userManagerMessage" role="status" style="margin-top:14px; white-space:pre-wrap;"></p>
   </div>
 </div>
@@ -240,7 +240,7 @@ tr.memo-done-row{background:var(--success-light)}
       <div id="spaceStatusContent" style="font-size:14px;">Loading space information...</div>
     </div>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <button class="btn-outline" onclick="openSpaceConfig()" style="background:rgba(255,255,255,0.2); color:white; border-color:rgba(255,255,255,0.3);"> Configure</button>
+      <button class="btn-outline" onclick="openSpaceConfig()" style="background:rgba(255,255,255,0.2); color:white; border-color:rgba(255,255,255,0.3);">⚙️ Configure</button>
       <button class="btn-warning" onclick="triggerManualBackup()" style="background:#f59e0b; color:white;">🚀 Backup Now</button>
     </div>
   </div>
@@ -254,11 +254,11 @@ tr.memo-done-row{background:var(--success-light)}
 </div>
 
 <div class="stats">
-  <div class="stat stat-total"><div class="stat-icon"></div><div class="stat-label">Total</div><div class="stat-value" id="totalCount">0</div></div>
-  <div class="stat stat-pending"><div class="stat-icon"></div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div>
-  <div class="stat stat-hold"><div class="stat-icon"></div><div class="stat-label">Hold</div><div class="stat-value" id="holdCount">0</div></div>
-  <div class="stat stat-done"><div class="stat-icon"></div><div class="stat-label">Done</div><div class="stat-value" id="doneCount">0</div></div>
-  <div class="stat stat-memo"><div class="stat-icon"></div><div class="stat-label">Admin</div><div class="stat-value" id="memoCount">0</div></div>
+  <div class="stat stat-total"><div class="stat-icon">📋</div><div class="stat-label">Total</div><div class="stat-value" id="totalCount">0</div></div>
+  <div class="stat stat-pending"><div class="stat-icon">⏳</div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div>
+  <div class="stat stat-hold"><div class="stat-icon">⏸</div><div class="stat-label">Hold</div><div class="stat-value" id="holdCount">0</div></div>
+  <div class="stat stat-done"><div class="stat-icon">✓</div><div class="stat-label">Done</div><div class="stat-value" id="doneCount">0</div></div>
+  <div class="stat stat-memo"><div class="stat-icon">📝</div><div class="stat-label">Admin</div><div class="stat-value" id="memoCount">0</div></div>
 </div>
 
 <div class="card no-print assign-task-card" style="padding:22px 28px">
@@ -286,7 +286,7 @@ tr.memo-done-row{background:var(--success-light)}
     </div>
   </div>
   <div id="taskMsg" class="message" style="margin-top:8px"></div>
-  <div class="warning-box" id="duplicateWarning"><span></span><span id="duplicateMsg"></span><div class="warn-actions"><button class="btn-sm btn-warning" onclick="forceCreateTask()">Assign Anyway</button><button class="btn-sm btn-muted" onclick="hideWarning()">Cancel</button></div></div>
+  <div class="warning-box" id="duplicateWarning"><span>⚠️</span><span id="duplicateMsg"></span><div class="warn-actions"><button class="btn-sm btn-warning" onclick="forceCreateTask()">Assign Anyway</button><button class="btn-sm btn-muted" onclick="hideWarning()">Cancel</button></div></div>
 </div>
 
 <div class="card card-no-pad">
@@ -325,7 +325,7 @@ tr.memo-done-row{background:var(--success-light)}
 <div id="spaceConfigModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100000; display:flex; align-items:center; justify-content:center; padding:20px;">
   <div style="background:white; border-radius:12px; padding:28px; max-width:600px; width:100%; max-height:90vh; overflow-y:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <h2 style="margin:0;"> Auto Backup Configuration</h2>
+      <h2 style="margin:0;">⚙️ Auto Backup Configuration</h2>
       <button onclick="closeSpaceConfig()" style="border:0; background:#eee; padding:8px 12px; border-radius:6px; cursor:pointer;">✕</button>
     </div>
     <div style="margin-bottom:16px;"><label style="display:block; margin-bottom:6px; font-weight:700;">Auto Backup Enabled</label><select id="cfgAutoBackup" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"><option value="true">Yes - Automatic</option><option value="false">No - Manual Only</option></select></div>
@@ -339,7 +339,7 @@ tr.memo-done-row{background:var(--success-light)}
 </div>
 
 <!-- HOLD REASON MODAL -->
-<div id="holdReasonOverlay" class="hidden"><div id="holdReasonBox"><h3> Hold Task</h3><p id="holdReasonTaskLabel">Select the reason for putting this task on hold.</p><select id="holdReasonSelect"><option value="">— Select Hold Reason —</option></select><div class="hold-modal-actions"><button class="btn-muted" onclick="cancelHoldReason()">Cancel</button><button class="btn-warning" onclick="confirmHoldReason()">⏸ HOLD TASK</button></div></div></div>
+<div id="holdReasonOverlay" class="hidden"><div id="holdReasonBox"><h3>⏸ Hold Task</h3><p id="holdReasonTaskLabel">Select the reason for putting this task on hold.</p><select id="holdReasonSelect"><option value="">— Select Hold Reason —</option></select><div class="hold-modal-actions"><button class="btn-muted" onclick="cancelHoldReason()">Cancel</button><button class="btn-warning" onclick="confirmHoldReason()">⏸ HOLD TASK</button></div></div></div>
 
 <script>
 /* ===================================================== SUPABASE CONFIG ===================================================== */
@@ -510,7 +510,7 @@ async function loadManagedOperators() {
         const nextAction = operator.active ? "deactivate" : "activate"; if (!confirm(`${nextAction} operator "${operator.username}"?`)) return;
         button.disabled = true; try {
           await manageOperatorsRequest({ action: nextAction, username: operator.username });
-          if (message) { message.textContent = `Status changed.`; message.style.color = "#15803d"; }
+          if (message) { message.textContent = `✅ Status changed.`; message.style.color = "#15803d"; }
           await loadManagedOperators(); await loadOperators();
         } catch (error) { if (message) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; } button.disabled = false; }
       });
@@ -578,7 +578,7 @@ function renderTasks(){
     const courtStr = getCourtStr(t);
     let caseBadges = '<span style="color:var(--gray-400)">-</span>'; if(decoded.caseTypes.length) caseBadges = decoded.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("");
 
-    const reasonDisplay = (t.reason || t.hold_reason) ? `<span style="color:var(--purple); font-weight:700; font-size:12px;"> ${esc(t.reason || t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
+    const reasonDisplay = (t.reason || t.hold_reason) ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(t.reason || t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
     const isPending = status === "pending", showCheckbox = !memo && isPending;
 
     return `<tr class="${rc}">
@@ -591,7 +591,7 @@ function renderTasks(){
         ${memo ? `<button class="btn-sm ${green ? "btn-muted" : "btn-success"}" onclick="toggleMemo(${t.id},${!green})">${green ? "↩" : "✓"}</button>` : ""}
         ${status !== "done" ? `<button class="btn-sm btn-outline" onclick="reassign(${t.id})" title="Reassign">Re</button>` : ""}
         ${!memo && status === "hold" ? `<button class="btn-sm btn-success" onclick="resumeTask(${t.id})">▶</button>` : ""}
-        ${!memo && status === "pending" ? `<button class="btn-sm btn-warning" onclick="openHoldReason(${t.id})"></button>` : ""}
+        ${!memo && status === "pending" ? `<button class="btn-sm btn-warning" onclick="openHoldReason(${t.id})">⏸</button>` : ""}
         <button class="btn-sm btn-danger" onclick="deleteTask(${t.id})">✕</button>
       </div></td></tr>`;
   }).join("");
@@ -667,10 +667,10 @@ function openReport(){
         <select id="reportCourtFilter">${courtOptions.join("")}</select>
       </div>
       <div style="display:flex; gap:8px; align-items:end;">
-        <button class="btn-primary" onclick="generateReport()"> Generate Report</button>
+        <button class="btn-primary" onclick="generateReport()">🔍 Generate Report</button>
       </div>
     </div>
-    <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">  click "Generate Report" button</div></div>
+    <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">👆 "Generate Report" button click karein</div></div>
   `;
   $("modal").classList.remove("hidden");
   
@@ -684,7 +684,7 @@ async function generateReport(){
   
   if(!date){ alert("Select date"); return; }
   
-  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">Report Generating ...</div>`;
+  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Report Generate हो रही है...</div>`;
   
   try{
     const j = await taskApi({action:"report", date});
@@ -754,7 +754,7 @@ async function generateReport(){
 
     $("reportResults").innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:16px; background:var(--success-light); border:1px solid var(--success); border-radius:var(--radius); flex-wrap:wrap; gap:10px;">
-        <div style="font-size:16px; font-weight:700; color:var(--success);">Report Generated for ${esc(date)}${courtLabel} (${total} Tasks)</div>
+        <div style="font-size:16px; font-weight:700; color:var(--success);">✅ Report Generated for ${esc(date)}${courtLabel} (${total} Tasks)</div>
         <button class="btn-success" onclick="doPrintReport()" style="background:var(--success); border:none; color:white; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:700;">🖨️ Print Report</button>
       </div>
       <div class="report-summary">
@@ -806,7 +806,7 @@ async function generateReport(){
   }
 }
 
-//  FIX: Print function - sirf #printReport print hoga
+// ✅ FIX: Print function - sirf #printReport print hoga
 function doPrintReport(){
   window.print();
 }
@@ -833,7 +833,7 @@ function downloadReportPDF(report) {
   doc.save("ACL_Report_" + date + ".pdf");
 }
 
-// FIX: Broken Courts Report - properly working
+// ✅ FIX: Broken Courts Report - properly working
 async function generateBrokenCourtsReportPDF() {
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -848,7 +848,7 @@ async function generateBrokenCourtsReportPDF() {
     });
     
     if (brokenTasks.length === 0) {
-      alert("❌ for this date there is no Broken Court task found.");
+      alert("❌ Is date par koi Broken Court task nahi mila.");
       return;
     }
     
@@ -874,7 +874,7 @@ async function generateBrokenCourtsReportPDF() {
     });
     
     if (typeof doc.autoTable !== "function") {
-      alert("❌ PDF plugin not loaded.");
+      alert("❌ PDF plugin load nahi hua.");
       return;
     }
     
@@ -888,7 +888,7 @@ async function generateBrokenCourtsReportPDF() {
     });
     
     doc.save("ACL_Broken_Courts_" + selectedDate() + ".pdf");
-    alert(` Broken Courts PDF downloaded!\nTotal: ${brokenTasks.length} tasks`);
+    alert(`✅ Broken Courts PDF downloaded!\nTotal: ${brokenTasks.length} tasks`);
   } catch (error) { 
     console.error("Broken Courts PDF Error:", error);
     alert("PDF error: " + error.message); 
@@ -915,18 +915,18 @@ function switchUserTab(tab) {
   if (tab === 'delete') loadOperatorsForDelete();
 }
 
-//  FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
+// ✅ FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
 function validatePin(pin) {
   if (!pin || pin.length < 4 || pin.length > 16) {
     return { valid: false, error: "PIN 4-16 characters ka hona chahiye." };
   }
   // Allow: letters, numbers, and @ # $ % & * !
   if (!/^[A-Za-z0-9@#$%&*!]+$/.test(pin)) {
-    return { valid: false, error: "in PIN only alphanumeric and these special characters @ # $ % & * ! allowed ." };
+    return { valid: false, error: "PIN mein sirf letters, numbers aur @ # $ % & * ! allowed hain." };
   }
   // Must contain at least 1 letter and 1 number
   if (!/[A-Za-z]/.test(pin) || !/[0-9]/.test(pin)) {
-    return { valid: false, error: "in PIN atleast 1 letter and 1 number is compulsory." };
+    return { valid: false, error: "PIN mein kam se kam 1 letter aur 1 number hona zaroori hai." };
   }
   return { valid: true };
 }
@@ -939,12 +939,12 @@ async function addOperator() {
   const pinValue = $("newOperatorPin").value.trim();
   
   if (!full_name || !username || !phone || !pinValue) { 
-    message.textContent = "❌ fill all fields ."; 
+    message.textContent = "❌ Sabhi fields bharein."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
   if (!/^[6-9]\d{9}$/.test(phone)) { 
-    message.textContent = "❌  phone number should be of 10 digits (only starts from 6-9)."; 
+    message.textContent = "❌ Phone 10 digits ka hona chahiye (6-9 se shuru)."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -986,7 +986,7 @@ async function resetOperatorPassword() {
   const newPassword = $("resetNewPassword").value.trim();
   
   if (!phone || !newPassword) { 
-    message.textContent = "❌ Phone and new password both are compulsory."; 
+    message.textContent = "❌ Phone aur naya password dono zaroori."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -1004,7 +1004,7 @@ async function resetOperatorPassword() {
     return;
   }
   
-  if (!confirm(`reset user password of Phone number ${phone}  ?`)) return;
+  if (!confirm(`Phone ${phone} wale operator ka password reset karein?`)) return;
   message.textContent = "Resetting...";
   try {
     const result = await manageOperatorsRequest({action: "reset_password", phone, new_password: newPassword});
@@ -1044,12 +1044,12 @@ async function checkOperatorBeforeDelete() {
       const rows = operatorTasks.map(t => { const decoded = decodeSection(t.section_name); return [String(t.id), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.task_date || "—", decoded.section || "—", t.remarks || "—", t.status || "—"]; });
       doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List", "Date", "Section", "Remarks", "Status"]], body: rows, theme: "grid", styles: { fontSize: 7, cellPadding: 1.5 }, headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255] } });
       const fileName = `Operator_Backup_${username}_${todayIST()}.pdf`; doc.save(fileName);
-      const finalConfirm = confirm(` PDF DOWNLOADED: "${fileName}"\n\nAb delete karein?\nOperator: ${operatorName}\nTasks archived honge.`);
+      const finalConfirm = confirm(`✅ PDF DOWNLOADED: "${fileName}"\n\nAb delete karein?\nOperator: ${operatorName}\nTasks archived honge.`);
       if (!finalConfirm) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; }
     } else { if (!confirm(`Operator ke paas koi task nahi. Delete karein "${operatorName}"?`)) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; } }
     message.textContent = "Deleting...";
     const result = await manageOperatorsRequest({action: "delete", username, backup_confirmed: true});
-    message.textContent = ` ${result.message}`; message.style.color = "#15803d";
+    message.textContent = `✅ ${result.message}`; message.style.color = "#15803d";
     await loadManagedOperators(); await loadOperators(); await loadOperatorsForDelete();
   } catch (error) { message.textContent = "❌ " + error.message; message.style.color = "#b91c1c"; }
 }
@@ -1065,7 +1065,7 @@ async function loadSpaceStatus() {
 }
 function updateSpaceStatusUI(data) {
   const space = data.space, config = data.config, lastBackup = data.last_backup;
-  const statusColors = { healthy: { bar: '#10b981', icon: '', text: 'Healthy' }, warning: { bar: '#fbbf24', icon: '', text: 'Warning' }, critical: { bar: '#fca5a5', icon: '🚨', text: 'Critical' } };
+  const statusColors = { healthy: { bar: '#10b981', icon: '✅', text: 'Healthy' }, warning: { bar: '#fbbf24', icon: '⚠️', text: 'Warning' }, critical: { bar: '#fca5a5', icon: '🚨', text: 'Critical' } };
   const status = statusColors[space.status] || statusColors.healthy;
   const card = $("spaceStatusCard"); card.classList.remove('status-warning', 'status-critical');
   if (space.status === 'warning') card.classList.add('status-warning'); if (space.status === 'critical') card.classList.add('status-critical');
@@ -1080,10 +1080,10 @@ function updateSpaceStatusUI(data) {
     </div>
     <div class="space-progress"><div class="space-progress-bar" style="background:${status.bar}; width:${space.usage_percentage}%;">${space.usage_percentage}% Used</div></div>
     <div class="space-details">
-      <div> Tasks: <b>${space.stats.tasks_count}</b> (${space.stats.tasks_table_size_mb} MB)</div>
-      <div> Operators: <b>${space.stats.operators_count}</b></div>
-      <div> Last Backup: <b>${lastBackupText}</b></div>
-      <div> Auto: <b>${config.auto_backup_enabled ? 'Every ' + config.backup_interval_days + ' days' : 'Disabled'}</b></div>
+      <div>📋 Tasks: <b>${space.stats.tasks_count}</b> (${space.stats.tasks_table_size_mb} MB)</div>
+      <div>👥 Operators: <b>${space.stats.operators_count}</b></div>
+      <div>⏰ Last Backup: <b>${lastBackupText}</b></div>
+      <div>🔄 Auto: <b>${config.auto_backup_enabled ? 'Every ' + config.backup_interval_days + ' days' : 'Disabled'}</b></div>
     </div>`;
 }
 function openSpaceConfig() {
@@ -1100,7 +1100,7 @@ async function saveSpaceConfig() {
     const config = { auto_backup_enabled: $("cfgAutoBackup").value === 'true', backup_interval_days: parseInt($("cfgBackupInterval").value), retention_months: parseInt($("cfgRetentionMonths").value), max_database_size_mb: parseInt($("cfgMaxSize").value), warning_threshold_mb: parseInt($("cfgWarningThreshold").value), critical_threshold_mb: parseInt($("cfgCriticalThreshold").value) };
     const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "update_config", ...config } });
     if (error) throw error; if (!data.success) throw new Error(data.error);
-    alert(" Configuration saved!"); closeSpaceConfig(); await loadSpaceStatus();
+    alert("✅ Configuration saved!"); closeSpaceConfig(); await loadSpaceStatus();
   } catch (error) { alert("❌ Save failed: " + error.message); }
 }
 async function triggerManualBackup() {
@@ -1114,7 +1114,7 @@ async function triggerManualBackup() {
         const { data: allTasksResult, error: fetchError } = await sb.from('tasks').select('*').or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`).order('assigned_time', { ascending: false });
         if (fetchError) throw fetchError;
         const tasksToBackup = allTasksResult || [];
-        if (tasksToBackup.length === 0) { alert(`no task found earlier of this ${cutoffDateStr} .`); return; }
+        if (tasksToBackup.length === 0) { alert(`✅ Koi task nahi mila ${cutoffDateStr} se pehle.`); return; }
         const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
         doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.text("ACL DATABASE BACKUP REPORT", 10, 15);
         doc.setFont("helvetica", "normal"); doc.setFontSize(10);
@@ -1135,7 +1135,7 @@ async function triggerManualBackup() {
         const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "trigger_backup", months: parseInt(months) } });
         if (error) throw error;
         if (!data.success) throw new Error(data.error);
-        alert(` SUCCESS!\n\n📄 PDF Downloaded: "${fileName}"\n🗑️  ${data.result?.deletedTasks || 0} tasks backed up & deleted.`);
+        alert(`✅ SUCCESS!\n\n📄 PDF Downloaded: "${fileName}"\n🗑️  ${data.result?.deletedTasks || 0} tasks backed up & deleted.`);
         await loadSpaceStatus(); await refreshAll();
     } catch (error) { alert(`❌ Backup failed: ${error.message}`); console.error("Backup error:", error); }
 }
