@@ -134,4 +134,752 @@ tbody tr:last-child td{border-bottom:none}
 .forgot-field input:focus, .forgot-field select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
 .forgot-actions{display:flex;gap:10px;margin-top:18px}
 .forgot-actions button{flex:1}
-.forgot-link{margin-top:18px;padding-top:16px;border-top:1px solid var(--gray-200
+.forgot-link{margin-top:18px;padding-top:16px;border-top:1px solid var(--gray-200);text-align:center}
+.forgot-link button{width:100%;justify-content:center;color:var(--primary);border-color:var(--primary)}
+.task-date-badge{background:#dbeafe;color:#1d4ed8}
+
+@media(max-width:768px){.stats{grid-template-columns:1fr}.task-meta{grid-template-columns:1fr 1fr}.card{padding:18px}.login{margin:30px auto;padding:30px 22px}#forgotPasswordBox{padding:24px 20px}}
+@media(max-width:480px){.task-meta{grid-template-columns:1fr}.task-actions button{width:100%}.forgot-actions{flex-direction:column}}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+<!-- LOGIN -->
+<div id="loginCard" class="card login">
+  <h1>ACL USER</h1>
+  <p>Enter your credentials to login</p>
+  <div class="field">
+    <label>Username</label>
+    <input id="username" autocomplete="username" placeholder="Enter username">
+  </div>
+  <div class="field">
+    <label>PIN</label>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Enter PIN">
+  </div>
+  <button id="loginBtn" onclick="operatorLogin()">Sign In</button>
+  <div id="loginMsg" class="message"></div>
+  <div class="forgot-link">
+    <button type="button" class="btn-outline" onclick="openForgotPassword()">🔐 Forgot Password?</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <div class="card">
+    <div class="top">
+      <div class="header-title">
+        <h1>USER Dashboard</h1>
+        <div class="header-sub">
+          <span class="operator-badge" id="operatorInfo">USER</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span id="notifDot" style="display:none; width:12px; height:12px; background:red; border-radius:50%; animation: blink 1s infinite;" title="New Task Assigned!"></span>
+        <button class="btn-outline btn-sm" onclick="refreshAll()">↻ Refresh</button>
+        <button class="btn-danger btn-sm" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:18px 24px">
+    <div class="top" style="align-items:center">
+      <div>
+        <label style="margin-bottom:4px;display:block;font-weight:700">📅 Working Date</label>
+        <div style="font-size:12px;color:var(--gray-500)">Select a date to see tasks assigned for that date.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input id="workDate" type="date" onchange="refreshAll()" style="width:auto;min-width:170px;padding:10px 12px;border:1px solid var(--gray-300);border-radius:var(--radius)">
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat stat-pending"><div><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div></div>
+    <div class="stat stat-hold"><div><div class="stat-label">Hold</div><div class="stat-value" id="holdCount">0</div></div></div>
+    <div class="stat stat-done"><div><div class="stat-label">Done Today</div><div class="stat-value" id="doneCount">0</div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="top"><h2>My Active Tasks</h2></div>
+    <div id="currentTasks"></div>
+  </div>
+
+  <div class="card card-no-pad">
+    <div style="padding:20px 24px;border-bottom:1px solid var(--gray-200)">
+      <h2 style="margin-bottom:0">Completed Tasks — Selected Date</h2>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Bench</th><th>Court</th><th>List Type</th><th>Section</th><th>Case Type</th><th>Remarks</th><th>Completed</th>
+          </tr>
+        </thead>
+        <tbody id="doneRows"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- NEW TASK POPUP -->
+<div id="newTaskOverlay" class="hidden">
+  <div id="newTaskBox">
+    <div class="popup-priority" id="popupPriority"></div>
+    <div class="popup-title" id="popupTitle">NEW TASK ASSIGNED</div>
+    <div class="popup-one-liner" id="popupOneLiner"></div>
+    <button class="btn-success btn-lg" style="width:100%" onclick="acknowledgeTask()">✓ ACKNOWLEDGE</button>
+  </div>
+</div>
+
+<!-- HOLD REASON -->
+<div id="holdReasonOverlay" class="hidden">
+  <div id="holdReasonBox">
+    <h3>⏸ Hold Task</h3>
+    <p id="holdReasonTaskLabel">Select the reason for putting this task on hold.</p>
+    <select id="holdReasonSelect"><option value="">— Select Hold Reason —</option></select>
+    <div class="hold-modal-actions">
+      <button class="btn-outline btn-lg" onclick="cancelHoldReason()">Cancel</button>
+      <button class="btn-warning btn-lg" onclick="confirmHoldReason()">⏸ HOLD TASK</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE REASON -->
+<div id="deleteReasonOverlay" class="hidden">
+  <div id="deleteReasonBox">
+    <h3>🗑 Delete Task</h3>
+    <p id="deleteReasonTaskLabel">Select the reason for deleting this task.</p>
+    <select id="deleteReasonSelect"><option value="">— Select Delete Reason —</option></select>
+    <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap">
+      <button class="btn-outline btn-lg" onclick="cancelDeleteReason()">Cancel</button>
+      <button class="btn-danger btn-lg" onclick="confirmDeleteReason()">🗑 DELETE TASK</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="forgotPasswordOverlay" class="hidden">
+  <div id="forgotPasswordBox">
+    <div class="forgot-header">
+      <h2>Forgot Password</h2>
+      <p>Verify your account and create a new password (PIN).</p>
+    </div>
+    <div class="forgot-field">
+      <label>Username</label>
+      <input id="forgotUsername" type="text" autocomplete="username" placeholder="Enter your username">
+    </div>
+    <div class="forgot-field">
+      <label>Select Verification Parameter</label>
+      <select id="forgotVerificationType" onchange="changeForgotVerification()">
+        <option value="phone">Phone Number</option>
+        <option value="dob">Date of Birth</option>
+      </select>
+    </div>
+    <div class="forgot-field">
+      <label id="forgotVerificationLabel">Phone Number</label>
+      <input id="forgotVerificationValue" type="tel" inputmode="numeric" placeholder="Enter 10-digit registered phone number">
+    </div>
+    <div class="forgot-field">
+      <label>New Password (PIN)</label>
+      <input id="forgotNewPassword" type="password" autocomplete="new-password" placeholder="Enter new PIN (min 4 chars)">
+    </div>
+    <div class="forgot-field">
+      <label>Confirm New Password (PIN)</label>
+      <input id="forgotConfirmPassword" type="password" autocomplete="new-password" placeholder="Confirm new PIN">
+    </div>
+    <div id="forgotPasswordMsg" class="message"></div>
+    <div class="forgot-actions">
+      <button type="button" class="btn-outline btn-lg" onclick="closeForgotPassword()">Cancel</button>
+      <button type="button" id="resetPasswordBtn" class="btn-primary btn-lg" onclick="resetForgotPassword()">🔑 Set New Password</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   ✅ UNIFIED REAL-TIME NOTIFICATION & BEEP SYSTEM
+===================================================== */
+let CURRENT_USER_ID = null;
+let originalTitle = document.title;
+let blinkInterval = null;
+let audioCtx = null;
+let isAcknowledged = true;
+
+function initAudio() {
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(err => console.warn("Audio resume failed:", err));
+    }
+}
+
+function playBeep() {
+    if (!audioCtx) return;
+    try {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 880; 
+        gainNode.gain.value = 0.15; 
+        oscillator.start();
+        setTimeout(() => oscillator.stop(), 150);
+    } catch (e) { console.warn("Beep play failed:", e); }
+}
+
+function startNotificationAlert() {
+    if (!isAcknowledged) return;
+    isAcknowledged = false;
+    initAudio();
+    let showNew = true;
+    blinkInterval = setInterval(() => {
+        document.title = showNew ? "🔔 NEW TASK ASSIGNED!" : originalTitle;
+        showNew = !showNew;
+        playBeep();
+    }, 1000);
+    const notifDot = document.getElementById('notifDot');
+    if (notifDot) notifDot.style.display = 'inline-block';
+}
+
+function stopNotificationAlert() {
+    if (isAcknowledged) return;
+    clearInterval(blinkInterval);
+    document.title = originalTitle;
+    isAcknowledged = true;
+    const notifDot = document.getElementById('notifDot');
+    if (notifDot) notifDot.style.display = 'none';
+}
+
+window.addEventListener('focus', stopNotificationAlert);
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('keydown', initAudio, { once: true });
+document.addEventListener('touchstart', initAudio, { once: true });
+
+function setupRealtimeNotifications() {
+    if (!CURRENT_USER_ID) return;
+    if (window.notificationChannel) sb.removeChannel(window.notificationChannel);
+    
+    window.notificationChannel = sb.channel('user-task-notifications')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tasks' }, (payload) => {
+            const newTask = payload.new;
+            if (String(newTask.assigned_to) === String(CURRENT_USER_ID)) {
+                startNotificationAlert();
+            }
+        })
+        .subscribe((status, err) => {
+            if (err) console.error("Realtime Error:", err);
+        });
+}
+
+/* ============================================================
+   SUPABASE CONFIGURATION & STATE
+============================================================ */
+const SUPABASE_URL = "https://tvzrpruqkeymfuhvbalv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-T72JQ8JD3v5a-McP60D1A_ILwu0_vh";
+const OPERATOR_LOGIN = SUPABASE_URL + "/functions/v1/operator-login";
+const VERIFY_SESSION = SUPABASE_URL + "/functions/v1/verify-operator-session";
+const TASK_API = SUPABASE_URL + "/functions/v1/task-api";
+const FORGOT_PASSWORD_API = SUPABASE_URL + "/functions/v1/operator-forgot-password";
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+let operator = null, sessionToken = null, myTasks = [];
+let knownTaskIds = new Set(), popupTask = null, firstLoad = true;
+let loading = false, loginTime = 0, pendingHoldTaskId = null, pendingDeleteTaskId = null;
+
+// ✅ MASTER HOLD REASONS (Same as Admin Dashboard)
+const HOLD_REASONS = [
+  "IN-CHAMBER INSTEAD OF 201",
+  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+  "SECTION COMPLIANCE MUST BE ADDED",
+  "SECTION NOT FEEDED YET",
+  "SERIAL NUMBER ISSUE",
+  "TIMING NOT IN COURT HEADER",
+  "TIMING NOT IN SHORT ORDER REMARK",
+  "TU MUST BE ADDED",
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
+  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
+  "WRONGLY BY SECTION"
+].sort((a,b) => a.localeCompare(b));
+
+const DELETE_REASONS = [
+  "HOLD BY SECTION NOT FEEDED", "IN-CHAMBER INSTEAD OF 201", "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+  "SECTION COMPLIANCE MUST BE ADDED", "SECTION NOT FEEDED YET", "SERIAL NUMBER ISSUE",
+  "TIMING NOT IN COURT HEADER", "TIMING NOT IN SHORT ORDER REMARK", "TU MUST BE ADDED",
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN", "VIDEO CONFERENCING WITH TIMING NOT PRESENT", "WRONGLY BY SECTION"
+].sort((a,b) => a.localeCompare(b));
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function esc(v){ return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+function dt(v){ return v ? new Date(v).toLocaleString("en-IN", { day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit" }) : "—"; }
+function todayIST(){ return new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date()); }
+
+function formatTaskDate(t){
+  const v = t?.task_date || t?.taskDate || t?.work_date || t?.workDate || t?.assigned_for_date || t?.date;
+  if(!v) return "Not specified";
+  const d = new Date(String(v).length <= 10 ? String(v) + "T00:00:00" : v);
+  if(Number.isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString("en-IN", { day:"2-digit", month:"short", year:"numeric", timeZone:"Asia/Kolkata" });
+}
+
+function decodeSection(s){
+  if(!s) return { bench:"R", caseTypes:[], section:"-" };
+  const str = String(s);
+  const m = str.match(/^\[([RB])\|([^\]]*)\]\s*(.*)/);
+  if(m){
+    return { bench:m[1], caseTypes: m[2] ? m[2].split(",").filter(c => c.trim()) : [], section:m[3] || "-" };
+  }
+  return { bench:"R", caseTypes:[], section:str || "-" };
+}
+
+function showMsg(t,ty){ $("loginMsg").textContent = t; $("loginMsg").className = "message show " + (ty || "info"); }
+function hideMsg(){ $("loginMsg").className = "message"; }
+function saveSession(){ localStorage.setItem("ahc_operator_session", JSON.stringify({ token:sessionToken, operator:operator })); }
+function clearSession(){ localStorage.removeItem("ahc_operator_session"); sessionToken = null; operator = null; }
+
+/* ============================================================
+   LOGIN & SESSION
+============================================================ */
+async function operatorLogin(){
+  const btn = $("loginBtn");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Signing in...';
+  showMsg("Signing in...", "info");
+  try{
+    const u = $("username").value.trim(), p = $("pin").value.trim();
+    if(!u || !p) throw Error("Username and PIN required.");
+    const r = await fetch(OPERATOR_LOGIN, { method:"POST", headers:{ "Content-Type":"application/json", "apikey":SUPABASE_KEY }, body:JSON.stringify({ username:u, pin:p }) });
+    const t = await r.text(); let j;
+    try{ j = JSON.parse(t); } catch{ throw Error("Invalid response."); }
+    if(!r.ok || !j.success) throw Error(j.error || j.message || "Login failed.");
+    
+    sessionToken = j.session_token || j.sessionToken || j.token || j.session?.token;
+    operator = j.user || j.operator;
+    CURRENT_USER_ID = operator.id; // ✅ SET FOR REALTIME
+    
+    if(!sessionToken || !operator) throw Error("Session data missing.");
+    saveSession(); loginTime = Date.now(); hideMsg(); initAudio();
+    if("Notification" in window && Notification.permission === "default") try{ await Notification.requestPermission(); } catch(e){}
+    
+    setupRealtimeNotifications();
+    await openDashboard();
+  } catch(e){
+    showMsg(e.message, "error"); btn.disabled = false; btn.textContent = "Sign In";
+  }
+}
+
+async function verifySession(){
+  if(!sessionToken || !operator) return false;
+  try{
+    const r = await fetch(VERIFY_SESSION, { method:"POST", headers:{ "Content-Type":"application/json", "apikey":SUPABASE_KEY, "x-session-token":sessionToken } });
+    if(!r.ok) return false;
+    const t = await r.text(); let j;
+    try{ j = JSON.parse(t); } catch{ return true; }
+    if(j.success === false || j.authenticated === false) return false;
+    if(j.user || j.operator){ operator = j.user || j.operator; saveSession(); }
+    return true;
+  } catch(e){ return false; }
+}
+
+async function taskApi(body){
+  if(!sessionToken) throw Error("Session expired.");
+  const r = await fetch(TASK_API, { method:"POST", headers:{ "Content-Type":"application/json", "apikey":SUPABASE_KEY, "x-session-token":sessionToken }, body:JSON.stringify(body) });
+  const t = await r.text(); let j;
+  try{ j = JSON.parse(t); } catch{ throw Error("Invalid API response."); }
+  if(!r.ok || !j.success) throw Error(j.error || "API error.");
+  return j;
+}
+
+/* ============================================================
+   DASHBOARD & TASKS
+============================================================ */
+async function openDashboard(){
+  $("loginCard").classList.add("hidden"); $("app").classList.remove("hidden");
+  const n = operator.full_name || operator.username || "Operator";
+  const u = operator.username || "";
+  $("operatorInfo").innerHTML = `<span style="font-weight:700">${esc(n)}</span>` + `${u ? " · " + esc(u) : ""}`;
+  firstLoad = true; await refreshAll();
+}
+
+function selectedWorkDate(){ return $("workDate").value || todayIST(); }
+function taskWorkDate(t){
+  const v = t?.task_date || t?.taskDate || t?.work_date || t?.workDate || t?.assigned_for_date || t?.date;
+  if(v){
+    const str = String(v);
+    if(/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    const d = new Date(str);
+    if(!Number.isNaN(d.getTime())) return new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" }).format(d);
+  }
+  if(t?.assigned_time){
+    const d = new Date(t.assigned_time);
+    if(!Number.isNaN(d.getTime())) return new Intl.DateTimeFormat("en-CA", { timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" }).format(d);
+  }
+  return "";
+}
+function filterTasksForDate(list){
+  const sel = selectedWorkDate();
+  return (list || []).filter(t => taskWorkDate(t) === sel);
+}
+
+async function refreshAll(){
+  if(loading) return; loading = true;
+  try{ await loadMyTasks(); await loadDoneToday(); } 
+  catch(e){ console.error(e); } 
+  finally{ loading = false; }
+}
+
+async function loadMyTasks(){
+  const j = await taskApi({ action:"my_tasks" });
+  const incoming = j.tasks || [];
+  const activeAll = incoming.filter(t => {
+    const st = String(t.status || "").toLowerCase();
+    return (st !== "done" && st !== "completed" && st !== "deleted");
+  });
+  const active = filterTasksForDate(activeAll);
+  const newTasks = active.filter(t => !knownTaskIds.has(Number(t.id)));
+
+  if(!firstLoad && newTasks.length){
+    newTasks.sort((a,b) => {
+      if(a.priority === "Urgent" && b.priority !== "Urgent") return -1;
+      if(a.priority !== "Urgent" && b.priority === "Urgent") return 1;
+      return Number(b.id) - Number(a.id);
+    });
+    showNewTask(newTasks[0]);
+  }
+  knownTaskIds = new Set(activeAll.map(t => Number(t.id)));
+  myTasks = active;
+  renderMyTasks();
+  firstLoad = false;
+}
+
+async function loadDoneToday(){
+  const j = await taskApi({ action:"today_done", date:selectedWorkDate() });
+  const rows = j.tasks || [];
+  $("doneCount").textContent = rows.length;
+  if(!rows.length){
+    $("doneRows").innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--gray-500)">No tasks completed today.</td></tr>`;
+    return;
+  }
+  $("doneRows").innerHTML = rows.map(t => {
+    const d = decodeSection(t.section_name);
+    const cb = d.caseTypes.length ? d.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join(" ") : `<span style="color:var(--gray-400)">-</span>`;
+    return `<tr>
+      <td><b>#${esc(t.id)}</b></td>
+      <td><span class="badge ${d.bench === "B" ? "badge-b" : "badge-r"}">${d.bench}</span></td>
+      <td>${esc(t.court_no || "-")}</td>
+      <td>${esc(t.list_type || "-")}</td>
+      <td>${esc(d.section)}</td>
+      <td>${cb}</td>
+      <td style="max-width:200px">${esc(t.remarks || "-")}</td>
+      <td style="white-space:nowrap;font-size:13px">${dt(t.completed_time)}</td>
+    </tr>`;
+  }).join("");
+}
+
+/* ============================================================
+   HOLD & DELETE ACTIONS
+============================================================ */
+function initHoldReasons(){
+  $("holdReasonSelect").innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+}
+function openHoldReason(id){
+  pendingHoldTaskId = Number(id);
+  $("holdReasonTaskLabel").textContent = "Task #" + id + " — select the reason for putting this task on hold.";
+  $("holdReasonSelect").value = "";
+  $("holdReasonOverlay").classList.remove("hidden");
+  setTimeout(() => $("holdReasonSelect").focus(), 50);
+}
+function cancelHoldReason(){ pendingHoldTaskId = null; $("holdReasonOverlay").classList.add("hidden"); }
+
+async function confirmHoldReason(){
+  const id = pendingHoldTaskId;
+  const reason = $("holdReasonSelect").value.trim();
+  if(!id || !reason){ alert("Please select a Hold Reason."); return; }
+  const btn = document.querySelector("#holdReasonBox .btn-warning");
+  if(btn){ btn.disabled = true; btn.textContent = "Saving…"; }
+  try{
+    // ✅ FIX: Send BOTH 'reason' and 'hold_reason'. DO NOT send 'remarks' to prevent backend mix-up.
+    const j = await taskApi({ action:"hold", task_id:Number(id), reason:reason, hold_reason:reason });
+    if(!j.success) throw Error(j.error || "Unable to hold.");
+    cancelHoldReason();
+    await refreshAll();
+  } catch(e){ alert("Hold failed: " + e.message); }
+  finally{ if(btn){ btn.disabled = false; btn.textContent = "⏸ HOLD TASK"; } }
+}
+
+function initDeleteReasons(){
+  $("deleteReasonSelect").innerHTML = `<option value="">— Select Delete Reason —</option>` + DELETE_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join("");
+}
+function openDeleteReason(id){
+  pendingDeleteTaskId = Number(id);
+  $("deleteReasonTaskLabel").textContent = "Task #" + id + " — select the reason for deleting this task.";
+  $("deleteReasonSelect").value = "";
+  $("deleteReasonOverlay").classList.remove("hidden");
+  setTimeout(() => $("deleteReasonSelect").focus(), 50);
+}
+function cancelDeleteReason(){ pendingDeleteTaskId = null; $("deleteReasonOverlay").classList.add("hidden"); }
+
+async function confirmDeleteReason(){
+  const id = pendingDeleteTaskId;
+  const reason = $("deleteReasonSelect").value.trim();
+  if(!id || !reason){ alert("Please select a Delete Reason."); return; }
+  const btn = document.querySelector("#deleteReasonOverlay .btn-danger");
+  if(btn){ btn.disabled = true; btn.textContent = "Deleting…"; }
+  try{
+    const j = await taskApi({ action:"delete", task_id:Number(id), reason:reason });
+    if(!j.success) throw Error(j.error || "Unable to delete.");
+    cancelDeleteReason();
+    knownTaskIds.delete(Number(id));
+    await refreshAll();
+  } catch(e){ alert("Delete failed: " + e.message); }
+  finally{ if(btn){ btn.disabled = false; btn.textContent = "🗑 DELETE TASK"; } }
+}
+
+/* ============================================================
+   ✅ RENDER TASKS (WITH SMART FIX FOR REMARKS/REASON)
+============================================================ */
+function renderMyTasks(){
+  const pending = myTasks.filter(t => String(t.status).toLowerCase() === "pending");
+  const hold = myTasks.filter(t => String(t.status).toLowerCase() === "hold");
+  $("pendingCount").textContent = pending.length;
+  $("holdCount").textContent = hold.length;
+
+  if(!myTasks.length){
+    $("currentTasks").innerHTML = `<div class="empty-state"><p>No pending or hold task assigned to you.</p></div>`;
+    return;
+  }
+
+  $("currentTasks").innerHTML = myTasks.map(t => {
+    const urgent = t.priority === "Urgent";
+    const held = String(t.status).toLowerCase() === "hold";
+    const d = decodeSection(t.section_name);
+    const cc = held ? "hold-card" : (urgent ? "urgent-card" : "");
+    const cb = d.caseTypes.length ? `<div class="case-types">${d.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("")}</div>` : `<span style="color:var(--gray-400);font-size:13px">-</span>`;
+    
+    // ✅ SMART FIX: Separate Remarks and Hold Reason correctly
+    let displayRemarks = t.remarks || "";
+    let displayHoldReason = t.hold_reason || t.holdReason || "";
+
+    // If remarks accidentally contains a hold reason (common backend bug), move it to hold_reason
+    if (displayRemarks && HOLD_REASONS.includes(displayRemarks.trim())) {
+        displayHoldReason = displayRemarks.trim();
+        displayRemarks = ""; // Clear remarks so it doesn't show in the wrong place
+    }
+
+    const holdHtml = held ? `<div class="hold-reason-box"><b>⏸ Hold Reason:</b> ${esc(displayHoldReason || "Task on hold")}</div>` : "";
+    const remarksHtml = displayRemarks ? `<div class="task-remarks"><b>💬 Comment:</b> ${esc(displayRemarks)}</div>` : "";
+    
+    let actions = `<button class="btn-warning btn-lg" onclick="openHoldReason(${Number(t.id)})">⏸ HOLD</button><button class="btn-success btn-lg" onclick="completeTask(${Number(t.id)})">✓ DONE</button>`;
+    if(held) actions = `<button class="btn-primary btn-lg" onclick="resumeTask(${Number(t.id)})">▶ RESUME</button><button class="btn-success btn-lg" onclick="completeTask(${Number(t.id)})">✓ DONE</button>`;
+
+    return `<div class="task-card ${cc}">
+      <div class="task-header">
+        <span class="task-id">#${esc(t.id)}</span>
+        <span class="badge ${d.bench === "B" ? "badge-b" : "badge-r"}">${d.bench === "B" ? "B · Broken" : "R · Regular"}</span>
+        ${urgent ? `<span class="badge badge-urgent">⚡ URGENT</span>` : ""}
+        ${held ? `<span class="badge badge-hold">⏸ ON HOLD</span>` : ""}
+        ${!urgent && !held ? `<span class="badge badge-pending">⏳ PENDING</span>` : ""}
+      </div>
+      <div class="task-meta">
+        <div class="meta-item"><div class="meta-label">Court / Chamber</div><div class="meta-value big">${esc(t.court_no || "-")}</div></div>
+        <div class="meta-item"><div class="meta-label">List Type</div><div class="meta-value big">${esc(t.list_type || "-")}</div></div>
+        <div class="meta-item"><div class="meta-label">Task Date</div><div class="meta-value"><span class="badge task-date-badge">📅 ${esc(formatTaskDate(t))}</span></div></div>
+        <div class="meta-item"><div class="meta-label">Section</div><div class="meta-value">${esc(d.section)}</div></div>
+        <div class="meta-item"><div class="meta-label">Case Type</div>${cb}</div>
+      </div>
+      ${remarksHtml}
+      ${holdHtml}
+      <div class="task-actions">${actions}</div>
+    </div>`;
+  }).join("");
+}
+
+async function completeTask(id){
+  try{
+    const j = await taskApi({ action:"complete", task_id:Number(id) });
+    if(!j.success) throw Error(j.error || "Unable to complete.");
+    knownTaskIds.delete(Number(id));
+    await refreshAll();
+  } catch(e){ alert("Error: " + e.message); }
+}
+async function resumeTask(id){
+  try{
+    const j = await taskApi({ action:"resume", task_id:Number(id) });
+    if(!j.success) throw Error(j.error || "Unable to resume task.");
+    knownTaskIds.add(Number(id));
+    await refreshAll();
+  } catch(e){ alert("Resume failed: " + e.message); }
+}
+
+/* ============================================================
+   NEW TASK POPUP & NOTIFICATIONS
+============================================================ */
+function showNewTask(t){
+  popupTask = t;
+  const urgent = t.priority === "Urgent";
+  $("newTaskBox").className = urgent ? "urgent-popup" : "normal-popup";
+  $("popupPriority").innerHTML = urgent ? `<span class="badge badge-urgent flash" style="font-size:13px;padding:6px 14px">⚡ URGENT</span>` : `<span class="badge badge-pending" style="font-size:13px;padding:6px 14px">📋 NEW TASK</span>`;
+  $("popupTitle").textContent = "Task #" + t.id + " Assigned";
+  $("popupOneLiner").innerHTML = `🏛️ Court: <b>${esc(t.court_no || "-")}</b> &nbsp;|&nbsp; 📋 List: <b>${esc(t.list_type || "-")}</b> &nbsp;|&nbsp; 📅 Date: <b>${esc(formatTaskDate(t))}</b>`;
+  $("newTaskOverlay").classList.remove("hidden");
+  startNotificationAlert();
+  notifyNewTask(t);
+}
+
+function acknowledgeTask(){
+  stopNotificationAlert();
+  $("newTaskOverlay").classList.add("hidden");
+  popupTask = null;
+  try{ window.focus(); } catch(e){}
+}
+
+function notifyNewTask(t){
+  if("Notification" in window){
+    if(Notification.permission === "granted"){
+      try{
+        new Notification(t.priority === "Urgent" ? "⚡ URGENT AHC TASK" : "📋 New AHC Task", {
+          body: "Task #" + t.id + " | Date: " + formatTaskDate(t) + " | " + (t.court_no || "") + " | " + (t.list_type || ""),
+          requireInteraction:true
+        });
+      } catch(e){}
+    } else if(Notification.permission === "default"){
+      Notification.requestPermission().catch(()=>{});
+    }
+  }
+  try{ window.focus(); } catch(e){}
+}
+
+/* ============================================================
+   FORGOT PASSWORD
+============================================================ */
+function openForgotPassword(){
+  $("forgotPasswordOverlay").classList.remove("hidden");
+  $("forgotUsername").value = $("username").value.trim();
+  $("forgotVerificationType").value = "phone";
+  $("forgotVerificationValue").value = "";
+  $("forgotNewPassword").value = "";
+  $("forgotConfirmPassword").value = "";
+  $("forgotPasswordMsg").className = "message";
+  changeForgotVerification();
+  setTimeout(() => $("forgotUsername").focus(), 100);
+}
+function closeForgotPassword(){ $("forgotPasswordOverlay").classList.add("hidden"); $("forgotPasswordMsg").className = "message"; }
+function changeForgotVerification(){
+  const type = $("forgotVerificationType").value;
+  const label = $("forgotVerificationLabel");
+  const input = $("forgotVerificationValue");
+  if(type === "dob"){
+    label.textContent = "Date of Birth"; input.type = "date"; input.inputMode = ""; input.placeholder = "Select your date of birth";
+  } else {
+    label.textContent = "Phone Number"; input.type = "tel"; input.inputMode = "numeric"; input.placeholder = "Enter 10-digit registered phone number";
+  }
+}
+function showForgotMsg(text, type){
+  const box = $("forgotPasswordMsg");
+  box.textContent = text;
+  box.className = "message show " + (type || "info");
+}
+async function resetForgotPassword(){
+  const btn = $("resetPasswordBtn");
+  const username = $("forgotUsername").value.trim();
+  const verificationType = $("forgotVerificationType").value;
+  const verificationValue = $("forgotVerificationValue").value.trim();
+  const newPassword = $("forgotNewPassword").value;
+  const confirmPassword = $("forgotConfirmPassword").value;
+
+  if(!username){ showForgotMsg("Please enter your username.", "error"); $("forgotUsername").focus(); return; }
+  if(!verificationValue){ showForgotMsg(verificationType === "phone" ? "Please enter your registered phone number." : "Please select your date of birth.", "error"); $("forgotVerificationValue").focus(); return; }
+  if(verificationType === "phone" && verificationValue.replace(/\D/g,"").length !== 10){ showForgotMsg("Please enter a valid 10-digit phone number.", "error"); $("forgotVerificationValue").focus(); return; }
+  if(!newPassword){ showForgotMsg("Please enter a new password (PIN).", "error"); $("forgotNewPassword").focus(); return; }
+  if(newPassword.length < 4){ showForgotMsg("New password must be at least 4 characters long.", "error"); $("forgotNewPassword").focus(); return; }
+  if(newPassword !== confirmPassword){ showForgotMsg("New password and confirm password do not match.", "error"); $("forgotConfirmPassword").focus(); return; }
+
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Updating...';
+  showForgotMsg("Verifying your details...", "info");
+
+  try{
+    const response = await fetch(FORGOT_PASSWORD_API, {
+      method:"POST", headers:{ "Content-Type":"application/json", "apikey":SUPABASE_KEY },
+      body:JSON.stringify({ userId:username, newPassword:newPassword, verificationMethod:verificationType, verificationData:{ [verificationType]: verificationValue } })
+    });
+    const text = await response.text(); let result;
+    try{ result = JSON.parse(text); } catch{ throw new Error("Invalid server response."); }
+    if(!response.ok || !result.success) throw new Error(result.error || result.message || "Unable to reset password.");
+
+    showForgotMsg("✓ Password (PIN) changed successfully! Redirecting to login...", "info");
+    setTimeout(() => {
+      closeForgotPassword();
+      $("username").value = username; $("pin").value = ""; $("pin").focus();
+      showMsg("Password changed successfully. Please login with your new password.", "info");
+    }, 1500);
+  } catch(error){
+    console.error("Forgot password error:", error);
+    let displayMsg = error.message || "Unable to reset password.";
+    if(error.message.includes("NetworkError") || error.message.includes("Failed to fetch") || error.message.includes("TypeError")) displayMsg = "⚠️ Network Error: Please check your internet connection or contact admin.";
+    showForgotMsg(displayMsg, "error");
+  } finally {
+    btn.disabled = false; btn.innerHTML = "🔑 Set New Password";
+  }
+}
+
+/* ============================================================
+   INITIALIZE & AUTO LOGIN
+============================================================ */
+initHoldReasons();
+initDeleteReasons();
+$("workDate").value = todayIST();
+
+async function logout(){
+  if(!confirm("Logout?")) return;
+  stopNotificationAlert();
+  clearSession();
+  location.reload();
+}
+
+$("pin").addEventListener("keydown", e => { if(e.key === "Enter") operatorLogin(); });
+$("forgotConfirmPassword").addEventListener("keydown", e => { if(e.key === "Enter") resetForgotPassword(); });
+
+$("forgotPasswordOverlay").addEventListener("click", e => { if(e.target.id === "forgotPasswordOverlay") closeForgotPassword(); });
+$("holdReasonOverlay").addEventListener("click", e => { if(e.target.id === "holdReasonOverlay") cancelHoldReason(); });
+$("deleteReasonOverlay").addEventListener("click", e => { if(e.target.id === "deleteReasonOverlay") cancelDeleteReason(); });
+
+setInterval(async () => {
+  if(!$("app").classList.contains("hidden")){
+    if(Date.now() - loginTime < 10000){ await refreshAll(); return; }
+    const ok = await verifySession().catch(() => false);
+    if(!ok){
+      clearSession(); $("app").classList.add("hidden"); $("loginCard").classList.remove("hidden");
+      showMsg("Session expired. Please login again.", "error");
+      $("loginBtn").disabled = false; $("loginBtn").textContent = "Sign In";
+      return;
+    }
+    await refreshAll();
+  }
+}, 2000);
+
+(async()=>{
+  try{
+    const s = JSON.parse(localStorage.getItem("ahc_operator_session") || "null");
+    if(s?.token && s?.operator){
+      sessionToken = s.token; operator = s.operator;
+      CURRENT_USER_ID = operator.id; // ✅ Set ID for auto-login too
+      loginTime = Date.now() - 20000;
+      const ok = await verifySession();
+      if(ok){
+        setupRealtimeNotifications(); // ✅ Start listening on auto-login
+        await openDashboard();
+      } else clearSession();
+    }
+  } catch(e){ clearSession(); }
+})();
+</script>
+</body>
+</html>
