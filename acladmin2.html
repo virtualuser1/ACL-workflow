@@ -652,7 +652,7 @@ const HOLD_REASONS = ["CONNECTED MATTERS NOT SHOWN TOGETHER",
 "VC FROM LUCKNOW NOT MENTIONED",
 "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
 "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
-"WRONGLY BY SECTION"].sort((a,b) => a.localeCompare(b));
+"WRONGLY BY SECTION","Wrongly"].sort((a,b) => a.localeCompare(b));
 let pendingHoldTaskId = null;
 function initHoldReasons(){ const sel = $("holdReasonSelect"); sel.innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join(""); }
 function openHoldReason(id){ pendingHoldTaskId = Number(id); $("holdReasonTaskLabel").textContent = "Task #" + id; $("holdReasonSelect").value = ""; $("holdReasonOverlay").classList.remove("hidden"); }
