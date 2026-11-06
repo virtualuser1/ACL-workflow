@@ -188,7 +188,7 @@ tr.memo-done-row{background:var(--success-light)}
 
     <div id="panelReset" style="display:none;">
       <h3>🔑 Reset Operator Password</h3>
-      <p style="color:#64748b; font-size:13px; margin-bottom:14px;">Agar operator apna PIN/Password bhool gaya hai, to uska registered phone number daal kar naya password set karein.</p>
+      <p style="color:#64748b; font-size:13px; margin-bottom:14px;" If an operator has forgotten their PIN or password, enter their registered phone number to set a new password.</p>
       <label>📱 Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>New Password / PIN <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
       <input id="resetNewPassword" type="password" placeholder="e.g. Pass@123" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
@@ -205,7 +205,7 @@ tr.memo-done-row{background:var(--success-light)}
     </div>
 
     <hr style="margin:24px 0;"><h3>Existing Operators</h3>
-    <div id="operatorManagementList">Operators ki list load ho rahi hai...</div>
+    <div id="operatorManagementList">Operators is loading..</div>
     <p id="userManagerMessage" role="status" style="margin-top:14px; white-space:pre-wrap;"></p>
   </div>
 </div>
@@ -489,7 +489,7 @@ async function loadOperators() {
     operators = result.operators.map(o => ({ id: Number(o.numeric_id || o.id), username: String(o.username || ""), full_name: String(o.full_name || o.username || `Operator ${o.numeric_id || o.id}`), active: o.active === true }))
       .filter(o => Number.isInteger(o.id) && o.id > 0 && o.active && o.username.toLowerCase() !== "admin").sort((a, b) => a.id - b.id);
     select.innerHTML = '<option value="">Admin</option>' + operators.map(o => `<option value="${o.id}">${o.id} — ${o.full_name}</option>`).join("");
-  } catch (error) { console.error("Unable to load operators:", error); select.innerHTML = '<option value="">Operators load nahi hue</option>'; } 
+  } catch (error) { console.error("Unable to load operators:", error); select.innerHTML = '<option value="">Operators not loaded</option>'; } 
   finally { select.disabled = false; }
 }
 
@@ -522,7 +522,7 @@ async function loadManagedOperators() {
 /* ===================================================== TASK CREATION & RENDERING ===================================================== */
 async function createTask(){
   hideWarning(); const bench = $("benchType").value, courts = [...selectedCourts], listType = $("listType").value, assigned = $("operatorSelect").value;
-  if(!assigned){ if(courts.length > 1){ alert("Admin Memo ke liye ek court chunein."); return; } await submitTask(); return; }
+  if(!assigned){ if(courts.length > 1){ alert("For Admin select only Single court option."); return; } await submitTask(); return; }
   if(!bench){ alert("Select Bench."); return; } if(courts.length === 0){ alert("Select Court."); return; }
   const duplicates = []; for(const court of courts){ const dupe = checkDuplicate(bench, court, listType); if(dupe) duplicates.push({court, dupe}); }
   if(duplicates.length){
@@ -629,7 +629,29 @@ async function reassign(id){
   const n = Number(answer); if(!Number.isInteger(n)) return;
   try{ await taskApi({action:"reassign", task_id:id, assigned_to:n}); await refreshAll(); }catch(e){ alert(e.message); }
 }
-const HOLD_REASONS = ["IN-CHAMBER INSTEAD OF 201","PH SHOULD BE FURTHER HEARING IN SHORT ORDER","SECTION COMPLIANCE MUST BE ADDED","SECTION NOT FEEDED YET","SERIAL NUMBER ISSUE","TIMING NOT IN COURT HEADER","TIMING NOT IN SHORT ORDER REMARK","TU MUST BE ADDED","VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN","VIDEO CONFERENCING WITH TIMING NOT PRESENT","WRONGLY BY SECTION"].sort((a,b) => a.localeCompare(b));
+const HOLD_REASONS = ["CONNECTED MATTERS NOT SHOWN TOGETHER",
+"COURT NUMBER NOT IN PDF",
+"DUPLICATE SERIAL NUMBER",
+"FURTHER HEARING NOT MENTIONED",
+"IN-CHAMBER INSTEAD OF 201",
+"LEARNED COUNSEL DETAILS NOT SHOWN",
+"LISTING PURPOSE NOT MENTIONED",
+"PARTY NAME MISSING",
+"PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+"SECTION COMPLIANCE MUST BE ADDED",
+"SECTION COMPLIANCE NOT MENTIONED",
+"SECTION NOT FEEDED YET",
+"SERIAL NUMBER ISSUE",
+"SERIAL NUMBER MISSING",
+"SERIAL NUMBER NOT IN SEQUENCE",
+"SHORT ORDER NOT MENTIONED",
+"TIMING NOT IN COURT HEADER",
+"TIMING NOT IN SHORT ORDER REMARK",
+"TU MUST BE ADDED",
+"VC FROM LUCKNOW NOT MENTIONED",
+"ONLY VIDEO CONFERENCING SHOULD BE MENTIONED",
+"VIDEO CONFERENCING WITH TIMING NOT PRESENT",
+"WRONGLY BY SECTION, "WRONGLY"].sort((a,b) => a.localeCompare(b));
 let pendingHoldTaskId = null;
 function initHoldReasons(){ const sel = $("holdReasonSelect"); sel.innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join(""); }
 function openHoldReason(id){ pendingHoldTaskId = Number(id); $("holdReasonTaskLabel").textContent = "Task #" + id; $("holdReasonSelect").value = ""; $("holdReasonOverlay").classList.remove("hidden"); }
@@ -684,7 +706,7 @@ async function generateReport(){
   
   if(!date){ alert("Select date"); return; }
   
-  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Report Generate हो रही है...</div>`;
+  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Report Generating...</div>`;
   
   try{
     const j = await taskApi({action:"report", date});
@@ -706,7 +728,7 @@ async function generateReport(){
     }
     
     if(tasks.length === 0) {
-      $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500);">❌ ${esc(date)}${courtFilter ? ' (Court: ' + esc(courtFilter) + ')' : ''} के लिए कोई Task नहीं मिला।</div>`;
+      $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500);">❌ ${esc(date)}${courtFilter ? ' (Court: ' + esc(courtFilter) + ')' : ''} No task found for this</div>`;
       return;
     }
 
@@ -820,7 +842,7 @@ async function downloadSelectedDatePDF() {
 }
 
 function downloadReportPDF(report) {
-  if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library load nahi hui.");
+  if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library not  loaded.");
   const activeTasks = Array.isArray(report?.tasks) ? report.tasks : [], deletedTasks = Array.isArray(report?.deletedTasks) ? report.deletedTasks : [], date = report?.date || selectedDate();
   const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL DATE-WISE TASK REPORT", 10, 12);
@@ -837,7 +859,7 @@ function downloadReportPDF(report) {
 async function generateBrokenCourtsReportPDF() {
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) {
-      alert("❌ PDF library load nahi hui. Page refresh karein.");
+      alert("❌ PDF library not  loaded. refresh the page. ");
       return;
     }
     
@@ -918,15 +940,15 @@ function switchUserTab(tab) {
 // ✅ FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
 function validatePin(pin) {
   if (!pin || pin.length < 4 || pin.length > 16) {
-    return { valid: false, error: "PIN 4-16 characters ka hona chahiye." };
+    return { valid: false, error: "The PIN must be 4–16 characters long.." };
   }
   // Allow: letters, numbers, and @ # $ % & * !
   if (!/^[A-Za-z0-9@#$%&*!]+$/.test(pin)) {
-    return { valid: false, error: "PIN mein sirf letters, numbers aur @ # $ % & * ! allowed hain." };
+    return { valid: false, error: "Only letters, numbers, and the symbols @ # $ % & * ! are allowed in the PIN." };
   }
   // Must contain at least 1 letter and 1 number
   if (!/[A-Za-z]/.test(pin) || !/[0-9]/.test(pin)) {
-    return { valid: false, error: "PIN mein kam se kam 1 letter aur 1 number hona zaroori hai." };
+    return { valid: false, error: "The PIN must contain at least one letter and one number." };
   }
   return { valid: true };
 }
@@ -944,7 +966,7 @@ async function addOperator() {
     return; 
   }
   if (!/^[6-9]\d{9}$/.test(phone)) { 
-    message.textContent = "❌ Phone 10 digits ka hona chahiye (6-9 se shuru)."; 
+    message.textContent = "❌ The phone number must be 10 digits long (starting with 6–9).."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -986,7 +1008,7 @@ async function resetOperatorPassword() {
   const newPassword = $("resetNewPassword").value.trim();
   
   if (!phone || !newPassword) { 
-    message.textContent = "❌ Phone aur naya password dono zaroori."; 
+    message.textContent = "❌ Both the phone and the new password are required.."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -1004,7 +1026,7 @@ async function resetOperatorPassword() {
     return;
   }
   
-  if (!confirm(`Phone ${phone} wale operator ka password reset karein?`)) return;
+  if (!confirm(`Phone ${phone} Reset the User's password?`)) return;
   message.textContent = "Resetting...";
   try {
     const result = await manageOperatorsRequest({action: "reset_password", phone, new_password: newPassword});
@@ -1061,7 +1083,7 @@ async function loadSpaceStatus() {
     const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "get_status" } });
     if (error) throw error; if (!data.success) throw new Error(data.error);
     lastSpaceConfig = data.config; updateSpaceStatusUI(data);
-  } catch (error) { console.error("Space status failed:", error); $("spaceStatusContent").innerHTML = `<div style="opacity:0.9">❌ Space monitor nahi chal raha. Edge Function 'space-monitor' deploy karein.</div>`; }
+  } catch (error) { console.error("Space status failed:", error); $("spaceStatusContent").innerHTML = `<div style="opacity:0.9">❌ Space Monitor is not running. Deploy the edge function 'space-monitor'..</div>`; }
 }
 function updateSpaceStatusUI(data) {
   const space = data.space, config = data.config, lastBackup = data.last_backup;
@@ -1104,12 +1126,12 @@ async function saveSpaceConfig() {
   } catch (error) { alert("❌ Save failed: " + error.message); }
 }
 async function triggerManualBackup() {
-    const months = prompt("Kitne mahine purane tasks ka backup lena hai?", "4");
+    const months = prompt("How many months' worth of tasks should be backed up?", "1");
     if (!months) return;
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - parseInt(months));
     const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
-    if (!confirm(`⚠️  ${months} mahine purane tasks (${cutoffDateStr} se pehle) backup + delete honge.\n\nPehle PDF download hogi, phir backup hoga.\nContinue?`)) return;
+    if (!confirm(`⚠️  ${months} tasks older than (${cutoffDateStr} ) backup + deleted.\n\nPDF will be downloaded firstly,then backedup.\nContinue?`)) return;
     try {
         const { data: allTasksResult, error: fetchError } = await sb.from('tasks').select('*').or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`).order('assigned_time', { ascending: false });
         if (fetchError) throw fetchError;
