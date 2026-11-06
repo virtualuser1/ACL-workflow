@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -356,6 +355,21 @@ let operators = [], tasks = [], busy = false, selectedTaskIds = new Set();
 const CASE_TYPES = ["A227","A228","A340","A372","A372D","A378","A378D","A389","A482","A483","ABAIL","ABAILC","AMAL","APPL","ARBT","ARCO","ARPL","ARPLD","BAIL","BAILC","C14A1","C14A1D","C372","C372D","C378","C378D","CAPL","CAPT","CAPTD","CEAP","CERA","CERE","CEXA","CLRE","CLRED","CMRA","CMRAD","COMA","COMAD","COMP","CONA","CONAD","COPL","COPLD","COPP","COSU","CRCL","CREF","CREFD","CRLA","CRLAD","CRLP","CRLR","CRLRD","CROB","CRPIL","CRRA","CRRAD","CUSA","CUSAD","EAPL","ECASE","EDAP","EDRE","EFAPL","ELEP","FAFO","FAFOD","FAPL","FAPLD","FEXA","GAPL","GOVA","GOVAD","GSTAL","GSTALD","GTAP","GTRE","HABC","IAPL","IAPLD","ITAP","ITRE","JAPL","JAPLD","MCOA","MTAL","NA379","NA413","NA413D","NA419","NA419D","NA430","NA528","NA529","NABAIL","NC413","NC413D","NC419","NC419D","OLR","OSUT","PRCS","REFC","REFE","RERA","RERAD","SAFO","SAFOD","SAMC","SAPL","SAPLD","SCAP","SCAPD","SCCR","SCCRD","SPLA","SPLAD","STRE","STRED","TACL","TACLD","TACR","TEAP","TEST","TESU","WAPL","WPIL","WQPL","WQPLD","WRIA","WRIB","WRIC","WTAP","WTAR","WTAX","WTRE"];
 let selectedCaseTypes = [], selectedCourts = [];
 
+// ✅ MASTER HOLD REASONS LIST (Ensure Operator Dashboard uses this exact same list)
+const HOLD_REASONS = [
+  "IN-CHAMBER INSTEAD OF 201",
+  "PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
+  "SECTION COMPLIANCE MUST BE ADDED",
+  "SECTION NOT FEEDED YET",
+  "SERIAL NUMBER ISSUE",
+  "TIMING NOT IN COURT HEADER",
+  "TIMING NOT IN SHORT ORDER REMARK",
+  "TU MUST BE ADDED",
+  "VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
+  "VIDEO CONFERENCING WITH TIMING NOT PRESENT",
+  "WRONGLY BY SECTION"
+].sort((a,b) => a.localeCompare(b));
+
 function initCourtDropdown(){
   const values = ["IN-CHAMBER", "AT RESIDENCE", "CJ", ...Array.from({length:100}, (_,i) => String(i + 1))];
   $("courtPanel").innerHTML = values.map(value => `<div class="ct-option" data-val="${value}" role="option" onclick="selectCourt(event,this)">${value}</div>`).join("");
@@ -579,13 +593,22 @@ function renderTasks(){
     const courtStr = getCourtStr(t);
     let caseBadges = '<span style="color:var(--gray-400)">-</span>'; if(decoded.caseTypes.length) caseBadges = decoded.caseTypes.map(c => `<span class="badge badge-case">${esc(c)}</span>`).join("");
 
-    const reasonDisplay = (t.reason || t.hold_reason) ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(t.reason || t.hold_reason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
+    // ✅ FIX: Smart check - if remarks accidentally contains a hold reason (common from operator dashboard), move it to Reason column
+    let displayRemarks = t.remarks || "-";
+    let displayReason = t.reason || t.hold_reason || "";
+    
+    if (displayRemarks !== "-" && HOLD_REASONS.includes(displayRemarks.trim())) {
+      displayReason = displayRemarks.trim();
+      displayRemarks = "-";
+    }
+
+    const reasonDisplay = displayReason ? `<span style="color:var(--purple); font-weight:700; font-size:12px;">⏸ ${esc(displayReason)}</span>` : '<span style="color:var(--gray-400)">—</span>';
     const isPending = status === "pending", showCheckbox = !memo && isPending;
 
     return `<tr class="${rc}">
       <td class="no-print">${showCheckbox ? `<input class="task-select task-row-select" type="checkbox" data-task-id="${Number(t.id)}" ${selectedTaskIds.has(Number(t.id)) ? "checked" : ""} onchange="toggleTaskSelection(${Number(t.id)}, this.checked)">` : '<span style="color:var(--gray-400)">—</span>'}</td>
       <td><b>#${esc(t.id)}</b></td><td>${benchBadge}</td><td><b>${esc(courtStr)}</b></td><td>${esc(t.list_type || "-")}</td>
-      <td>${memo ? '<span class="badge badge-memo">MEMO</span>' : esc(t.operator?.full_name || "-")}</td><td>${esc(decoded.section)}</td><td style="max-width:150px">${esc(t.remarks || "-")}</td>
+      <td>${memo ? '<span class="badge badge-memo">MEMO</span>' : esc(t.operator?.full_name || "-")}</td><td>${esc(decoded.section)}</td><td style="max-width:150px">${esc(displayRemarks)}</td>
       <td>${reasonDisplay}</td><td><div class="case-cell">${caseBadges}</div></td><td>${statusBadge}</td>
       <td style="white-space:nowrap;font-size:12px">${dt(t.assigned_time)}</td><td style="white-space:nowrap;font-size:12px">${dt(t.completed_time)}</td>
       <td class="no-print"><div class="action">
@@ -630,36 +653,19 @@ async function reassign(id){
   const n = Number(answer); if(!Number.isInteger(n)) return;
   try{ await taskApi({action:"reassign", task_id:id, assigned_to:n}); await refreshAll(); }catch(e){ alert(e.message); }
 }
-const HOLD_REASONS = ["CONNECTED MATTERS NOT SHOWN TOGETHER",
-"COURT NUMBER NOT IN PDF",
-"DUPLICATE SERIAL NUMBER",
-"FURTHER HEARING NOT MENTIONED",
-"IN-CHAMBER INSTEAD OF 201",
-"LEARNED COUNSEL DETAILS NOT SHOWN",
-"LISTING PURPOSE NOT MENTIONED",
-"PARTY NAME MISSING",
-"PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
-"SECTION COMPLIANCE MUST BE ADDED",
-"SECTION COMPLIANCE NOT MENTIONED",
-"SECTION NOT FEEDED YET",
-"SERIAL NUMBER ISSUE",
-"SERIAL NUMBER MISSING",
-"SERIAL NUMBER NOT IN SEQUENCE",
-"SHORT ORDER NOT MENTIONED",
-"TIMING NOT IN COURT HEADER",
-"TIMING NOT IN SHORT ORDER REMARK",
-"TU MUST BE ADDED",
-"VC FROM LUCKNOW NOT MENTIONED",
-"VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN",
-"VIDEO CONFERENCING WITH TIMING NOT PRESENT",
-"WRONGLY BY SECTION"].sort((a,b) => a.localeCompare(b));
+
 let pendingHoldTaskId = null;
 function initHoldReasons(){ const sel = $("holdReasonSelect"); sel.innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join(""); }
 function openHoldReason(id){ pendingHoldTaskId = Number(id); $("holdReasonTaskLabel").textContent = "Task #" + id; $("holdReasonSelect").value = ""; $("holdReasonOverlay").classList.remove("hidden"); }
 function cancelHoldReason(){ pendingHoldTaskId = null; $("holdReasonOverlay").classList.add("hidden"); }
 async function confirmHoldReason(){
   const id = pendingHoldTaskId, reason = $("holdReasonSelect").value.trim(); if(!id || !reason){ alert("Select reason."); return; }
-  try{ await taskApi({action:"hold", task_id:Number(id), reason:reason}); cancelHoldReason(); await refreshAll(); }catch(e){ alert("Hold failed: " + e.message); }
+  try{ 
+    // ✅ FIX: Send both 'reason' and 'hold_reason' to ensure backend saves it correctly regardless of expected field name
+    await taskApi({action:"hold", task_id:Number(id), reason:reason, hold_reason:reason}); 
+    cancelHoldReason(); 
+    await refreshAll(); 
+  }catch(e){ alert("Hold failed: " + e.message); }
 }
 async function resumeTask(id){ if(!confirm("Resume?")) return; try{ await taskApi({action:"resume", task_id:id}); await refreshAll(); }catch(e){ alert(e.message); } }
 async function deleteTask(id){
@@ -667,12 +673,10 @@ async function deleteTask(id){
   try{ const task = tasks.find(t => t.id === id); await taskApi({action:"delete", task_id:id, reason:reason.trim()}); if(task) saveDeletedTask(task, reason.trim()); await refreshAll(); }catch(e){ alert("Delete failed: " + e.message); }
 }
 
-/* ===================================================== REPORTS & PDF (FIXED) ===================================================== */
+/* ===================================================== REPORTS & PDF ===================================================== */
 function closeModal(){ $("modal").classList.add("hidden"); $("printReport").style.display = "none"; $("printReport").innerHTML = ""; }
 
-// ✅ FIX: openReport function properly defined with Court filter
 function openReport(){
-  // Court dropdown options build karo
   const courtOptions = ['<option value="">All Courts</option>'];
   const uniqueCourts = new Set();
   tasks.forEach(t => { const c = getCourtStr(t); if(c && c !== "-") uniqueCourts.add(c); });
@@ -696,8 +700,6 @@ function openReport(){
     <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">👆 Click the "Generate Report" button</div></div>
   `;
   $("modal").classList.remove("hidden");
-  
-  // Auto-generate on open
   setTimeout(() => generateReport(), 200);
 }
 
@@ -713,7 +715,6 @@ async function generateReport(){
     const j = await taskApi({action:"report", date});
     let allTasks = j.tasks || [];
     
-    // Date filter
     let tasks = allTasks.filter(t => { 
       if(t.task_date) return t.task_date === date; 
       if(t.assigned_time){ 
@@ -723,7 +724,6 @@ async function generateReport(){
       return false; 
     });
 
-    // ✅ FIX: Court filter apply karo
     if(courtFilter) {
       tasks = tasks.filter(t => getCourtStr(t) === courtFilter);
     }
@@ -743,7 +743,15 @@ async function generateReport(){
 
     tasks.forEach(t => {
       const decoded = decodeSection(t.section_name);
-      const reasonText = t.reason || t.hold_reason || "—";
+      
+      // ✅ FIX: Smart check for report generation
+      let reasonText = t.reason || t.hold_reason || "—";
+      let displayRemarks = t.remarks || "—";
+      if (displayRemarks !== "—" && HOLD_REASONS.includes(displayRemarks.trim())) {
+        reasonText = displayRemarks.trim();
+        displayRemarks = "—";
+      }
+
       const statusClass = String(t.status).toLowerCase() === "done" ? "done" : String(t.status).toLowerCase() === "hold" ? "hold" : "pending";
       
       tableRowsHTML += `<tr>
@@ -753,7 +761,7 @@ async function generateReport(){
         <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.list_type || "—")}</td>
         <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.operator?.full_name || "MEMO")}</td>
         <td style="padding:6px; border:1px solid #cbd5e1;">${esc(decoded.section)}</td>
-        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(t.remarks || "—")}</td>
+        <td style="padding:6px; border:1px solid #cbd5e1;">${esc(displayRemarks)}</td>
         <td style="padding:6px; border:1px solid #cbd5e1; color:var(--purple); font-weight:700;">${esc(reasonText)}</td>
         <td style="padding:6px; border:1px solid #cbd5e1;">${esc(decoded.caseTypes.join(", ") || "—")}</td>
         <td style="padding:6px; border:1px solid #cbd5e1;"><span class="badge badge-${statusClass}">${esc(t.status)}</span></td>
@@ -766,7 +774,7 @@ async function generateReport(){
         <td>${esc(t.list_type || "—")}</td>
         <td>${esc(t.operator?.full_name || "MEMO")}</td>
         <td>${esc(decoded.section)}</td>
-        <td>${esc(t.remarks || "—")}</td>
+        <td>${esc(displayRemarks)}</td>
         <td style="color:#7c3aed; font-weight:bold;">${esc(reasonText)}</td>
         <td>${esc(decoded.caseTypes.join(", ") || "—")}</td>
         <td>${esc(t.status)}</td>
@@ -807,7 +815,6 @@ async function generateReport(){
       </div>
     `;
 
-    // Hidden Print Area prepare karo
     $("printReport").style.display = "block";
     $("printReport").innerHTML = `
       <h1>ACL Daily Task Report</h1>
@@ -829,7 +836,6 @@ async function generateReport(){
   }
 }
 
-// ✅ FIX: Print function - sirf #printReport print hoga
 function doPrintReport(){
   window.print();
 }
@@ -849,14 +855,35 @@ function downloadReportPDF(report) {
   doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL DATE-WISE TASK REPORT", 10, 12);
   doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.text("Date: " + date, 10, 19); doc.text("Total: " + activeTasks.length + " | Deleted: " + deletedTasks.length, 10, 25);
   const tableRows = [];
-  activeTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", (t.reason || t.hold_reason) || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); });
-  deletedTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", "—", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.deleted_reason || "—", decoded.caseTypes.join(", ") || "—", "—", "DELETED"]); });
+  
+  activeTasks.forEach(t => { 
+    const decoded = decodeSection(t.section_name); 
+    // ✅ FIX: Smart check for PDF
+    let reasonText = (t.reason || t.hold_reason) || "";
+    let displayRemarks = t.remarks || "";
+    if (displayRemarks && HOLD_REASONS.includes(displayRemarks.trim())) {
+      reasonText = displayRemarks.trim();
+      displayRemarks = "";
+    }
+    tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", displayRemarks || "—", reasonText || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); 
+  });
+  
+  deletedTasks.forEach(t => { 
+    const decoded = decodeSection(t.section_name); 
+    let reasonText = t.deleted_reason || (t.reason || t.hold_reason) || "";
+    let displayRemarks = t.remarks || "";
+    if (displayRemarks && HOLD_REASONS.includes(displayRemarks.trim())) {
+      reasonText = displayRemarks.trim();
+      displayRemarks = "";
+    }
+    tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", "—", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", displayRemarks || "—", reasonText || "—", decoded.caseTypes.join(", ") || "—", "—", "DELETED"]); 
+  });
+  
   if (typeof doc.autoTable !== "function") throw new Error("PDF plugin did not load.");
   doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Assigned", "Section", "Remarks", "Reason", "Case Type", "Completed", "Status"]], body: tableRows.length ? tableRows : [["—", "—", "—", "—", "—", "—", "—", "No tasks", "—", "—", "—", "—"]], theme: "grid", styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" }, headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] } });
   doc.save("ACL_Report_" + date + ".pdf");
 }
 
-// ✅ FIX: Broken Courts Report - properly working
 async function generateBrokenCourtsReportPDF() {
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) {
@@ -919,13 +946,23 @@ async function generateBrokenCourtsReportPDF() {
 }
 
 function printTasks(){
-  const rows = tasks.map(t => { const d = decodeSection(t.section_name); return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(d.section)}</td><td>${esc(t.remarks || "")}</td><td>${esc(t.reason || t.hold_reason || "—")}</td><td>${esc(d.caseTypes.join(", ") || "-")}</td><td>${esc(t.status || "")}</td></tr>`; }).join("");
+  const rows = tasks.map(t => { 
+    const d = decodeSection(t.section_name); 
+    // ✅ FIX: Smart check for print
+    let reasonText = t.reason || t.hold_reason || "—";
+    let displayRemarks = t.remarks || "—";
+    if (displayRemarks !== "—" && HOLD_REASONS.includes(displayRemarks.trim())) {
+      reasonText = displayRemarks.trim();
+      displayRemarks = "—";
+    }
+    return `<tr><td>${esc(t.id)}</td><td>${esc(d.bench)}</td><td>${esc(getCourtStr(t))}</td><td>${esc(t.list_type || "")}</td><td>${esc(t.operator?.full_name || "MEMO")}</td><td>${esc(d.section)}</td><td>${esc(displayRemarks)}</td><td>${esc(reasonText)}</td><td>${esc(d.caseTypes.join(", ") || "-")}</td><td>${esc(t.status || "")}</td></tr>`; 
+  }).join("");
   $("printReport").style.display = "block";
   $("printReport").innerHTML = `<h1>AHC Tasks</h1><p>Date: ${esc(selectedDate())} | Total: ${tasks.length}</p><table><thead><tr><th>ID</th><th>Bench</th><th>Court</th><th>List</th><th>Assigned</th><th>Section</th><th>Remarks</th><th>Reason</th><th>Case Type</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>`;
   window.print();
 }
 
-/* ===================================================== USER MANAGER (PIN ALPHANUMERIC FIX) ===================================================== */
+/* ===================================================== USER MANAGER ===================================================== */
 function openUserManager() { $("userManagerModal").style.display = "block"; document.body.style.overflow = "hidden"; loadManagedOperators(); }
 function closeUserManager() { $("userManagerModal").style.display = "none"; document.body.style.overflow = ""; }
 function switchUserTab(tab) {
@@ -938,16 +975,13 @@ function switchUserTab(tab) {
   if (tab === 'delete') loadOperatorsForDelete();
 }
 
-// ✅ FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
 function validatePin(pin) {
   if (!pin || pin.length < 4 || pin.length > 16) {
     return { valid: false, error: "PIN must be 4-16 characters long." };
   }
-  // Allow: letters, numbers, and @ # $ % & * !
   if (!/^[A-Za-z0-9@#$%&*!]+$/.test(pin)) {
     return { valid: false, error: "PIN can only contain letters, numbers, and @ # $ % & * !" };
   }
-  // Must contain at least 1 letter and 1 number
   if (!/[A-Za-z]/.test(pin) || !/[0-9]/.test(pin)) {
     return { valid: false, error: "PIN must contain at least 1 letter and 1 number." };
   }
@@ -977,7 +1011,6 @@ async function addOperator() {
     return; 
   }
   
-  // ✅ FIX: New alphanumeric PIN validation
   const pinCheck = validatePin(pinValue);
   if (!pinCheck.valid) {
     message.textContent = "❌ " + pinCheck.error;
@@ -1019,7 +1052,6 @@ async function resetOperatorPassword() {
     return; 
   }
   
-  // ✅ FIX: New alphanumeric PIN validation
   const pinCheck = validatePin(newPassword);
   if (!pinCheck.valid) {
     message.textContent = "❌ " + pinCheck.error;
