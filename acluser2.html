@@ -1048,6 +1048,120 @@ window.addEventListener('message', function(event) {
         alert(`Welcome back, ${user}!`);
     }
 });
+    /* =====================================================
+   OPERATOR TAB BLINK & NOTIFICATION SYSTEM
+   (Is code ko Operator Dashboard mein add karein)
+===================================================== */
+
+let originalTitle = document.title;
+let blinkInterval = null;
+let isBlinking = false;
+let lastPendingTaskCount = 0;
+let currentOperatorId = null; // Yeh login ke baad set hoga
+
+// 1. Halka sa Notification Sound (Web Audio API - koi external file nahi chahiye)
+function playNotificationBeep() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const audioCtx = new AudioContext();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // A5 note
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volume low rakha hai
+        
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.15); // 150ms ki short beep
+    } catch (e) {
+        console.log("Audio notification blocked by browser (user interaction needed)");
+    }
+}
+
+// 2. Tab Title Blinking Start/Stop Functions
+function startTabBlinking() {
+    if (isBlinking) return; // Agar pehle se blink ho raha hai toh dobara start na kare
+    isBlinking = true;
+    let showBell = true;
+    
+    playNotificationBeep(); // Pehli baar sound bajaye
+    
+    blinkInterval = setInterval(() => {
+        if (showBell) {
+            document.title = "🔔 NEW TASK ASSIGNED! | " + originalTitle;
+        } else {
+            document.title = originalTitle;
+        }
+        showBell = !showBell;
+    }, 800); // 0.8 second ke interval par toggle hoga
+}
+
+function stopTabBlinking() {
+    if (!isBlinking) return;
+    isBlinking = false;
+    clearInterval(blinkInterval);
+    document.title = originalTitle; // Original title wapas laaye
+}
+
+// 3. Background Task Checker (Har 10 second mein chalega)
+async function checkForNewTasks() {
+    // Note: currentOperatorId operator ke login ke baad set hona chahiye
+    if (!currentOperatorId) return; 
+
+    try {
+        // Sirf pending/hold tasks count karein jo is operator ko assign hain
+        const { data, error } = await sb.from('tasks')
+            .select('id')
+            .eq('assigned_to', currentOperatorId)
+            .in('status', ['pending', 'hold']);
+
+        if (error) throw error;
+
+        const currentPendingCount = data ? data.length : 0;
+
+        // Agar count pichli baar se zyada hai, matlab NAYA task aaya hai
+        if (currentPendingCount > lastPendingTaskCount && lastPendingTaskCount !== 0) {
+            startTabBlinking();
+        }
+        
+        lastPendingTaskCount = currentPendingCount;
+    } catch (err) {
+        console.error("Task check error:", err);
+    }
+}
+
+// 4. Acknowledge Logic: Jab user page par kahin bhi click kare ya task list refresh kare
+function acknowledgeNotification() {
+    stopTabBlinking();
+    // Optional: Yahan aap lastPendingTaskCount ko update kar sakte hain
+    // checkForNewTasks(); 
+}
+
+// 5. Event Listeners Setup
+document.addEventListener("click", acknowledgeNotification); // User ne click kiya toh blink band
+document.addEventListener("keydown", acknowledgeNotification); // Keyboard use kiya toh blink band
+
+// Jab tab wapas foreground (active) mein aaye, toh bhi check karein
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === 'visible') {
+        acknowledgeNotification();
+        checkForNewTasks(); // Turant data refresh kare
+    }
+});
+
+// 6. Initialization (Isko operator ke login ya page load function ke andar call karein)
+function initOperatorNotifications(operatorId) {
+    currentOperatorId = operatorId;
+    lastPendingTaskCount = 0; // Reset count on fresh load/login
+    checkForNewTasks(); // Pehli baar count set kare
+    
+    // Har 10 second (10000 ms) mein background check chalega
+    setInterval(checkForNewTasks, 10000); 
+}
 </script>
 
 </body>
