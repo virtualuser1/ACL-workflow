@@ -188,7 +188,7 @@ tr.memo-done-row{background:var(--success-light)}
 
     <div id="panelReset" style="display:none;">
       <h3>🔑 Reset Operator Password</h3>
-      <p style="color:#64748b; font-size:13px; margin-bottom:14px;" If an operator has forgotten their PIN or password, enter their registered phone number to set a new password.</p>
+      <p style="color:#64748b; font-size:13px; margin-bottom:14px;">If the operator has forgotten their PIN/Password, enter their registered phone number to set a new password.</p>
       <label>📱 Registered Phone Number</label><input id="resetPhone" type="tel" placeholder="10-digit mobile number" maxlength="10" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
       <label>New Password / PIN <small style="color:#64748b;font-weight:400;text-transform:none;">(Alphanumeric + @#$%&*! allowed, 4-16 chars)</small></label>
       <input id="resetNewPassword" type="password" placeholder="e.g. Pass@123" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;">
@@ -197,7 +197,7 @@ tr.memo-done-row{background:var(--success-light)}
 
     <div id="panelDelete" style="display:none;">
       <h3>🗑️ Delete Operator</h3>
-      <p style="color:#dc2626; font-size:13px; margin-bottom:14px; background:#fee2e2; padding:10px; border-radius:6px;">⚠️ <strong>Warning:</strong> Delete karne se pehle operator ke saare tasks ka PDF backup lena zaroori hai.</p>
+      <p style="color:#dc2626; font-size:13px; margin-bottom:14px; background:#fee2e2; padding:10px; border-radius:6px;">⚠️ <strong>Warning:</strong> It is mandatory to take a PDF backup of all operator tasks before deleting.</p>
       <label>Select Operator to Delete</label>
       <select id="deleteOperatorSelect" style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:6px 0 14px;"><option value="">-- Select Operator --</option></select>
       <div id="deleteOperatorInfo" style="display:none; background:#fff7ed; border:1px solid #fb923c; padding:12px; border-radius:6px; margin-bottom:14px;"><div id="deleteOperatorDetails"></div></div>
@@ -205,7 +205,7 @@ tr.memo-done-row{background:var(--success-light)}
     </div>
 
     <hr style="margin:24px 0;"><h3>Existing Operators</h3>
-    <div id="operatorManagementList">Operators is loading..</div>
+    <div id="operatorManagementList">Loading operators list...</div>
     <p id="userManagerMessage" role="status" style="margin-top:14px; white-space:pre-wrap;"></p>
   </div>
 </div>
@@ -465,7 +465,7 @@ async function taskApi(body){
   if(!r.ok || !j.success) throw Error(j.error || "API error."); return j;
 }
 async function manageOperatorsRequest(payload) {
-  const { data: sessionData } = await sb.auth.getSession(); if (!sessionData.session?.access_token) throw new Error("Admin session nahi mila.");
+  const { data: sessionData } = await sb.auth.getSession(); if (!sessionData.session?.access_token) throw new Error("Admin session not found.");
   const response = await fetch(`${SUPABASE_URL}/functions/v1/manage-operators`, { method: "POST", headers: {"Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${sessionData.session.access_token}`}, body: JSON.stringify(payload) });
   const result = await response.json(); if (!response.ok || result.ok !== true) throw new Error(result.error || `Request failed (${response.status})`); return result;
 }
@@ -489,16 +489,16 @@ async function loadOperators() {
     operators = result.operators.map(o => ({ id: Number(o.numeric_id || o.id), username: String(o.username || ""), full_name: String(o.full_name || o.username || `Operator ${o.numeric_id || o.id}`), active: o.active === true }))
       .filter(o => Number.isInteger(o.id) && o.id > 0 && o.active && o.username.toLowerCase() !== "admin").sort((a, b) => a.id - b.id);
     select.innerHTML = '<option value="">Admin</option>' + operators.map(o => `<option value="${o.id}">${o.id} — ${o.full_name}</option>`).join("");
-  } catch (error) { console.error("Unable to load operators:", error); select.innerHTML = '<option value="">Operators not loaded</option>'; } 
+  } catch (error) { console.error("Unable to load operators:", error); select.innerHTML = '<option value="">Operators failed to load</option>'; } 
   finally { select.disabled = false; }
 }
 
 async function loadManagedOperators() {
   const list = document.getElementById("operatorManagementList"), message = document.getElementById("userManagerMessage"); if (!list) return;
-  list.replaceChildren(); const loading = document.createElement("p"); loading.textContent = "Operators list load ho rahi hai..."; list.appendChild(loading); if (message) message.textContent = "";
+  list.replaceChildren(); const loading = document.createElement("p"); loading.textContent = "Loading operators list..."; list.appendChild(loading); if (message) message.textContent = "";
   try {
     const result = await manageOperatorsRequest({ action: "list" }); list.replaceChildren();
-    if (!Array.isArray(result.operators) || result.operators.length === 0) { const empty = document.createElement("p"); empty.textContent = "Koi operator nahi hai."; list.appendChild(empty); return; }
+    if (!Array.isArray(result.operators) || result.operators.length === 0) { const empty = document.createElement("p"); empty.textContent = "No operators found."; list.appendChild(empty); return; }
     result.operators.forEach((operator) => {
       const item = document.createElement("div"); item.style.cssText = "padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;";
       const name = document.createElement("strong"); name.textContent = operator.full_name || operator.username || "Unnamed";
@@ -522,17 +522,17 @@ async function loadManagedOperators() {
 /* ===================================================== TASK CREATION & RENDERING ===================================================== */
 async function createTask(){
   hideWarning(); const bench = $("benchType").value, courts = [...selectedCourts], listType = $("listType").value, assigned = $("operatorSelect").value;
-  if(!assigned){ if(courts.length > 1){ alert("For Admin select only Single court option."); return; } await submitTask(); return; }
+  if(!assigned){ if(courts.length > 1){ alert("Please select one court for Admin Memo."); return; } await submitTask(); return; }
   if(!bench){ alert("Select Bench."); return; } if(courts.length === 0){ alert("Select Court."); return; }
   const duplicates = []; for(const court of courts){ const dupe = checkDuplicate(bench, court, listType); if(dupe) duplicates.push({court, dupe}); }
   if(duplicates.length){
     const names = duplicates.map(x => `${x.court} (Task #${x.dupe.id})`).join("\n");
-    const proceed = confirm(`Duplicates:\n${names}\n\nSkip karke baaki assign karein?`); if(!proceed) return;
+    const proceed = confirm(`Duplicates:\n${names}\n\nSkip and assign the rest?`); if(!proceed) return;
     const duplicateSet = new Set(duplicates.map(x => x.court)), remaining = courts.filter(court => !duplicateSet.has(court));
-    if(!remaining.length){ showWarning("Sabhi courts ke liye task already hai."); return; }
+    if(!remaining.length){ showWarning("Task already exists for all courts."); return; }
     await submitTask(remaining, duplicates.map(x=>x.court)); return;
   }
-  if(!confirm(`${courts.length} task(s) assign honge. Continue?`)) return; await submitTask(courts, []);
+  if(!confirm(`${courts.length} task(s) will be assigned. Continue?`)) return; await submitTask(courts, []);
 }
 async function forceCreateTask(){ hideWarning(); await submitTask(); }
 async function submitTask(courtValues = null, skippedDuplicates = []){
@@ -550,7 +550,7 @@ async function submitTask(courtValues = null, skippedDuplicates = []){
     }
     if(created.length){
       $("taskMsg").textContent = `✓ ${created.length} task(s) saved`; $("benchType").value = "R"; clearCourtDropdown(); $("sectionName").value = ""; $("listType").value = ""; $("remarks").value = ""; $("operatorSelect").value = ""; $("wordCount").textContent = "(0/50)"; clearCtDropdown(); await refreshAll();
-    } else { $("taskMsg").textContent = "Koi task save nahi hua."; }
+    } else { $("taskMsg").textContent = "No tasks were saved."; }
     if(failed.length) alert("Failed: " + failed.map(x=>`${x.court}: ${x.message}`).join("\n"));
   }catch(e){ $("taskMsg").textContent = e.message; }
 }
@@ -629,29 +629,7 @@ async function reassign(id){
   const n = Number(answer); if(!Number.isInteger(n)) return;
   try{ await taskApi({action:"reassign", task_id:id, assigned_to:n}); await refreshAll(); }catch(e){ alert(e.message); }
 }
-const HOLD_REASONS = ["CONNECTED MATTERS NOT SHOWN TOGETHER",
-"COURT NUMBER NOT IN PDF",
-"DUPLICATE SERIAL NUMBER",
-"FURTHER HEARING NOT MENTIONED",
-"IN-CHAMBER INSTEAD OF 201",
-"LEARNED COUNSEL DETAILS NOT SHOWN",
-"LISTING PURPOSE NOT MENTIONED",
-"PARTY NAME MISSING",
-"PH SHOULD BE FURTHER HEARING IN SHORT ORDER",
-"SECTION COMPLIANCE MUST BE ADDED",
-"SECTION COMPLIANCE NOT MENTIONED",
-"SECTION NOT FEEDED YET",
-"SERIAL NUMBER ISSUE",
-"SERIAL NUMBER MISSING",
-"SERIAL NUMBER NOT IN SEQUENCE",
-"SHORT ORDER NOT MENTIONED",
-"TIMING NOT IN COURT HEADER",
-"TIMING NOT IN SHORT ORDER REMARK",
-"TU MUST BE ADDED",
-"VC FROM LUCKNOW NOT MENTIONED",
-"ONLY VIDEO CONFERENCING SHOULD BE MENTIONED",
-"VIDEO CONFERENCING WITH TIMING NOT PRESENT",
-"WRONGLY BY SECTION, "WRONGLY"].sort((a,b) => a.localeCompare(b));
+const HOLD_REASONS = ["IN-CHAMBER INSTEAD OF 201","PH SHOULD BE FURTHER HEARING IN SHORT ORDER","SECTION COMPLIANCE MUST BE ADDED","SECTION NOT FEEDED YET","SERIAL NUMBER ISSUE","TIMING NOT IN COURT HEADER","TIMING NOT IN SHORT ORDER REMARK","TU MUST BE ADDED","VIDEO CONFERENCING FROM LUCKNOW NOT SHOWN","VIDEO CONFERENCING WITH TIMING NOT PRESENT","WRONGLY BY SECTION"].sort((a,b) => a.localeCompare(b));
 let pendingHoldTaskId = null;
 function initHoldReasons(){ const sel = $("holdReasonSelect"); sel.innerHTML = `<option value="">— Select Hold Reason —</option>` + HOLD_REASONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join(""); }
 function openHoldReason(id){ pendingHoldTaskId = Number(id); $("holdReasonTaskLabel").textContent = "Task #" + id; $("holdReasonSelect").value = ""; $("holdReasonOverlay").classList.remove("hidden"); }
@@ -692,7 +670,7 @@ function openReport(){
         <button class="btn-primary" onclick="generateReport()">🔍 Generate Report</button>
       </div>
     </div>
-    <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">👆 "Generate Report" button click karein</div></div>
+    <div id="reportResults"><div style="text-align:center;padding:30px;color:var(--gray-500);">👆 Click the "Generate Report" button</div></div>
   `;
   $("modal").classList.remove("hidden");
   
@@ -706,7 +684,7 @@ async function generateReport(){
   
   if(!date){ alert("Select date"); return; }
   
-  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Report Generating...</div>`;
+  $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--primary);font-weight:600;">⏳ Generating Report...</div>`;
   
   try{
     const j = await taskApi({action:"report", date});
@@ -728,7 +706,7 @@ async function generateReport(){
     }
     
     if(tasks.length === 0) {
-      $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500);">❌ ${esc(date)}${courtFilter ? ' (Court: ' + esc(courtFilter) + ')' : ''} No task found for this</div>`;
+      $("reportResults").innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-500);">❌ No tasks found for ${esc(date)}${courtFilter ? ' (Court: ' + esc(courtFilter) + ')' : ''}.</div>`;
       return;
     }
 
@@ -842,7 +820,7 @@ async function downloadSelectedDatePDF() {
 }
 
 function downloadReportPDF(report) {
-  if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library not  loaded.");
+  if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF library did not load.");
   const activeTasks = Array.isArray(report?.tasks) ? report.tasks : [], deletedTasks = Array.isArray(report?.deletedTasks) ? report.deletedTasks : [], date = report?.date || selectedDate();
   const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text("ACL DATE-WISE TASK REPORT", 10, 12);
@@ -850,7 +828,7 @@ function downloadReportPDF(report) {
   const tableRows = [];
   activeTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.operator?.full_name || "MEMO", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", (t.reason || t.hold_reason) || "—", decoded.caseTypes.join(", ") || "—", t.completed_time ? dt(t.completed_time) : "—", t.status || ""]); });
   deletedTasks.forEach(t => { const decoded = decodeSection(t.section_name); tableRows.push([String(t.id ?? ""), decoded.bench || "—", getCourtStr(t), t.list_type || "", "—", t.assigned_time ? dt(t.assigned_time) : "—", decoded.section || "—", t.remarks || "", t.deleted_reason || "—", decoded.caseTypes.join(", ") || "—", "—", "DELETED"]); });
-  if (typeof doc.autoTable !== "function") throw new Error("PDF plugin load nahi hua.");
+  if (typeof doc.autoTable !== "function") throw new Error("PDF plugin did not load.");
   doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List Type", "Assigned To", "Assigned", "Section", "Remarks", "Reason", "Case Type", "Completed", "Status"]], body: tableRows.length ? tableRows : [["—", "—", "—", "—", "—", "—", "—", "No tasks", "—", "—", "—", "—"]], theme: "grid", styles: { fontSize: 7, cellPadding: 1.5, overflow: "linebreak" }, headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255] } });
   doc.save("ACL_Report_" + date + ".pdf");
 }
@@ -859,7 +837,7 @@ function downloadReportPDF(report) {
 async function generateBrokenCourtsReportPDF() {
   try {
     if (!window.jspdf || !window.jspdf.jsPDF) {
-      alert("❌ PDF library not  loaded. refresh the page. ");
+      alert("❌ PDF library did not load. Please refresh the page.");
       return;
     }
     
@@ -870,7 +848,7 @@ async function generateBrokenCourtsReportPDF() {
     });
     
     if (brokenTasks.length === 0) {
-      alert("❌ Is date par koi Broken Court task nahi mila.");
+      alert("❌ No Broken Court tasks found for this date.");
       return;
     }
     
@@ -896,7 +874,7 @@ async function generateBrokenCourtsReportPDF() {
     });
     
     if (typeof doc.autoTable !== "function") {
-      alert("❌ PDF plugin load nahi hua.");
+      alert("❌ PDF plugin did not load.");
       return;
     }
     
@@ -940,15 +918,15 @@ function switchUserTab(tab) {
 // ✅ FIX: PIN validation - Alphanumeric + special chars (@#$%&*!) allowed, 4-16 chars
 function validatePin(pin) {
   if (!pin || pin.length < 4 || pin.length > 16) {
-    return { valid: false, error: "The PIN must be 4–16 characters long.." };
+    return { valid: false, error: "PIN must be 4-16 characters long." };
   }
   // Allow: letters, numbers, and @ # $ % & * !
   if (!/^[A-Za-z0-9@#$%&*!]+$/.test(pin)) {
-    return { valid: false, error: "Only letters, numbers, and the symbols @ # $ % & * ! are allowed in the PIN." };
+    return { valid: false, error: "PIN can only contain letters, numbers, and @ # $ % & * !" };
   }
   // Must contain at least 1 letter and 1 number
   if (!/[A-Za-z]/.test(pin) || !/[0-9]/.test(pin)) {
-    return { valid: false, error: "The PIN must contain at least one letter and one number." };
+    return { valid: false, error: "PIN must contain at least 1 letter and 1 number." };
   }
   return { valid: true };
 }
@@ -961,17 +939,17 @@ async function addOperator() {
   const pinValue = $("newOperatorPin").value.trim();
   
   if (!full_name || !username || !phone || !pinValue) { 
-    message.textContent = "❌ Sabhi fields bharein."; 
+    message.textContent = "❌ Please fill all fields."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
   if (!/^[6-9]\d{9}$/.test(phone)) { 
-    message.textContent = "❌ The phone number must be 10 digits long (starting with 6–9).."; 
+    message.textContent = "❌ Phone number must be 10 digits (starting with 6-9)."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
   if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) { 
-    message.textContent = "❌ Username 3-30 chars."; 
+    message.textContent = "❌ Username must be 3-30 characters."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -1008,12 +986,12 @@ async function resetOperatorPassword() {
   const newPassword = $("resetNewPassword").value.trim();
   
   if (!phone || !newPassword) { 
-    message.textContent = "❌ Both the phone and the new password are required.."; 
+    message.textContent = "❌ Both phone and new password are required."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
   if (!/^[6-9]\d{9}$/.test(phone)) { 
-    message.textContent = "❌ Phone 10 digits."; 
+    message.textContent = "❌ Phone must be 10 digits."; 
     message.style.color = "#b91c1c"; 
     return; 
   }
@@ -1026,7 +1004,7 @@ async function resetOperatorPassword() {
     return;
   }
   
-  if (!confirm(`Phone ${phone} Reset the User's password?`)) return;
+  if (!confirm(`Reset password for operator with phone ${phone}?`)) return;
   message.textContent = "Resetting...";
   try {
     const result = await manageOperatorsRequest({action: "reset_password", phone, new_password: newPassword});
@@ -1051,14 +1029,14 @@ async function loadOperatorsForDelete() {
 
 async function checkOperatorBeforeDelete() {
   const message = document.getElementById("userManagerMessage"), select = $("deleteOperatorSelect"), username = select.value;
-  if (!username) { message.textContent = "❌ Select operator."; message.style.color = "#b91c1c"; return; }
+  if (!username) { message.textContent = "❌ Please select an operator."; message.style.color = "#b91c1c"; return; }
   const selectedOption = select.options[select.selectedIndex], operatorName = selectedOption.text;
   message.textContent = "Checking tasks...";
   try {
     const allTasksResult = await taskApi({ action: "all_tasks", date: "" }), allTasks = allTasksResult.tasks || [];
     const operatorTasks = allTasks.filter(t => String(t.assigned_to) === String(selectedOption.dataset.id)), taskCount = operatorTasks.length;
     if (taskCount > 0) {
-      const backupConfirm = confirm(`⚠️ OPERATOR HAS ${taskCount} TASKS!\n\nPehle PDF backup lena zaroori hai.\nOK = Backup download, Cancel = Stop`);
+      const backupConfirm = confirm(`⚠️ OPERATOR HAS ${taskCount} TASKS!\n\nIt is mandatory to take a PDF backup first.\nOK = Download Backup, Cancel = Stop`);
       if (!backupConfirm) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; }
       const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.text(`OPERATOR BACKUP — ${operatorName}`, 10, 12); doc.setFontSize(10);
@@ -1066,9 +1044,9 @@ async function checkOperatorBeforeDelete() {
       const rows = operatorTasks.map(t => { const decoded = decodeSection(t.section_name); return [String(t.id), decoded.bench || "—", getCourtStr(t), t.list_type || "", t.task_date || "—", decoded.section || "—", t.remarks || "—", t.status || "—"]; });
       doc.autoTable({ startY: 30, head: [["ID", "Bench", "Court", "List", "Date", "Section", "Remarks", "Status"]], body: rows, theme: "grid", styles: { fontSize: 7, cellPadding: 1.5 }, headStyles: { fillColor: [220, 38, 38], textColor: [255, 255, 255] } });
       const fileName = `Operator_Backup_${username}_${todayIST()}.pdf`; doc.save(fileName);
-      const finalConfirm = confirm(`✅ PDF DOWNLOADED: "${fileName}"\n\nAb delete karein?\nOperator: ${operatorName}\nTasks archived honge.`);
+      const finalConfirm = confirm(`✅ PDF DOWNLOADED: "${fileName}"\n\nDelete now?\nOperator: ${operatorName}\nTasks will be archived.`);
       if (!finalConfirm) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; }
-    } else { if (!confirm(`Operator ke paas koi task nahi. Delete karein "${operatorName}"?`)) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; } }
+    } else { if (!confirm(`Operator has no tasks. Delete anyway "${operatorName}"?`)) { message.textContent = "❌ Cancelled."; message.style.color = "#b91c1c"; return; } }
     message.textContent = "Deleting...";
     const result = await manageOperatorsRequest({action: "delete", username, backup_confirmed: true});
     message.textContent = `✅ ${result.message}`; message.style.color = "#15803d";
@@ -1083,7 +1061,7 @@ async function loadSpaceStatus() {
     const { data, error } = await sb.functions.invoke("space-monitor", { body: { action: "get_status" } });
     if (error) throw error; if (!data.success) throw new Error(data.error);
     lastSpaceConfig = data.config; updateSpaceStatusUI(data);
-  } catch (error) { console.error("Space status failed:", error); $("spaceStatusContent").innerHTML = `<div style="opacity:0.9">❌ Space Monitor is not running. Deploy the edge function 'space-monitor'..</div>`; }
+  } catch (error) { console.error("Space status failed:", error); $("spaceStatusContent").innerHTML = `<div style="opacity:0.9">❌ Space monitor is not running. Please deploy Edge Function 'space-monitor'.</div>`; }
 }
 function updateSpaceStatusUI(data) {
   const space = data.space, config = data.config, lastBackup = data.last_backup;
@@ -1126,17 +1104,17 @@ async function saveSpaceConfig() {
   } catch (error) { alert("❌ Save failed: " + error.message); }
 }
 async function triggerManualBackup() {
-    const months = prompt("How many months' worth of tasks should be backed up?", "1");
+    const months = prompt("How many months old tasks to backup?", "4");
     if (!months) return;
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - parseInt(months));
     const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
-    if (!confirm(`⚠️  ${months} tasks older than (${cutoffDateStr} ) backup + deleted.\n\nPDF will be downloaded firstly,then backedup.\nContinue?`)) return;
+    if (!confirm(`⚠️  ${months} months old tasks (before ${cutoffDateStr}) will be backed up + deleted.\n\nPDF will be downloaded first, then backup will be created.\nContinue?`)) return;
     try {
         const { data: allTasksResult, error: fetchError } = await sb.from('tasks').select('*').or(`task_date.lt.${cutoffDateStr},assigned_time.lt.${cutoffDate.toISOString()}`).order('assigned_time', { ascending: false });
         if (fetchError) throw fetchError;
         const tasksToBackup = allTasksResult || [];
-        if (tasksToBackup.length === 0) { alert(`✅ Koi task nahi mila ${cutoffDateStr} se pehle.`); return; }
+        if (tasksToBackup.length === 0) { alert(`✅ No tasks found before ${cutoffDateStr}.`); return; }
         const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
         doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.text("ACL DATABASE BACKUP REPORT", 10, 15);
         doc.setFont("helvetica", "normal"); doc.setFontSize(10);
