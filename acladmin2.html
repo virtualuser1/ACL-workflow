@@ -1104,7 +1104,7 @@ async function saveSpaceConfig() {
   } catch (error) { alert("❌ Save failed: " + error.message); }
 }
 async function triggerManualBackup() {
-    const months = prompt("How many months old tasks to backup?", "4");
+    const months = prompt("How many months old tasks to backup?", "1");
     if (!months) return;
     const cutoffDate = new Date();
     cutoffDate.setMonth(cutoffDate.getMonth() - parseInt(months));
